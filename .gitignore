@@ -223,3 +223,10 @@ data/*
 *.pth
 .env
 .ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
