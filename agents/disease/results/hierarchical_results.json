@@ -1,0 +1,12 @@
+{
+  "model": "Hierarchical (Stage1: crop EfficientNetB0, Stage2: per-crop disease EfficientNetB0)",
+  "stage1_val_acc": 0.9997243660418964,
+  "stage2_tomato_val_acc": 0.9968730456535334,
+  "stage2_potato_val_acc": 1.0,
+  "end_to_end_val_accuracy": 0.99696802646086,
+  "end_to_end_correct": 3617,
+  "end_to_end_total": 3628,
+  "errors_from_stage1_misrouting": 1,
+  "errors_from_stage2_confusion": 10,
+  "flat_baseline_val_accuracy": 0.9972436604189636
+}
