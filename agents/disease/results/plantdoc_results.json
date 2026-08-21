@@ -1,0 +1,31 @@
+{
+  "plantdoc_images_evaluated": 968,
+  "classes_covered": [
+    "Potato___Early_blight",
+    "Potato___Late_blight",
+    "Tomato_Bacterial_spot",
+    "Tomato_Early_blight",
+    "Tomato_Late_blight",
+    "Tomato_Leaf_Mold",
+    "Tomato_Septoria_leaf_spot",
+    "Tomato_Spider_mites_Two_spotted_spider_mite",
+    "Tomato__Tomato_YellowLeaf__Curl_Virus",
+    "Tomato__Tomato_mosaic_virus",
+    "Tomato_healthy"
+  ],
+  "classes_missing_from_plantdoc": [
+    "Tomato__Target_Spot",
+    "Potato___healthy"
+  ],
+  "flat_baseline": {
+    "plantvillage_val_accuracy": 0.9972436604189636,
+    "plantdoc_accuracy": 0.22004132231404958,
+    "accuracy_drop": 0.777202338104914
+  },
+  "hierarchical": {
+    "plantvillage_val_accuracy": 0.99696802646086,
+    "plantdoc_accuracy": 0.23450413223140495,
+    "accuracy_drop": 0.762463894229455
+  },
+  "note": "Zero-shot evaluation -- no PlantDoc images used in training for either model. Both PlantDoc train and test folders used as the evaluation set."
+}
