@@ -1,0 +1,18 @@
+[
+  {"id": 1, "question": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?", "gloss": "Spots on my tomato leaves, what disease is this?", "expected": {"wants_disease": true, "wants_weather": false, "wants_price": false, "wants_soil": false}},
+  {"id": 2, "question": "రేపు వర్షం పడుతుందా?", "gloss": "Will it rain tomorrow?", "expected": {"wants_disease": false, "wants_weather": true, "wants_price": false, "wants_soil": false}},
+  {"id": 3, "question": "ఈ రోజు టమాటా ధర ఎంత?", "gloss": "What's today's tomato price?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": true, "wants_soil": false}},
+  {"id": 4, "question": "నా పొలంలో మట్టి బాగుందా?", "gloss": "Is my field's soil good?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": false, "wants_soil": true}},
+  {"id": 5, "question": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?", "gloss": "Potato leaves turning yellow, why?", "expected": {"wants_disease": true, "wants_weather": false, "wants_price": false, "wants_soil": false}},
+  {"id": 6, "question": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?", "gloss": "How's the weather this week?", "expected": {"wants_disease": false, "wants_weather": true, "wants_price": false, "wants_soil": false}},
+  {"id": 7, "question": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?", "gloss": "Will potato market price rise?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": true, "wants_soil": false}},
+  {"id": 8, "question": "నేల pH ఎంత ఉండాలి టమాటా కోసం?", "gloss": "What soil pH is needed for tomato?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": false, "wants_soil": true}},
+  {"id": 9, "question": "వర్షం వస్తే మందు కొట్టాలా?", "gloss": "Should I spray if rain is coming?", "expected": {"wants_disease": true, "wants_weather": true, "wants_price": false, "wants_soil": false}},
+  {"id": 10, "question": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి", "gloss": "Should I sell or hold, considering price and weather?", "expected": {"wants_disease": false, "wants_weather": true, "wants_price": true, "wants_soil": false}},
+  {"id": 11, "question": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?", "gloss": "Leaves have disease, price is also low, what do I do?", "expected": {"wants_disease": true, "wants_weather": false, "wants_price": true, "wants_soil": false}},
+  {"id": 12, "question": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి", "gloss": "I want full advice on my tomato crop", "expected": {"wants_disease": true, "wants_weather": true, "wants_price": true, "wants_soil": false}},
+  {"id": 13, "question": "నమస్కారం", "gloss": "Hello", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": false, "wants_soil": false}},
+  {"id": 14, "question": "ఈ మందు ఎక్కడ దొరుకుతుంది?", "gloss": "Where can I get this pesticide?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": false, "wants_soil": false}},
+  {"id": 15, "question": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?", "gloss": "Crop leaves drying up, is it due to lack of rain?", "expected": {"wants_disease": true, "wants_weather": true, "wants_price": false, "wants_soil": false}},
+  {"id": 16, "question": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?", "gloss": "Is nitrogen low in my soil, should I fertilize?", "expected": {"wants_disease": false, "wants_weather": false, "wants_price": false, "wants_soil": true}}
+]
