@@ -111,22 +111,29 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     weather_state = None
     weather_raw = None
     if intents.get("wants_weather"):
-        location = f"{farm_profile['district']},IN"
-        weather_raw = get_weather_advice(location)
-        weather_state = _map_weather_state(weather_raw)
-        logger.info(f"Weather Agent ({location}): rain_expected="
-                    f"{weather_raw.get('rain_expected')} -> state={weather_state}")
+        if "district" not in farm_profile or not farm_profile["district"]:
+            logger.warning("Weather intent detected but Farm Profile is missing 'district' -- skipping Weather Agent.")
+        else:
+            location = f"{farm_profile['district']},IN"
+            weather_raw = get_weather_advice(location)
+            weather_state = _map_weather_state(weather_raw)
+            logger.info(f"Weather Agent ({location}): rain_expected="
+                        f"{weather_raw.get('rain_expected')} -> state={weather_state}")
     trace["weather_raw"] = weather_raw
     trace["weather_state"] = weather_state
 
     price_state = None
     price_raw = None
     if intents.get("wants_price"):
-        price_raw = get_price_advice(
-            farm_profile["state"], farm_profile["crop"], farm_profile.get("mandi")
-        )
-        price_state = _map_price_state(price_raw)
-        logger.info(f"Price Agent: pct_diff={price_raw.get('pct_diff')} -> state={price_state}")
+        missing = [k for k in ("state", "crop") if k not in farm_profile or not farm_profile[k]]
+        if missing:
+            logger.warning(f"Price intent detected but Farm Profile is missing {missing} -- skipping Price Agent.")
+        else:
+            price_raw = get_price_advice(
+                farm_profile["state"], farm_profile["crop"], farm_profile.get("mandi")
+            )
+            price_state = _map_price_state(price_raw)
+            logger.info(f"Price Agent: pct_diff={price_raw.get('pct_diff')} -> state={price_state}")
     trace["price_raw"] = price_raw
     trace["price_state"] = price_state
 
