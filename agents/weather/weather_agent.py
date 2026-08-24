@@ -111,6 +111,10 @@ def get_weather_advice(location: str) -> dict:
         "confidence": confidence,
         "reason_for_confidence": reason,
         "source_freshness": f"OpenWeatherMap forecast retrieved {retrieved_at}",
+        # Added Phase 4.1b: structured fields for the Orchestrator's
+        # conflict-state mapping (avoids parsing the Telugu answer text).
+        "max_pop": max_pop,
+        "rain_expected": rain_expected,
     }
 
 
