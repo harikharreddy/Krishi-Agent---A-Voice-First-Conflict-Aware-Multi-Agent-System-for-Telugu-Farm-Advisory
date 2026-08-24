@@ -10,6 +10,7 @@ if "farm_profile" not in st.session_state:
 with st.form("farm_profile_form"):
     district = st.text_input("District")
     mandi = st.text_input("Nearest Mandi")
+    state = st.selectbox("State", ["Telangana", "Andhra Pradesh"])
     crop = st.selectbox("Crop", ["Tomato", "Potato"])
     submitted = st.form_submit_button("Save Profile")
 
@@ -20,6 +21,7 @@ with st.form("farm_profile_form"):
             st.session_state.farm_profile = {
                 "district": district,
                 "mandi": mandi,
+                "state": state,
                 "crop": crop,
             }
             st.success("Farm profile saved for this session.")
