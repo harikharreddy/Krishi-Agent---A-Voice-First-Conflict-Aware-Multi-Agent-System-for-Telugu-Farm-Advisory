@@ -177,6 +177,9 @@ def get_price_advice(state: str, commodity: str, market: str = None) -> dict:
             f"Live price from {today_record.get('arrival_date')}; "
             f"seasonal baseline from {sample_count} historical records (2002-2026 archive)"
         ),
+        # Added Phase 4.1b: structured field for the Orchestrator's
+        # conflict-state mapping (avoids parsing the Telugu answer text).
+        "pct_diff": pct_diff,
     }
 
 
