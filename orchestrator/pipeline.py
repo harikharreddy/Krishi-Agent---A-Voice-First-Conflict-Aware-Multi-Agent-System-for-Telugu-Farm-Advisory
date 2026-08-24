@@ -145,11 +145,35 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     trace["price_raw"] = price_raw
     trace["price_state"] = price_state
 
-    resolution = resolve_conflict(disease_state, weather_state, price_state)
+    # Phase 4.2c finding: when only ONE agent actually fired, there is
+    # nothing to arbitrate between -- relay that agent's own already-correct
+    # Telugu answer directly instead of routing it through the Conflict
+    # Resolver, which has no rule-table coverage for single-agent cases and
+    # was incorrectly returning "unresolved_conflict" for e.g. a simple
+    # weather-only question that the Weather Agent had already answered.
+    active_agents = [
+        (state, raw) for state, raw in
+        [(disease_state, disease_raw), (weather_state, weather_raw), (price_state, price_raw)]
+        if state is not None
+    ]
+
+    if len(active_agents) == 1:
+        _, single_raw = active_agents[0]
+        resolution = {
+            "is_conflict": False,
+            "resolution": "single_agent_passthrough",
+            "action": single_raw["answer"],
+            "confidence": single_raw["confidence"],
+        }
+        final_answer = single_raw["answer"]
+        logger.info("Only one agent fired -- relaying its answer directly (no arbitration needed).")
+    else:
+        resolution = resolve_conflict(disease_state, weather_state, price_state)
+        final_answer = phrase_resolution(resolution["resolution"], resolution["confidence"])
+
     trace["resolution"] = resolution
     logger.info(f"Conflict Resolver: {resolution}")
 
-    final_answer = phrase_resolution(resolution["resolution"], resolution["confidence"])
     trace["final_answer"] = final_answer
     logger.info(f"Final answer: {final_answer}")
 
