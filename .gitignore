@@ -230,3 +230,4 @@ __pycache__/
 .venv/
 venv/
 env/
+.venv-voice/
