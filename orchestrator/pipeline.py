@@ -129,11 +129,19 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
         if missing:
             logger.warning(f"Price intent detected but Farm Profile is missing {missing} -- skipping Price Agent.")
         else:
-            price_raw = get_price_advice(
-                farm_profile["state"], farm_profile["crop"], farm_profile.get("mandi")
-            )
-            price_state = _map_price_state(price_raw)
-            logger.info(f"Price Agent: pct_diff={price_raw.get('pct_diff')} -> state={price_state}")
+            try:
+                price_raw = get_price_advice(
+                    farm_profile["state"], farm_profile["crop"], farm_profile.get("mandi")
+                )
+                price_state = _map_price_state(price_raw)
+                logger.info(f"Price Agent: pct_diff={price_raw.get('pct_diff')} -> state={price_state}")
+            except Exception as e:
+                # Unlike Weather Agent, Price Agent's _fetch_today_price() can
+                # raise directly (e.g. RuntimeError on a missing API key)
+                # rather than always returning a failure-shaped dict.
+                logger.warning(f"Price Agent raised an exception -- treating as unavailable: {e}")
+                price_raw = None
+                price_state = None
     trace["price_raw"] = price_raw
     trace["price_state"] = price_state
 
