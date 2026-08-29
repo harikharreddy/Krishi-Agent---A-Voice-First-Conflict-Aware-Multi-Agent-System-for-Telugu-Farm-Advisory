@@ -6,10 +6,14 @@ import tempfile
 import torch
 import soundfile as sf
 import numpy as np
-from transformers import AutoModel
+from transformers import AutoModel, AutoTokenizer
+from parler_tts import ParlerTTSForConditionalGeneration
 import streamlit as st
 
 from orchestrator.pipeline import run_pipeline
+from shared.text_normalization import normalize_numerals_te
+
+TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu accent, at a moderate speed with high quality recording."
 
 
 @st.cache_resource
@@ -19,6 +23,18 @@ def load_asr_model():
     )
     model.eval()
     return model
+
+
+@st.cache_resource
+def load_tts_model():
+    tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
+        "ai4bharat/indic-parler-tts"
+    ).to("cpu")
+    tts_tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-parler-tts")
+    description_tokenizer = AutoTokenizer.from_pretrained(
+        tts_model.config.text_encoder._name_or_path
+    )
+    return tts_model, tts_tokenizer, description_tokenizer
 
 
 def transcribe_audio(audio_bytes):
@@ -38,6 +54,18 @@ def transcribe_audio(audio_bytes):
     with torch.no_grad():
         transcription = asr_model(wav, "te", "rnnt")
     return transcription
+
+
+def synthesize_speech(text):
+    normalized_text = normalize_numerals_te(text)
+    tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
+
+    input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids
+    prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids
+
+    generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
+    audio_arr = generation.cpu().numpy().squeeze()
+    return audio_arr, tts_model.config.sampling_rate
 
 
 st.set_page_config(page_title="Krishi-Agent", page_icon="🌾")
@@ -100,5 +128,10 @@ else:
         else:
             with st.spinner("Thinking..."):
                 trace = run_pipeline(final_question, st.session_state.farm_profile)
+            answer_text = trace["final_answer"]
             st.subheader("Answer")
-            st.write(trace["final_answer"])
+            st.write(answer_text)
+
+            with st.spinner("Generating spoken reply..."):
+                audio_arr, sample_rate = synthesize_speech(answer_text)
+            st.audio(audio_arr, sample_rate=sample_rate)
