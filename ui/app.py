@@ -2,6 +2,8 @@ import os
 os.environ["USE_TF"] = "0"
 os.environ["USE_FLAX"] = "0"
 
+import time
+import logging
 import tempfile
 import torch
 import soundfile as sf
@@ -13,20 +15,28 @@ import streamlit as st
 from orchestrator.pipeline import run_pipeline
 from shared.text_normalization import normalize_numerals_te
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [TIMING] %(message)s", datefmt="%H:%M:%S")
+logger = logging.getLogger(__name__)
+
 TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu accent, at a moderate speed with high quality recording."
 
 
 @st.cache_resource
 def load_asr_model():
+    t0 = time.time()
+    logger.info("Loading ASR model...")
     model = AutoModel.from_pretrained(
         "ai4bharat/indic-conformer-600m-multilingual", trust_remote_code=True
     )
     model.eval()
+    logger.info(f"ASR model loaded in {time.time()-t0:.1f}s")
     return model
 
 
 @st.cache_resource
 def load_tts_model():
+    t0 = time.time()
+    logger.info("Loading TTS model...")
     tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
         "ai4bharat/indic-parler-tts"
     ).to("cpu")
@@ -34,10 +44,12 @@ def load_tts_model():
     description_tokenizer = AutoTokenizer.from_pretrained(
         tts_model.config.text_encoder._name_or_path
     )
+    logger.info(f"TTS model loaded in {time.time()-t0:.1f}s")
     return tts_model, tts_tokenizer, description_tokenizer
 
 
 def transcribe_audio(audio_bytes):
+    t0 = time.time()
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         tmp.write(audio_bytes)
         tmp_path = tmp.name
@@ -51,21 +63,35 @@ def transcribe_audio(audio_bytes):
     wav = torch.from_numpy(wav_np)
 
     asr_model = load_asr_model()
+    logger.info(f"ASR model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
     with torch.no_grad():
         transcription = asr_model(wav, "te", "rnnt")
+    logger.info(f"ASR transcription done, total {time.time()-t0:.1f}s")
     return transcription
 
 
 def synthesize_speech(text):
+    t0 = time.time()
     normalized_text = normalize_numerals_te(text)
     tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
+    logger.info(f"TTS model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
 
     input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids
     prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids
 
+    t1 = time.time()
     generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
+    logger.info(f"TTS generation took {time.time()-t1:.1f}s (total synth: {time.time()-t0:.1f}s)")
+
     audio_arr = generation.cpu().numpy().squeeze()
     return audio_arr, tts_model.config.sampling_rate
+
+
+def save_uploaded_image(uploaded_file):
+    suffix = os.path.splitext(uploaded_file.name)[1] or ".jpg"
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+        tmp.write(uploaded_file.getvalue())
+        return tmp.name
 
 
 st.set_page_config(page_title="Krishi-Agent", page_icon="🌾")
@@ -111,14 +137,24 @@ else:
         st.audio(audio_value)
 
     question = st.text_input("Type your question in Telugu")
+
+    uploaded_photo = st.file_uploader(
+        "Optional: attach a photo of the crop leaf (for disease questions)",
+        type=["jpg", "jpeg", "png"],
+    )
+    if uploaded_photo is not None:
+        st.image(uploaded_photo, caption="Uploaded leaf photo", width=250)
+
     ask_submitted = st.button("Ask")
 
     if ask_submitted:
+        t_start = time.time()
         final_question = None
 
         if audio_value is not None:
             with st.spinner("Transcribing your recording..."):
                 final_question = transcribe_audio(audio_value.getvalue())
+            logger.info(f"ASR stage total: {time.time()-t_start:.1f}s")
             st.write(f"Heard: {final_question}")
         elif question:
             final_question = question
@@ -126,12 +162,21 @@ else:
         if not final_question:
             st.error("Please record or type a question.")
         else:
+            image_path = None
+            if uploaded_photo is not None:
+                image_path = save_uploaded_image(uploaded_photo)
+
+            t_pipeline = time.time()
             with st.spinner("Thinking..."):
-                trace = run_pipeline(final_question, st.session_state.farm_profile)
+                trace = run_pipeline(final_question, st.session_state.farm_profile, image_path=image_path)
+            logger.info(f"Pipeline stage took {time.time()-t_pipeline:.1f}s")
             answer_text = trace["final_answer"]
             st.subheader("Answer")
             st.write(answer_text)
 
+            t_tts = time.time()
             with st.spinner("Generating spoken reply..."):
                 audio_arr, sample_rate = synthesize_speech(answer_text)
+            logger.info(f"TTS stage took {time.time()-t_tts:.1f}s")
             st.audio(audio_arr, sample_rate=sample_rate)
+            logger.info(f"TOTAL end-to-end: {time.time()-t_start:.1f}s")
