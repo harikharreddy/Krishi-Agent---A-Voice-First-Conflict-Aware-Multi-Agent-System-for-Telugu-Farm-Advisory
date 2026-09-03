@@ -60,9 +60,13 @@ def _map_disease_state(disease_result: dict) -> str:
 
 def _map_weather_state(weather_result: dict) -> str:
     """Map Weather Agent output to a Conflict Resolver state.
-    No real drought detection exists yet -- see module docstring."""
+    Phase 8 prep: drought_signal wired in as a short-range PROXY only
+    (see weather_agent.py's _check_drought_signal docstring for the
+    honest limitation -- this is not true multi-week drought detection)."""
     if "rain_expected" not in weather_result:
         return "uncertain"  # API failure / no forecast data
+    if weather_result.get("drought_signal"):
+        return "drought_risk"
     return "rain_risk" if weather_result["rain_expected"] else "favorable"
 
 

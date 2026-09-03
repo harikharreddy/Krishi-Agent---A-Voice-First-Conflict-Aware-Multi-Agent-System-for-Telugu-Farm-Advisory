@@ -10,12 +10,12 @@ their live API calls are exercised separately by test_weather_agent.py /
 test_price_agent.py, and real external calls would make this suite flaky
 and untestable for specific scenarios on demand.
 
-KNOWN GAP (not hidden): 3 of the 12 Phase 3 scenarios (ids 4, 6, 7) require
-weather_state="drought_risk", which _map_weather_state() can never produce --
-the Weather Agent has no drought detection, only a 48h rain forecast. These
-3 scenarios are SKIPPED here with an explicit reason, not silently mocked
-around, since forcing them to "pass" would misrepresent what the pipeline
-can actually do today. Revisit if/when real drought detection is built.
+UPDATE (Phase 8 prep): scenarios 4, 6, 7 previously required
+weather_state="drought_risk", which _map_weather_state() could not produce.
+A short-range drought PROXY signal was added to the Weather Agent (see
+weather_agent.py's _check_drought_signal docstring for the honest
+limitation -- this is not true multi-week drought detection). All 12
+scenarios are now reachable through the real pipeline.
 """
 
 import json
@@ -30,8 +30,6 @@ from orchestrator.pipeline import run_pipeline
 HERE = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(HERE, "conflict_scenarios.json"), encoding="utf-8") as f:
     SCENARIOS = json.load(f)
-
-UNREACHABLE_IDS = {4, 6, 7}  # require drought_risk -- see module docstring
 
 TEST_PROFILE = {
     "district": "Warangal",
@@ -55,12 +53,13 @@ def _mock_disease_output(state):
 
 def _mock_weather_output(state):
     """Build a synthetic Weather Agent output that _map_weather_state()
-    will map to the given target state. drought_risk is intentionally
-    NOT supported here -- see module docstring."""
+    will map to the given target state."""
     if state == "rain_risk":
         return {"rain_expected": True, "max_pop": 0.8}
     if state == "favorable":
         return {"rain_expected": False, "max_pop": 0.1}
+    if state == "drought_risk":
+        return {"rain_expected": False, "max_pop": 0.05, "drought_signal": True}
     if state == "uncertain":
         return {}  # simulates API failure -- no rain_expected key
     return None
@@ -118,12 +117,6 @@ def main():
 
     for scenario in SCENARIOS:
         sid = scenario["id"]
-
-        if sid in UNREACHABLE_IDS:
-            print(f"[SKIP] Scenario {sid}: requires drought_risk, "
-                  f"not producible by current Weather Agent")
-            skipped += 1
-            continue
 
         result = run_scenario(scenario)
         expected = scenario["expected"]
