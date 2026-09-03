@@ -87,13 +87,6 @@ def synthesize_speech(text):
     return audio_arr, tts_model.config.sampling_rate
 
 
-def save_uploaded_image(uploaded_file):
-    suffix = os.path.splitext(uploaded_file.name)[1] or ".jpg"
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        tmp.write(uploaded_file.getvalue())
-        return tmp.name
-
-
 st.set_page_config(page_title="Krishi-Agent", page_icon="🌾")
 
 st.title("Krishi-Agent")
@@ -164,7 +157,10 @@ else:
         else:
             image_path = None
             if uploaded_photo is not None:
-                image_path = save_uploaded_image(uploaded_photo)
+                suffix = os.path.splitext(uploaded_photo.name)[1] or ".jpg"
+                with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+                    tmp.write(uploaded_photo.getvalue())
+                    image_path = tmp.name
 
             t_pipeline = time.time()
             with st.spinner("Thinking..."):
@@ -175,7 +171,7 @@ else:
             st.write(answer_text)
 
             t_tts = time.time()
-            with st.spinner("Generating spoken reply..."):
+            with st.spinner("Generating spoken reply... (this can take a few minutes on this device)"):
                 audio_arr, sample_rate = synthesize_speech(answer_text)
             logger.info(f"TTS stage took {time.time()-t_tts:.1f}s")
             st.audio(audio_arr, sample_rate=sample_rate)
