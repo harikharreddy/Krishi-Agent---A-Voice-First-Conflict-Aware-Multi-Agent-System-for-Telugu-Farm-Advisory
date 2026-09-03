@@ -3,9 +3,9 @@ Disease Agent — hierarchical crop disease classifier.
 Stage 1: crop classifier (Tomato/Potato). Stage 2: per-crop disease classifier.
 Extracted from notebooks/phase1_disease_hierarchical_plantdoc.ipynb (Phase 1.4).
 
-NOTE: Telugu disease-name labels below are a DRAFT, not yet reviewed by a
-fluent Telugu speaker on the team. Same review step Phase 3.2's phrasing
-templates went through still needs to happen for these before Phase 5/6.
+NOTE: Telugu disease-name labels below were reviewed by fluent Telugu
+speakers on the team (Sep 2026, Phase 8 prep) and confirmed correct as-is --
+same review step Phase 3.2's phrasing templates already went through.
 """
 
 import os
@@ -38,7 +38,7 @@ STAGE2_POTATO_CLASSES = [
     'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy',
 ]
 
-# DRAFT Telugu labels — needs fluent-speaker review before Phase 5/6.
+# Telugu labels — reviewed and confirmed by fluent-Telugu teammates (Sep 2026).
 TELUGU_DISEASE_NAMES = {
     'Tomato_Bacterial_spot': 'బాక్టీరియల్ స్పాట్',
     'Tomato_Early_blight': 'ఎర్లీ బ్లైట్',
