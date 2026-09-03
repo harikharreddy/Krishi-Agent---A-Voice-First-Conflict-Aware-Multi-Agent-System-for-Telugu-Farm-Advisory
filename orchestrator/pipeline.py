@@ -11,12 +11,17 @@ typed question + Farm Profile (+ optional leaf photo) -> one Telugu answer.
 Does not touch voice (Phase 5) -- text question in, text answer out.
 
 KNOWN LIMITATIONS (honest, not hidden -- see Phase 8 report):
-- Disease state mapping uses a 0.7 confidence cutoff (treat_now vs monitor)
-  that is an unvalidated placeholder, not derived from a real PlantDoc
-  confidence-calibration analysis. Flagged for a Phase 8 revisit.
-- Weather state mapping has no real drought detection -- the Weather Agent
-  only computes a 48h rain forecast. Ambiguous/non-rain cases map to
-  "uncertain" rather than a fabricated "drought_risk"/"favorable" call.
+- Disease state mapping uses a 0.7 confidence cutoff (treat_now vs monitor).
+  A Phase 8 confidence-calibration spot-check on PlantDoc (see
+  agents/disease/plantdoc_confidence_analysis.py) found a weak but real
+  positive separation (26.5% accuracy above 0.7 vs 19.9% below,
+  non-monotonic across buckets) -- the cutoff is a reasonable but not
+  strongly-validated placeholder, not a precisely calibrated threshold.
+- Weather state mapping's drought_risk now uses a short-range PROXY signal
+  (see weather_agent.py's _check_drought_signal docstring): flagged when
+  the full 5-day forecast is uniformly dry and hot. This is NOT true
+  multi-week drought detection, which a 5-day forecast cannot observe --
+  documented honestly as a limited proxy, not hidden as a full solution.
 """
 
 import logging
