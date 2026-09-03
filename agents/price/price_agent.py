@@ -140,28 +140,38 @@ def get_price_advice(state: str, commodity: str, market: str = None) -> dict:
 
     pct_diff = (today_price - baseline) / baseline
 
-    if pct_diff >= SELL_THRESHOLD:
-        answer = (
-            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.) కంటే "
-            f"{round(pct_diff * 100)}% ఎక్కువ. ఇప్పుడు అమ్మడం మంచిది."
-        )
-    elif pct_diff <= HOLD_THRESHOLD:
-        answer = (
-            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.) కంటే "
-            f"{round(abs(pct_diff) * 100)}% తక్కువ. వీలైతే ఆగడం మంచిది."
-        )
-    else:
-        answer = (
-            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఇది ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.)కి "
-            f"దగ్గరగా ఉంది."
-        )
-
     if abs(pct_diff) >= 0.20:
         confidence = "High"
     elif abs(pct_diff) >= 0.08:
         confidence = "Medium"
     else:
         confidence = "Low"
+
+    # Phase 6 -- confidence-appropriate hedging, so Medium/Low-confidence
+    # answers audibly sound less certain than High-confidence ones,
+    # not just carry a different internal label.
+    if confidence == "High":
+        hedge = ""
+    elif confidence == "Medium":
+        hedge = ", కానీ ఖచ్చితంగా చెప్పలేం"
+    else:
+        hedge = ", అయితే ఇది స్పష్టమైన సూచన కాదు"
+
+    if pct_diff >= SELL_THRESHOLD:
+        answer = (
+            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.) కంటే "
+            f"{round(pct_diff * 100)}% ఎక్కువ{hedge}. ఇప్పుడు అమ్మడం మంచిది."
+        )
+    elif pct_diff <= HOLD_THRESHOLD:
+        answer = (
+            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.) కంటే "
+            f"{round(abs(pct_diff) * 100)}% తక్కువ{hedge}. వీలైతే ఆగడం మంచిది."
+        )
+    else:
+        answer = (
+            f"ఈరోజు {commodity} ధర {int(today_price)} రూ., ఇది ఈ నెలలో సాధారణ ధర ({int(baseline)} రూ.)కి "
+            f"దగ్గరగా ఉంది{hedge}."
+        )
 
     reason = (
         f"Today's modal price {today_price:.0f} compared to a {sample_count}-record seasonal average "

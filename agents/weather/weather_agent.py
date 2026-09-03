@@ -80,24 +80,29 @@ def get_weather_advice(location: str) -> dict:
     rain_entries = [e for e in window_entries if e.get("pop", 0.0) >= RAIN_POP_THRESHOLD]
     rain_expected = len(rain_entries) > 0
 
+    if max_pop >= 0.7 or max_pop <= 0.2:
+        confidence = "High"
+    else:
+        confidence = "Medium"
+
+    # Phase 6 -- confidence-appropriate hedging, so Medium-confidence
+    # answers audibly sound less certain than High-confidence ones,
+    # not just carry a different internal label.
+    hedge = "" if confidence == "High" else ", అయితే ఖచ్చితంగా చెప్పలేం"
+
     if rain_expected:
         first_rain = rain_entries[0]
         rain_time = datetime.fromtimestamp(first_rain["dt"], tz=timezone.utc)
         hours_until = round((rain_time - datetime.now(timezone.utc)).total_seconds() / 3600)
         answer = (
-            f"రాబోయే {hours_until} గంటల్లో వర్షం పడే అవకాశం ఉంది "
+            f"రాబోయే {hours_until} గంటల్లో వర్షం పడే అవకాశం ఉంది{hedge} "
             f"(వర్షం సంభావ్యత {round(max_pop * 100)}%)."
         )
     else:
         answer = (
-            f"రాబోయే 48 గంటల్లో వర్షం పడే అవకాశం తక్కువ "
+            f"రాబోయే 48 గంటల్లో వర్షం పడే అవకాశం తక్కువ{hedge} "
             f"(గరిష్ట సంభావ్యత {round(max_pop * 100)}%)."
         )
-
-    if max_pop >= 0.7 or max_pop <= 0.2:
-        confidence = "High"
-    else:
-        confidence = "Medium"
 
     reason = (
         f"Based on {len(window_entries)} forecast points from OpenWeatherMap "
