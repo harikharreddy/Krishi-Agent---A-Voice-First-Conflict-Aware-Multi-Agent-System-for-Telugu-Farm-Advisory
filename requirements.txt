@@ -14,3 +14,19 @@ requests==2.34.2
 six==1.17.0
 urllib3==2.7.0
 num2words==0.5.14
+
+# UI
+streamlit
+
+# Disease Agent (image classification)
+torch
+torchvision
+Pillow
+
+# ASR (speech-to-text) + TTS (text-to-speech)
+transformers==4.46.1
+accelerate==0.34.2
+soundfile
+torchaudio
+einops
+git+https://github.com/huggingface/parler-tts.git
