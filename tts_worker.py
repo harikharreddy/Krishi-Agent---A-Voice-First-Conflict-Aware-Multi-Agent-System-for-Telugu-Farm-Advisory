@@ -4,7 +4,11 @@ Isolates TTS generation from Streamlit's process, since generation was
 observed to take 5-7x longer when run in-process inside Streamlit
 versus as a standalone script (root cause not identified after
 eliminating thread count, network I/O, file-watching, and sentence
-length as causes across multiple systematic tests).
+length as causes across multiple systematic tests; most pronounced on
+macOS, where in-process generation was taking ~3 minutes per reply).
+
+The input text is expected to already be normalized (e.g. via
+shared.text_normalization.normalize_numerals_te) by the caller.
 
 Usage: python3 tts_worker.py <text_file_path> <output_wav_path>
 """

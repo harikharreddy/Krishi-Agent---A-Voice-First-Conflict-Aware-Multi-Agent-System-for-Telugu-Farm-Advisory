@@ -2,14 +2,15 @@ import os
 os.environ["USE_TF"] = "0"
 os.environ["USE_FLAX"] = "0"
 
+import sys
 import time
 import logging
 import tempfile
+import subprocess
 import torch
 import soundfile as sf
 import numpy as np
-from transformers import AutoModel, AutoTokenizer
-from parler_tts import ParlerTTSForConditionalGeneration
+from transformers import AutoModel
 import streamlit as st
 
 from orchestrator.pipeline import run_pipeline
@@ -18,7 +19,7 @@ from shared.text_normalization import normalize_numerals_te
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [TIMING] %(message)s", datefmt="%H:%M:%S")
 logger = logging.getLogger(__name__)
 
-TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu accent, at a moderate speed with high quality recording."
+TTS_WORKER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tts_worker.py")
 
 
 @st.cache_resource
@@ -31,21 +32,6 @@ def load_asr_model():
     model.eval()
     logger.info(f"ASR model loaded in {time.time()-t0:.1f}s")
     return model
-
-
-@st.cache_resource
-def load_tts_model():
-    t0 = time.time()
-    logger.info("Loading TTS model...")
-    tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
-        "ai4bharat/indic-parler-tts"
-    ).to("cpu")
-    tts_tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-parler-tts")
-    description_tokenizer = AutoTokenizer.from_pretrained(
-        tts_model.config.text_encoder._name_or_path
-    )
-    logger.info(f"TTS model loaded in {time.time()-t0:.1f}s")
-    return tts_model, tts_tokenizer, description_tokenizer
 
 
 def transcribe_audio(audio_bytes):
@@ -71,20 +57,32 @@ def transcribe_audio(audio_bytes):
 
 
 def synthesize_speech(text):
+    """Run TTS generation in a standalone subprocess (tts_worker.py) rather than
+    in-process. Generation was observed to take 5-7x longer in-process inside
+    Streamlit, especially on macOS, likely due to thread/BLAS contention between
+    Streamlit's script-runner threads and PyTorch's CPU inference threads. A
+    clean subprocess avoids that contention."""
     t0 = time.time()
     normalized_text = normalize_numerals_te(text)
-    tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
-    logger.info(f"TTS model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
 
-    input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids
-    prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as text_tmp:
+        text_tmp.write(normalized_text)
+        text_path = text_tmp.name
+    audio_path = tempfile.NamedTemporaryFile(suffix=".wav", delete=False).name
 
-    t1 = time.time()
-    generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
-    logger.info(f"TTS generation took {time.time()-t1:.1f}s (total synth: {time.time()-t0:.1f}s)")
+    logger.info(f"Launching TTS worker subprocess at {time.time()-t0:.1f}s")
+    result = subprocess.run(
+        [sys.executable, TTS_WORKER_PATH, text_path, audio_path],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        logger.error(f"TTS worker failed: {result.stderr}")
+        raise RuntimeError(f"TTS worker subprocess failed: {result.stderr.strip()}")
+    logger.info(f"TTS worker subprocess finished, total synth: {time.time()-t0:.1f}s")
 
-    audio_arr = generation.cpu().numpy().squeeze()
-    return audio_arr, tts_model.config.sampling_rate
+    audio_arr, sample_rate = sf.read(audio_path, dtype="float32")
+    return audio_arr, sample_rate
 
 
 st.set_page_config(page_title="Krishi-Agent", page_icon="🌾")
@@ -171,7 +169,7 @@ else:
             st.write(answer_text)
 
             t_tts = time.time()
-            with st.spinner("Generating spoken reply... (this can take a few minutes on this device)"):
+            with st.spinner("Generating spoken reply..."):
                 audio_arr, sample_rate = synthesize_speech(answer_text)
             logger.info(f"TTS stage took {time.time()-t_tts:.1f}s")
             st.audio(audio_arr, sample_rate=sample_rate)
