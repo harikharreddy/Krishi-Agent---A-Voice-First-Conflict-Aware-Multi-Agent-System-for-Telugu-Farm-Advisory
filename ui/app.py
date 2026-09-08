@@ -2,6 +2,8 @@ import os
 os.environ["USE_TF"] = "0"
 os.environ["USE_FLAX"] = "0"
 
+import ctypes
+import sys
 import time
 import logging
 import tempfile
@@ -19,6 +21,28 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [TIMING] %(message)s
 logger = logging.getLogger(__name__)
 
 TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu accent, at a moderate speed with high quality recording."
+
+# macOS pins a thread's CPU-bound work to slow efficiency cores whenever that
+# thread's QoS class drops below "user initiated" -- Streamlit runs each script
+# rerun on its own worker thread, and once Terminal loses focus (e.g. the user
+# switches to the browser to use the app) that thread's QoS gets demoted,
+# producing a 5-10x slowdown for CPU-bound generation that never shows up when
+# running the same code as a plain foreground script. Explicitly boosting the
+# calling thread's QoS class right before heavy compute (measured to fully
+# reverse the slowdown, in-process, no subprocess/root needed) works around it.
+if sys.platform == "darwin":
+    _libc = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+    _libc.pthread_set_qos_class_self_np.argtypes = [ctypes.c_int, ctypes.c_int]
+    _libc.pthread_set_qos_class_self_np.restype = ctypes.c_int
+    _QOS_CLASS_USER_INITIATED = 0x19
+
+    def boost_thread_qos():
+        rc = _libc.pthread_set_qos_class_self_np(_QOS_CLASS_USER_INITIATED, 0)
+        if rc != 0:
+            logger.warning(f"pthread_set_qos_class_self_np failed rc={rc} errno={ctypes.get_errno()}")
+else:
+    def boost_thread_qos():
+        pass
 
 
 @st.cache_resource
@@ -50,6 +74,7 @@ def load_tts_model():
 
 def transcribe_audio(audio_bytes):
     t0 = time.time()
+    boost_thread_qos()
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         tmp.write(audio_bytes)
         tmp_path = tmp.name
@@ -72,6 +97,7 @@ def transcribe_audio(audio_bytes):
 
 def synthesize_speech(text):
     t0 = time.time()
+    boost_thread_qos()
     normalized_text = normalize_numerals_te(text)
     tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
     logger.info(f"TTS model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
