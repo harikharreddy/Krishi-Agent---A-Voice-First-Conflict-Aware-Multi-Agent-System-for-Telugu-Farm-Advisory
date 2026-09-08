@@ -1,6 +1,7 @@
 import os
 os.environ["USE_TF"] = "0"
 os.environ["USE_FLAX"] = "0"
+os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 
 import ctypes
 import sys
@@ -84,19 +85,33 @@ def load_asr_model():
     return model
 
 
+def select_tts_device():
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
 @st.cache_resource
 def load_tts_model():
     t0 = time.time()
-    logger.info("Loading TTS model...")
-    tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
-        "ai4bharat/indic-parler-tts"
-    ).to("cpu")
+    device = select_tts_device()
+    logger.info(f"Loading TTS model onto device={device}...")
+    try:
+        tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
+            "ai4bharat/indic-parler-tts"
+        ).to(device)
+    except Exception:
+        logger.exception(f"Failed to load TTS model on device={device}, falling back to cpu")
+        device = "cpu"
+        tts_model = ParlerTTSForConditionalGeneration.from_pretrained(
+            "ai4bharat/indic-parler-tts"
+        ).to(device)
     tts_tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-parler-tts")
     description_tokenizer = AutoTokenizer.from_pretrained(
         tts_model.config.text_encoder._name_or_path
     )
-    logger.info(f"TTS model loaded in {time.time()-t0:.1f}s")
-    return tts_model, tts_tokenizer, description_tokenizer
+    logger.info(f"TTS model loaded on device={device} in {time.time()-t0:.1f}s")
+    return tts_model, tts_tokenizer, description_tokenizer, device
 
 
 def transcribe_audio(audio_bytes):
@@ -130,23 +145,33 @@ def synthesize_speech(text):
     logger.info(f"synthesize_speech() entered on thread={threading.current_thread().name} tid={threading.get_ident()}")
     boost_thread_qos()
     normalized_text = normalize_numerals_te(text)
-    tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
-    logger.info(f"TTS model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
+    tts_model, tts_tokenizer, description_tokenizer, _ = load_tts_model()
+    device = str(next(tts_model.parameters()).device)
+    logger.info(f"TTS model ready (from cache or fresh load) at {time.time()-t0:.1f}s, device={device}")
 
-    input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids
-    prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids
+    input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids.to(device)
+    prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids.to(device)
 
     _, qos_name = current_thread_qos()
     logger.info(
         f"QoS immediately before tts_model.generate(): {qos_name} "
         f"(thread={threading.current_thread().name} tid={threading.get_ident()}, "
-        f"torch.get_num_threads()={torch.get_num_threads()})"
+        f"device={device}, torch.get_num_threads()={torch.get_num_threads()})"
     )
     t1 = time.time()
-    generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
+    try:
+        generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
+    except Exception:
+        if device == "cpu":
+            raise
+        logger.exception(f"generate() failed on device={device}, retrying on cpu")
+        tts_model = tts_model.to("cpu")
+        generation = tts_model.generate(
+            input_ids=input_ids.to("cpu"), prompt_input_ids=prompt_input_ids.to("cpu")
+        )
     logger.info(f"TTS generation took {time.time()-t1:.1f}s (total synth: {time.time()-t0:.1f}s)")
 
-    audio_arr = generation.cpu().numpy().squeeze()
+    audio_arr = generation.cpu().float().numpy().squeeze()
     return audio_arr, tts_model.config.sampling_rate
 
 
