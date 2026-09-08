@@ -4,6 +4,7 @@ os.environ["USE_FLAX"] = "0"
 
 import ctypes
 import sys
+import threading
 import time
 import logging
 import tempfile
@@ -32,15 +33,41 @@ TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu acce
 # reverse the slowdown, in-process, no subprocess/root needed) works around it.
 if sys.platform == "darwin":
     _libc = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+    _libc.pthread_self.restype = ctypes.c_void_p
     _libc.pthread_set_qos_class_self_np.argtypes = [ctypes.c_int, ctypes.c_int]
     _libc.pthread_set_qos_class_self_np.restype = ctypes.c_int
+    _libc.pthread_get_qos_class_np.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)]
+    _libc.pthread_get_qos_class_np.restype = ctypes.c_int
     _QOS_CLASS_USER_INITIATED = 0x19
+    _QOS_NAMES = {
+        0x21: "USER_INTERACTIVE",
+        0x19: "USER_INITIATED",
+        0x15: "DEFAULT",
+        0x11: "UTILITY",
+        0x09: "BACKGROUND",
+        0x00: "UNSPECIFIED",
+    }
+
+    def current_thread_qos():
+        qos_out = ctypes.c_int(0)
+        rel_out = ctypes.c_int(0)
+        _libc.pthread_get_qos_class_np(_libc.pthread_self(), ctypes.byref(qos_out), ctypes.byref(rel_out))
+        return qos_out.value, _QOS_NAMES.get(qos_out.value, hex(qos_out.value))
 
     def boost_thread_qos():
+        before_val, before_name = current_thread_qos()
         rc = _libc.pthread_set_qos_class_self_np(_QOS_CLASS_USER_INITIATED, 0)
+        after_val, after_name = current_thread_qos()
+        logger.info(
+            f"boost_thread_qos() called on thread={threading.current_thread().name} "
+            f"tid={threading.get_ident()} before={before_name} rc={rc} after={after_name}"
+        )
         if rc != 0:
             logger.warning(f"pthread_set_qos_class_self_np failed rc={rc} errno={ctypes.get_errno()}")
 else:
+    def current_thread_qos():
+        return None, "n/a"
+
     def boost_thread_qos():
         pass
 
@@ -74,6 +101,7 @@ def load_tts_model():
 
 def transcribe_audio(audio_bytes):
     t0 = time.time()
+    logger.info(f"transcribe_audio() entered on thread={threading.current_thread().name} tid={threading.get_ident()}")
     boost_thread_qos()
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         tmp.write(audio_bytes)
@@ -89,6 +117,8 @@ def transcribe_audio(audio_bytes):
 
     asr_model = load_asr_model()
     logger.info(f"ASR model ready (from cache or fresh load) at {time.time()-t0:.1f}s")
+    _, qos_name = current_thread_qos()
+    logger.info(f"QoS immediately before ASR inference: {qos_name}")
     with torch.no_grad():
         transcription = asr_model(wav, "te", "rnnt")
     logger.info(f"ASR transcription done, total {time.time()-t0:.1f}s")
@@ -97,6 +127,7 @@ def transcribe_audio(audio_bytes):
 
 def synthesize_speech(text):
     t0 = time.time()
+    logger.info(f"synthesize_speech() entered on thread={threading.current_thread().name} tid={threading.get_ident()}")
     boost_thread_qos()
     normalized_text = normalize_numerals_te(text)
     tts_model, tts_tokenizer, description_tokenizer = load_tts_model()
@@ -105,6 +136,12 @@ def synthesize_speech(text):
     input_ids = description_tokenizer(TTS_DESCRIPTION, return_tensors="pt").input_ids
     prompt_input_ids = tts_tokenizer(normalized_text, return_tensors="pt").input_ids
 
+    _, qos_name = current_thread_qos()
+    logger.info(
+        f"QoS immediately before tts_model.generate(): {qos_name} "
+        f"(thread={threading.current_thread().name} tid={threading.get_ident()}, "
+        f"torch.get_num_threads()={torch.get_num_threads()})"
+    )
     t1 = time.time()
     generation = tts_model.generate(input_ids=input_ids, prompt_input_ids=prompt_input_ids)
     logger.info(f"TTS generation took {time.time()-t1:.1f}s (total synth: {time.time()-t0:.1f}s)")
