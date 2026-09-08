@@ -22,6 +22,35 @@ from shared.text_normalization import normalize_numerals_te
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [TIMING] %(message)s", datefmt="%H:%M:%S")
 logger = logging.getLogger(__name__)
 
+# The ASR model (ai4bharat/indic-conformer, loaded via trust_remote_code) creates
+# multiple onnxruntime.InferenceSession instances internally, and each one defaults
+# to spinning up its own intra/inter-op thread pool sized to the CPU count. That
+# adds up to ~85 mostly-idle OS threads in the process once the ASR model is loaded
+# (confirmed via `top -pid <pid> -stats th` and Apple's `sample` profiler live on
+# this app: 85 of 119 total threads were onnxruntime workers parked in a condvar
+# wait). With that many threads alive, the LATER TTS generate() call -- which is
+# otherwise fine on its own -- gets 5-10x slower, apparently from added
+# scheduling/GIL contention rather than any change in raw compute throughput.
+# Capping each onnx session to 1 thread, validated end-to-end with both models
+# loaded in one process (ASR then TTS, matching the real pipeline order): total
+# process threads dropped from ~118 to 7, and TTS generate() dropped from ~240s
+# back to ~27s, matching the fast standalone baseline.
+try:
+    import onnxruntime as _ort
+
+    _orig_ort_session_init = _ort.InferenceSession.__init__
+
+    def _capped_ort_session_init(self, *args, sess_options=None, **kwargs):
+        if sess_options is None:
+            sess_options = _ort.SessionOptions()
+        sess_options.intra_op_num_threads = 1
+        sess_options.inter_op_num_threads = 1
+        return _orig_ort_session_init(self, *args, sess_options=sess_options, **kwargs)
+
+    _ort.InferenceSession.__init__ = _capped_ort_session_init
+except ImportError:
+    pass
+
 TTS_DESCRIPTION = "Lalitha's voice is calm and clear, with a natural Telugu accent, at a moderate speed with high quality recording."
 
 # macOS pins a thread's CPU-bound work to slow efficiency cores whenever that
