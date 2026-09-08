@@ -4,8 +4,11 @@ os.environ["USE_FLAX"] = "0"
 
 import sys
 import time
+import json
+import queue
 import logging
 import tempfile
+import threading
 import subprocess
 import torch
 import soundfile as sf
@@ -20,6 +23,88 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [TIMING] %(message)s
 logger = logging.getLogger(__name__)
 
 TTS_WORKER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tts_worker.py")
+TTS_WARMUP_TIMEOUT_SECONDS = 300
+TTS_REQUEST_TIMEOUT_SECONDS = 180
+
+
+class TTSWorker:
+    """Keeps a single tts_worker.py --serve subprocess alive for the life of
+    the session so the (slow) model load only happens once instead of on
+    every reply. Self-heals: a request that times out or a worker that dies
+    gets a fresh subprocess spawned for the next request rather than wedging
+    the UI forever."""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.process = None
+        self.stdout_queue = None
+        self._start()
+
+    def _start(self):
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        self.process = subprocess.Popen(
+            [sys.executable, TTS_WORKER_PATH, "--serve"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            env=env,
+        )
+        self.stdout_queue = queue.Queue()
+        threading.Thread(target=self._pump_stdout, daemon=True).start()
+
+        try:
+            line = self.stdout_queue.get(timeout=TTS_WARMUP_TIMEOUT_SECONDS)
+        except queue.Empty:
+            self.process.kill()
+            raise RuntimeError(f"TTS worker did not become ready within {TTS_WARMUP_TIMEOUT_SECONDS}s")
+        if line is None:
+            stderr_output = self.process.stderr.read() if self.process.stderr else ""
+            raise RuntimeError(f"TTS worker exited during startup: {stderr_output.strip()}")
+
+        ready = json.loads(line)
+        if ready.get("status") != "ready":
+            raise RuntimeError(f"TTS worker failed to start: {ready}")
+
+    def _pump_stdout(self):
+        for line in self.process.stdout:
+            self.stdout_queue.put(line)
+        self.stdout_queue.put(None)
+
+    def synthesize(self, text_path, output_path):
+        with self.lock:
+            if self.process.poll() is not None:
+                logger.warning("TTS worker had exited; restarting.")
+                self._start()
+
+            request = json.dumps({"text_path": text_path, "output_path": output_path})
+            try:
+                self.process.stdin.write(request + "\n")
+                self.process.stdin.flush()
+            except (BrokenPipeError, OSError):
+                logger.warning("TTS worker pipe was broken; restarting.")
+                self._start()
+                self.process.stdin.write(request + "\n")
+                self.process.stdin.flush()
+
+            try:
+                line = self.stdout_queue.get(timeout=TTS_REQUEST_TIMEOUT_SECONDS)
+            except queue.Empty:
+                logger.error(f"TTS worker timed out after {TTS_REQUEST_TIMEOUT_SECONDS}s; restarting for next request.")
+                self.process.kill()
+                self._start()
+                raise RuntimeError(f"TTS generation timed out after {TTS_REQUEST_TIMEOUT_SECONDS}s")
+
+            if line is None:
+                stderr_output = self.process.stderr.read() if self.process.stderr else ""
+                self._start()
+                raise RuntimeError(f"TTS worker exited unexpectedly: {stderr_output.strip()}")
+
+            response = json.loads(line)
+            if response.get("status") != "ok":
+                raise RuntimeError(f"TTS worker error: {response.get('message', 'unknown error')}")
 
 
 @st.cache_resource
@@ -56,12 +141,26 @@ def transcribe_audio(audio_bytes):
     return transcription
 
 
+@st.cache_resource
+def get_tts_worker():
+    logger.info("Starting persistent TTS worker (loads the model once)...")
+    t0 = time.time()
+    worker = TTSWorker()
+    logger.info(f"TTS worker ready in {time.time()-t0:.1f}s")
+    return worker
+
+
 def synthesize_speech(text):
-    """Run TTS generation in a standalone subprocess (tts_worker.py) rather than
-    in-process. Generation was observed to take 5-7x longer in-process inside
-    Streamlit, especially on macOS, likely due to thread/BLAS contention between
-    Streamlit's script-runner threads and PyTorch's CPU inference threads. A
-    clean subprocess avoids that contention."""
+    """Run TTS generation in a persistent standalone subprocess (tts_worker.py)
+    rather than in-process. Generation was observed to take 5-7x longer
+    in-process inside Streamlit, especially on macOS, likely due to
+    thread/BLAS contention between Streamlit's script-runner threads and
+    PyTorch's CPU inference threads. A clean subprocess avoids that
+    contention. The subprocess is kept alive and reused across replies
+    (via get_tts_worker's st.cache_resource caching) so the model-load cost
+    is paid once per session instead of on every reply, and it auto-restarts
+    if a request times out or the process dies, so a single bad reply can't
+    permanently wedge the app."""
     t0 = time.time()
     normalized_text = normalize_numerals_te(text)
 
@@ -70,16 +169,10 @@ def synthesize_speech(text):
         text_path = text_tmp.name
     audio_path = tempfile.NamedTemporaryFile(suffix=".wav", delete=False).name
 
-    logger.info(f"Launching TTS worker subprocess at {time.time()-t0:.1f}s")
-    result = subprocess.run(
-        [sys.executable, TTS_WORKER_PATH, text_path, audio_path],
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        logger.error(f"TTS worker failed: {result.stderr}")
-        raise RuntimeError(f"TTS worker subprocess failed: {result.stderr.strip()}")
-    logger.info(f"TTS worker subprocess finished, total synth: {time.time()-t0:.1f}s")
+    worker = get_tts_worker()
+    logger.info(f"TTS worker ready (from cache or fresh load) at {time.time()-t0:.1f}s")
+    worker.synthesize(text_path, audio_path)
+    logger.info(f"TTS generation finished, total synth: {time.time()-t0:.1f}s")
 
     audio_arr, sample_rate = sf.read(audio_path, dtype="float32")
     return audio_arr, sample_rate
@@ -169,8 +262,12 @@ else:
             st.write(answer_text)
 
             t_tts = time.time()
-            with st.spinner("Generating spoken reply..."):
-                audio_arr, sample_rate = synthesize_speech(answer_text)
-            logger.info(f"TTS stage took {time.time()-t_tts:.1f}s")
-            st.audio(audio_arr, sample_rate=sample_rate)
+            try:
+                with st.spinner("Generating spoken reply..."):
+                    audio_arr, sample_rate = synthesize_speech(answer_text)
+                logger.info(f"TTS stage took {time.time()-t_tts:.1f}s")
+                st.audio(audio_arr, sample_rate=sample_rate)
+            except RuntimeError as e:
+                logger.error(f"TTS stage failed after {time.time()-t_tts:.1f}s: {e}")
+                st.warning(f"Could not generate the spoken reply ({e}). The text answer above is still available.")
             logger.info(f"TOTAL end-to-end: {time.time()-t_start:.1f}s")
