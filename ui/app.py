@@ -86,8 +86,15 @@ def load_asr_model():
 
 
 def select_tts_device():
-    if torch.backends.mps.is_available():
-        return "mps"
+    # MPS was tried and reverted: Apple Silicon has no separate GPU memory --
+    # MPS shares the same physical RAM as everything else, so on a
+    # memory-constrained machine it adds Metal's own overhead on top of an
+    # already-tight budget instead of relieving it. Confirmed on real
+    # hardware: it hit a hard "Insufficient Memory
+    # (kIOGPUCommandBufferCallbackErrorOutOfMemory)" error from the Metal
+    # command buffer, which doesn't reliably surface as a catchable Python
+    # exception -- it can leave the process in a broken state rather than
+    # cleanly falling back. Not worth the risk here.
     return "cpu"
 
 
