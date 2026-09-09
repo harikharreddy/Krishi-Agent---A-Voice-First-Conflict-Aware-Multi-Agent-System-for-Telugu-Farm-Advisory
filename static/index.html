@@ -16,23 +16,42 @@
 </head>
 <body>
   <div id="splash" class="splash">
+    <div class="splash-drift splash-drift-1"></div>
+    <div class="splash-drift splash-drift-2"></div>
     <div class="splash-glow"></div>
+    <div class="splash-burst"></div>
     <svg class="splash-mark" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path class="splash-stem" d="M60 132 C57 108 63 84 60 42" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+      <path class="splash-root splash-root-l" d="M60 132 C56 137 50 141 46 146" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round" />
+      <path class="splash-root splash-root-r" d="M60 132 C64 137 70 141 74 146" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round" />
+      <path class="splash-stem" d="M60 132 C57 108 63 84 60 46" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
       <path class="splash-leaf splash-leaf-l" d="M60 96 C38 91 27 70 35 54 C48 64 58 80 60 96Z" fill="#ffffff" />
       <path class="splash-leaf splash-leaf-r" d="M60 68 C82 62 95 42 87 26 C73 37 62 53 60 68Z" fill="#ffffff" />
+      <path class="splash-bud" d="M60 46 C55 40 55 32 60 26 C65 32 65 40 60 46Z" fill="var(--color-accent, #c1622d)" />
     </svg>
     <span class="splash-rule"></span>
-    <p class="splash-word"><span>Krishi-Agent</span></p>
+    <p class="splash-word" id="splash-word">Krishi-Agent</p>
     <p class="splash-tagline">వాతావరణం, ధర, వ్యాధి — ఒకే గొంతులో</p>
   </div>
   <script>
     // Plays once per browser tab session -- reloading or navigating back
-    // within the same session shouldn't replay a 2s animation every time.
+    // within the same session shouldn't replay a multi-second animation
+    // every time.
     if (sessionStorage.getItem("krishi_splash_shown")) {
       document.getElementById("splash").style.display = "none";
     } else {
       sessionStorage.setItem("krishi_splash_shown", "1");
+      // Letter-by-letter stagger reveal -- split here rather than hand-write
+      // 12 spans in markup.
+      var wordEl = document.getElementById("splash-word");
+      var text = wordEl.textContent;
+      wordEl.textContent = "";
+      for (var i = 0; i < text.length; i++) {
+        var ch = document.createElement("span");
+        ch.className = "letter";
+        ch.textContent = text[i] === " " ? " " : text[i];
+        ch.style.animationDelay = (1.75 + i * 0.035) + "s";
+        wordEl.appendChild(ch);
+      }
     }
   </script>
 
