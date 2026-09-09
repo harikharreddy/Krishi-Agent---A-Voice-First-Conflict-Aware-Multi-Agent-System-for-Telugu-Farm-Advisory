@@ -15,11 +15,37 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+  <div id="splash" class="splash">
+    <svg class="splash-mark" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="splash-stem" d="M60 132 C57 108 63 84 60 42" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+      <path class="splash-leaf splash-leaf-l" d="M60 96 C38 91 27 70 35 54 C48 64 58 80 60 96Z" fill="#ffffff" />
+      <path class="splash-leaf splash-leaf-r" d="M60 68 C82 62 95 42 87 26 C73 37 62 53 60 68Z" fill="#ffffff" />
+    </svg>
+    <p class="splash-word">Krishi-Agent</p>
+    <p class="splash-tagline">వాతావరణం, ధర, వ్యాధి — ఒకే గొంతులో</p>
+  </div>
+  <script>
+    // Plays once per browser tab session -- reloading or navigating back
+    // within the same session shouldn't replay a 2s animation every time.
+    if (sessionStorage.getItem("krishi_splash_shown")) {
+      document.getElementById("splash").style.display = "none";
+    } else {
+      sessionStorage.setItem("krishi_splash_shown", "1");
+    }
+  </script>
+
   <div id="app">
     <!-- ============ Farm Profile setup (one-time, literate-helper screen) ============ -->
     <section id="profile-screen" class="screen profile-screen">
       <div class="profile-card">
-        <h1 class="brand">🌾 Krishi-Agent</h1>
+        <h1 class="brand">
+          <svg class="brand-mark" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 132 C57 108 63 84 60 42" stroke="currentColor" stroke-width="9" stroke-linecap="round" />
+            <path d="M60 96 C38 91 27 70 35 54 C48 64 58 80 60 96Z" fill="var(--color-accent)" />
+            <path d="M60 68 C82 62 95 42 87 26 C73 37 62 53 60 68Z" fill="currentColor" />
+          </svg>
+          Krishi-Agent
+        </h1>
         <p class="brand-sub">రైతు వివరాలు &middot; Farm Profile (one-time setup)</p>
 
         <form id="profile-form">
@@ -63,7 +89,14 @@
     <section id="ask-screen" class="screen ask-screen" hidden>
       <div class="ask-card">
       <header class="ask-header">
-        <h1 class="ask-brand">🌾 Krishi-Agent</h1>
+        <h1 class="ask-brand">
+          <svg class="brand-mark" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 132 C57 108 63 84 60 42" stroke="currentColor" stroke-width="9" stroke-linecap="round" />
+            <path d="M60 96 C38 91 27 70 35 54 C48 64 58 80 60 96Z" fill="var(--color-accent)" />
+            <path d="M60 68 C82 62 95 42 87 26 C73 37 62 53 60 68Z" fill="currentColor" />
+          </svg>
+          Krishi-Agent
+        </h1>
         <button id="edit-profile-btn" class="icon-btn" aria-label="Edit farm profile" title="Edit profile">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
