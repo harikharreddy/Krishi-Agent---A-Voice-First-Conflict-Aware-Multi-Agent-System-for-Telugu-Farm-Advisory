@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "krishi-agent-backend",
+      "runtimeExecutable": ".venv-voice/bin/uvicorn",
+      "runtimeArgs": ["backend.main:app", "--port", "8010"],
+      "port": 8010
+    }
+  ]
+}
