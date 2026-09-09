@@ -40,3 +40,82 @@ export const TELUGU_CROP_NAMES = {
   Tomato: "టమాటా",
   Potato: "బంగాళదుంప",
 };
+
+export const TELUGU_STATE_NAMES = {
+  "Andhra Pradesh": "ఆంధ్రప్రదేశ్",
+  "Telangana": "తెలంగాణ",
+};
+
+// Native Telugu spellings of the district names above -- these are Telugu
+// place names to begin with (this UI's English list is itself the
+// transliteration), so this is mostly a script switch, not a translation.
+// NOT reviewed by a fluent Telugu speaker (same caveat as TELUGU_CROP_NAMES,
+// but more names and several very recently created districts -- e.g. the
+// 2022 AP splits like "Alluri Sitharama Raju", "Konaseema", "Palnadu" --
+// where I have lower confidence in the exact standard spelling). Displayed
+// alongside the English name (not instead of it) specifically so a mistake
+// here is visible/checkable rather than silently trusted. Worth a native
+// speaker's pass before a real demo.
+export const TELUGU_DISTRICT_NAMES = {
+  // Andhra Pradesh
+  "Alluri Sitharama Raju": "అల్లూరి సీతారామరాజు",
+  "Anakapalli": "అనకాపల్లి",
+  "Anantapur": "అనంతపురం",
+  "Annamayya": "అన్నమయ్య",
+  "Bapatla": "బాపట్ల",
+  "Chittoor": "చిత్తూరు",
+  "East Godavari": "తూర్పు గోదావరి",
+  "Eluru": "ఏలూరు",
+  "Guntur": "గుంటూరు",
+  "Kakinada": "కాకినాడ",
+  "Konaseema": "కోనసీమ",
+  "Krishna": "కృష్ణా",
+  "Kurnool": "కర్నూలు",
+  "Nandyal": "నంద్యాల",
+  "NTR": "ఎన్టీఆర్",
+  "Palnadu": "పల్నాడు",
+  "Parvathipuram Manyam": "పార్వతీపురం మన్యం",
+  "Prakasam": "ప్రకాశం",
+  "Sri Potti Sriramulu Nellore": "శ్రీ పొట్టి శ్రీరాములు నెల్లూరు",
+  "Sri Sathya Sai": "శ్రీ సత్యసాయి",
+  "Srikakulam": "శ్రీకాకుళం",
+  "Tirupati": "తిరుపతి",
+  "Visakhapatnam": "విశాఖపట్నం",
+  "Vizianagaram": "విజయనగరం",
+  "West Godavari": "పశ్చిమ గోదావరి",
+  "YSR Kadapa": "వైఎస్సార్ కడప",
+  // Telangana
+  "Adilabad": "ఆదిలాబాద్",
+  "Bhadradri Kothagudem": "భద్రాద్రి కొత్తగూడెం",
+  "Hanamkonda": "హనుమకొండ",
+  "Hyderabad": "హైదరాబాద్",
+  "Jagtial": "జగిత్యాల",
+  "Jangaon": "జనగామ",
+  "Jayashankar Bhupalapally": "జయశంకర్ భూపాలపల్లి",
+  "Jogulamba Gadwal": "జోగులాంబ గద్వాల",
+  "Kamareddy": "కామారెడ్డి",
+  "Karimnagar": "కరీంనగర్",
+  "Khammam": "ఖమ్మం",
+  "Kumuram Bheem Asifabad": "కుమురం భీం ఆసిఫాబాద్",
+  "Mahabubabad": "మహబూబాబాద్",
+  "Mahabubnagar": "మహబూబ్‌నగర్",
+  "Mancherial": "మంచిర్యాల",
+  "Medak": "మెదక్",
+  "Medchal-Malkajgiri": "మేడ్చల్-మల్కాజ్‌గిరి",
+  "Mulugu": "ములుగు",
+  "Nagarkurnool": "నాగర్‌కర్నూల్",
+  "Nalgonda": "నల్గొండ",
+  "Narayanpet": "నారాయణపేట",
+  "Nirmal": "నిర్మల్",
+  "Nizamabad": "నిజామాబాద్",
+  "Peddapalli": "పెద్దపల్లి",
+  "Rajanna Sircilla": "రాజన్న సిరిసిల్ల",
+  "Ranga Reddy": "రంగారెడ్డి",
+  "Sangareddy": "సంగారెడ్డి",
+  "Siddipet": "సిద్దిపేట",
+  "Suryapet": "సూర్యాపేట",
+  "Vikarabad": "వికారాబాద్",
+  "Wanaparthy": "వనపర్తి",
+  "Warangal": "వరంగల్",
+  "Yadadri Bhuvanagiri": "యాదాద్రి భువనగిరి",
+};

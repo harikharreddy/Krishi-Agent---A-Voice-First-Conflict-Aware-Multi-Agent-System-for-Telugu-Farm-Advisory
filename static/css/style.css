@@ -410,6 +410,7 @@ body {
 .brand {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   margin: 0 0 4px;
   font-family: var(--font-display);
@@ -429,6 +430,7 @@ body {
   margin: 0 0 28px;
   color: var(--color-text-muted);
   font-size: 15px;
+  text-align: center;
 }
 
 .field {

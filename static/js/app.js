@@ -1,4 +1,4 @@
-import { DISTRICTS, CROPS, TELUGU_CROP_NAMES } from "./districts.js";
+import { DISTRICTS, CROPS, TELUGU_CROP_NAMES, TELUGU_STATE_NAMES, TELUGU_DISTRICT_NAMES } from "./districts.js";
 
 function teluguCropName(cropEnglish) {
   return TELUGU_CROP_NAMES[cropEnglish] || cropEnglish;
@@ -35,7 +35,13 @@ const editProfileBtn = document.getElementById("edit-profile-btn");
 const profileCancelBtn = document.getElementById("profile-cancel-btn");
 const profileClearBtn = document.getElementById("profile-clear-btn");
 
-function populateSelect(select, options, placeholder) {
+// displayNames (optional) maps the English value (still what's saved and
+// sent to the backend -- orchestrator/pipeline.py and the geocoding
+// overrides all key off the English spelling) to a Telugu label shown
+// instead. Kept bilingual ("తెలుగు (English)"), not Telugu-only, so a
+// wrong translation is visible/checkable rather than silently trusted --
+// none of this has had a fluent-speaker review yet (see districts.js).
+function populateSelect(select, options, placeholder, displayNames) {
   select.innerHTML = "";
   if (placeholder) {
     const ph = document.createElement("option");
@@ -48,7 +54,8 @@ function populateSelect(select, options, placeholder) {
   for (const opt of options) {
     const el = document.createElement("option");
     el.value = opt;
-    el.textContent = opt;
+    const telugu = displayNames && displayNames[opt];
+    el.textContent = telugu ? `${telugu} (${opt})` : opt;
     select.appendChild(el);
   }
 }
@@ -58,11 +65,16 @@ function populateSelect(select, options, placeholder) {
 // whatever's alphabetically first (e.g. "Alluri Sitharama Raju" as
 // District), not a deliberate choice.
 function populateDistricts(state) {
-  populateSelect(districtSelect, DISTRICTS[state] || [], "-- జిల్లా / District ఎంచుకోండి --");
+  populateSelect(
+    districtSelect,
+    DISTRICTS[state] || [],
+    "-- జిల్లా / District ఎంచుకోండి --",
+    TELUGU_DISTRICT_NAMES
+  );
 }
 
-populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం / State ఎంచుకోండి --");
-populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --");
+populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం / State ఎంచుకోండి --", TELUGU_STATE_NAMES);
+populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --", TELUGU_CROP_NAMES);
 populateDistricts(stateSelect.value);
 
 stateSelect.addEventListener("change", () => populateDistricts(stateSelect.value));
@@ -99,8 +111,8 @@ profileClearBtn.addEventListener("click", () => {
   // at, so reset() was landing State back on "Andhra Pradesh" instead of the
   // placeholder. Re-running the same population logic used at boot sidesteps
   // that entirely.
-  populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం / State ఎంచుకోండి --");
-  populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --");
+  populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం / State ఎంచుకోండి --", TELUGU_STATE_NAMES);
+  populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --", TELUGU_CROP_NAMES);
   populateDistricts(stateSelect.value);
   mandiInput.value = "";
   showProfileScreen(null);
