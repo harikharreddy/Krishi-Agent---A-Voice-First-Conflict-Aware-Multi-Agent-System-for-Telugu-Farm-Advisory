@@ -446,6 +446,21 @@ body {
   margin-bottom: 6px;
 }
 
+.field-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9c5a1f;
+}
+
+.field-warning::before {
+  content: "⚠";
+  flex-shrink: 0;
+}
+
 .field select,
 .field input {
   width: 100%;

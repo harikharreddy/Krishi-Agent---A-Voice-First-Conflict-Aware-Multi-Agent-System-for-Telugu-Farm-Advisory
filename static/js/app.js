@@ -1,4 +1,11 @@
-import { DISTRICTS, CROPS, TELUGU_CROP_NAMES, TELUGU_STATE_NAMES, TELUGU_DISTRICT_NAMES } from "./districts.js";
+import {
+  DISTRICTS,
+  CROPS,
+  TELUGU_CROP_NAMES,
+  TELUGU_STATE_NAMES,
+  TELUGU_DISTRICT_NAMES,
+  MANDI_STATE_HINTS,
+} from "./districts.js";
 
 function teluguCropName(cropEnglish) {
   return TELUGU_CROP_NAMES[cropEnglish] || cropEnglish;
@@ -34,6 +41,45 @@ const profileChip = document.getElementById("profile-chip");
 const editProfileBtn = document.getElementById("edit-profile-btn");
 const profileCancelBtn = document.getElementById("profile-cancel-btn");
 const profileClearBtn = document.getElementById("profile-clear-btn");
+const mandiStateWarning = document.getElementById("mandi-state-warning");
+
+const STATE_CODE = { "Andhra Pradesh": "AP", "Telangana": "TG" };
+
+// Soft warning only (never blocks Save) -- matches the typed mandi against
+// MANDI_STATE_HINTS (real data, see districts.js) and flags it if it looks
+// like a market from the OTHER state than the one selected. No match at
+// all (mandi just isn't in that list) is silent, not a warning -- this
+// can't and shouldn't claim to validate every real mandi in existence.
+function checkMandiStateWarning() {
+  const typed = mandiInput.value.trim();
+  const wantCode = STATE_CODE[stateSelect.value];
+  if (!typed || typed.length < 3 || !wantCode) {
+    mandiStateWarning.hidden = true;
+    return;
+  }
+  const typedLower = typed.toLowerCase();
+
+  let bestMatch = null;
+  for (const name of Object.keys(MANDI_STATE_HINTS)) {
+    const nameLower = name.toLowerCase();
+    if (nameLower.length < 3) continue;
+    if (typedLower === nameLower || typedLower.includes(nameLower) || nameLower.includes(typedLower)) {
+      if (!bestMatch || nameLower.length > bestMatch.toLowerCase().length) {
+        bestMatch = name;
+      }
+    }
+  }
+
+  if (bestMatch && MANDI_STATE_HINTS[bestMatch] !== wantCode) {
+    const otherState = wantCode === "AP" ? "Telangana" : "Andhra Pradesh";
+    mandiStateWarning.textContent =
+      `"${bestMatch}" ${otherState}లో ఉన్నట్లు కనిపిస్తోంది, మీరు ${stateSelect.value} ఎంచుకున్నారు. ` +
+      `(This looks like a ${otherState} mandi, but you selected ${stateSelect.value}.)`;
+    mandiStateWarning.hidden = false;
+  } else {
+    mandiStateWarning.hidden = true;
+  }
+}
 
 // displayNames (optional) maps the English value (still what's saved and
 // sent to the backend -- orchestrator/pipeline.py and the geocoding
@@ -77,7 +123,11 @@ populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం
 populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --", TELUGU_CROP_NAMES);
 populateDistricts(stateSelect.value);
 
-stateSelect.addEventListener("change", () => populateDistricts(stateSelect.value));
+stateSelect.addEventListener("change", () => {
+  populateDistricts(stateSelect.value);
+  checkMandiStateWarning();
+});
+mandiInput.addEventListener("input", checkMandiStateWarning);
 
 function showProfileScreen(existing) {
   if (existing) {
@@ -87,6 +137,7 @@ function showProfileScreen(existing) {
     mandiInput.value = existing.mandi;
     cropSelect.value = existing.crop;
   }
+  checkMandiStateWarning();
   // Only show a way back out (or a clear option) if there's an existing
   // profile to go back TO / clear -- first-time setup has neither.
   profileCancelBtn.hidden = !existing;
