@@ -33,6 +33,7 @@ const profileForm = document.getElementById("profile-form");
 const profileChip = document.getElementById("profile-chip");
 const editProfileBtn = document.getElementById("edit-profile-btn");
 const profileCancelBtn = document.getElementById("profile-cancel-btn");
+const profileClearBtn = document.getElementById("profile-clear-btn");
 
 function populateSelect(select, options, placeholder) {
   select.innerHTML = "";
@@ -74,9 +75,10 @@ function showProfileScreen(existing) {
     mandiInput.value = existing.mandi;
     cropSelect.value = existing.crop;
   }
-  // Only show a way back out if there's an existing profile to go back TO --
-  // first-time setup has no ask screen behind it yet.
+  // Only show a way back out (or a clear option) if there's an existing
+  // profile to go back TO / clear -- first-time setup has neither.
   profileCancelBtn.hidden = !existing;
+  profileClearBtn.hidden = !existing;
   profileScreen.hidden = false;
   askScreen.hidden = true;
 }
@@ -84,6 +86,24 @@ function showProfileScreen(existing) {
 profileCancelBtn.addEventListener("click", () => {
   const existing = loadProfile();
   if (existing) showAskScreen(existing);
+});
+
+profileClearBtn.addEventListener("click", () => {
+  const confirmed = confirm(
+    "ఈ సేవ్ చేసిన ప్రొఫైల్‌ను తీసివేయాలా? / Clear this saved profile? You'll need to set it up again."
+  );
+  if (!confirmed) return;
+  localStorage.removeItem(PROFILE_KEY);
+  // Not profileForm.reset() -- the placeholder options' "selected" state was
+  // set as a live JS property, not the HTML attribute reset() actually looks
+  // at, so reset() was landing State back on "Andhra Pradesh" instead of the
+  // placeholder. Re-running the same population logic used at boot sidesteps
+  // that entirely.
+  populateSelect(stateSelect, Object.keys(DISTRICTS), "-- రాష్ట్రం / State ఎంచుకోండి --");
+  populateSelect(cropSelect, CROPS, "-- పంట / Crop ఎంచుకోండి --");
+  populateDistricts(stateSelect.value);
+  mandiInput.value = "";
+  showProfileScreen(null);
 });
 
 function showAskScreen(profile) {

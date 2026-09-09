@@ -203,6 +203,28 @@ body {
   flex-shrink: 0;
 }
 
+.clear-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .clear-profile-btn:hover {
+    color: #b5433a;
+  }
+}
+
 .btn-primary {
   width: 100%;
   margin-top: 8px;
