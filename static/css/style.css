@@ -27,6 +27,7 @@
   --shadow-card: 0 4px 14px rgba(55, 44, 31, 0.08);
   --shadow-btn: 0 10px 28px rgba(43, 77, 36, 0.35);
   --font-body: "Noto Sans Telugu", "Noto Sans", system-ui, sans-serif;
+  --font-display: "Fraunces", "Noto Sans Telugu", Georgia, serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -186,9 +187,10 @@
 .splash-word {
   position: relative;
   margin: 0;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: #fff;
   white-space: pre;
 }
@@ -215,9 +217,11 @@
 
 .splash-tagline {
   position: relative;
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.88);
   opacity: 0;
   transform: translateY(6px);
   animation: splash-text-in 0.55s ease 4.25s forwards;
@@ -434,7 +438,10 @@ body {
   align-items: center;
   gap: 10px;
   margin: 0 0 4px;
-  font-size: 30px;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-primary-dark);
 }
 
@@ -605,7 +612,10 @@ body {
   justify-content: center;
   gap: 8px;
   margin: 0;
-  font-size: 22px;
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-primary-dark);
   text-align: center;
 }
@@ -617,7 +627,9 @@ body {
 
 .ask-tagline {
   margin: 4px 0 20px;
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--color-text-muted);
   text-align: center;
   white-space: nowrap;
