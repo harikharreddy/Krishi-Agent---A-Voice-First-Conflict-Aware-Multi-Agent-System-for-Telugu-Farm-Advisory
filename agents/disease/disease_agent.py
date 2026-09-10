@@ -12,7 +12,7 @@ NOTE (Sep 2026): checkpoints were originally trained on PlantVillage only
 zero-shot on PlantDoc's real-world field photos). Since then, fine-tuned
 on PlantDoc's own `train` split (see finetune_plantdoc.py) to close some of
 that gap -- honest end-to-end accuracy on PlantDoc's held-out `test` split
-went 28.2% -> 38.8%, and the earlier systematic over-prediction of
+went 28.2% -> 37.65%, and the earlier systematic over-prediction of
 Tomato_Late_blight (49% of test predictions vs a true rate of 12%) is
 resolved (now ~11%, matching the true distribution). See
 results/plantdoc_finetuned_results.json for the full numbers.
@@ -24,19 +24,25 @@ held-out check, and it cost accuracy elsewhere -- and was not promoted
 15 more real field photos from the CC BY 4.0 "Tomato Leaf Dataset"
 (Bangladesh tomato gardens, Mendeley DOI 10.17632/bpfd9cns5g.2), for 20
 training images total. Result: 1/5 correct on a held-out check (up from
-0/2), at a small additional cost elsewhere (38.8% vs 40.0% end-to-end
-without any Target_Spot data). This WAS promoted -- net honest judgment
-call: some real ability to recognize Target_Spot beats none, but it is
-still wrong 4 times out of 5 on held-out real photos. Not "fixed," don't
-represent it as reliable.
+0/2), at a small additional cost elsewhere. This WAS promoted -- net
+honest judgment call: some real ability to recognize Target_Spot beats
+none, but it is still wrong 4 times out of 5 on held-out real photos. Not
+"fixed," don't represent it as reliable.
 
-Potato___healthy still has ZERO real-world images anywhere and is
-unaddressed -- still entirely PlantVillage-only (studio conditions).
+Potato___healthy also had ZERO real-world images anywhere. Sourced 100
+real field photos from the CC BY 4.0 "Potato Leaf (Healthy and Late
+Blight)" dataset (Holeta, Ethiopia potato farm, Mendeley DOI
+10.17632/v4w72bsts5.1) -- cleanly labeled by the dataset authors, unlike
+Target_Spot's source. Result: 14/15 correct (93%) on a held-out check,
+with high confidence (86-100%) -- a genuinely reliable fix, unlike
+Target_Spot's. Collateral cost was minimal: 1 fewer correct image (out of
+85) on PlantDoc's test split. Promoted without reservation.
 
 Checkpoint lineage kept for comparison/rollback: checkpoints/
 *_plantvillage_only.pt (original, no PlantDoc fine-tuning at all) ->
-*_plantdoc_no_target_spot.pt (PlantDoc fine-tuned, before the Target_Spot
-attempts) -> *_best.pt (current, includes the 20-image Target_Spot data).
+*_plantdoc_no_target_spot.pt (PlantDoc fine-tuned, before either extra-data
+attempt) -> *_pre_potato_healthy.pt (adds Target_Spot, before healthy
+potato) -> *_best.pt (current, adds Potato___healthy too).
 """
 
 import os

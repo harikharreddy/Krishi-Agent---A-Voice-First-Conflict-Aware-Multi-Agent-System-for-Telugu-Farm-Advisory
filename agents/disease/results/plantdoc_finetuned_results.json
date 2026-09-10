@@ -1,10 +1,10 @@
 {
   "plantdoc_test_images_evaluated": 85,
   "stage1_crop_accuracy": 0.8235294117647058,
-  "end_to_end_accuracy": 0.38823529411764707,
+  "end_to_end_accuracy": 0.3764705882352941,
   "per_class": {
     "Potato___Early_blight": {
-      "accuracy": 0.375,
+      "accuracy": 0.25,
       "n": 8
     },
     "Potato___Late_blight": {
@@ -77,10 +77,102 @@
       "correct": true
     }
   ],
+  "potato_healthy_heldout_check": [
+    {
+      "file": "Healthy (2).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9547497630119324,
+      "correct": true
+    },
+    {
+      "file": "Healthy (21).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9734768867492676,
+      "correct": true
+    },
+    {
+      "file": "Healthy (282).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9360814690589905,
+      "correct": true
+    },
+    {
+      "file": "Healthy (283).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.994592010974884,
+      "correct": true
+    },
+    {
+      "file": "Healthy (317).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9897568821907043,
+      "correct": true
+    },
+    {
+      "file": "Healthy (324).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9608818292617798,
+      "correct": true
+    },
+    {
+      "file": "Healthy (329).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9736263751983643,
+      "correct": true
+    },
+    {
+      "file": "Healthy (336).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9926694631576538,
+      "correct": true
+    },
+    {
+      "file": "Healthy (417).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9967067837715149,
+      "correct": true
+    },
+    {
+      "file": "Healthy (421).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9643620252609253,
+      "correct": true
+    },
+    {
+      "file": "Healthy (433).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.8609302043914795,
+      "correct": true
+    },
+    {
+      "file": "Healthy (462).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9920167922973633,
+      "correct": true
+    },
+    {
+      "file": "Healthy (463).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9990221261978149,
+      "correct": true
+    },
+    {
+      "file": "Healthy (493).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.5074247121810913,
+      "correct": false
+    },
+    {
+      "file": "Healthy (5).jpg",
+      "predicted": "Potato___healthy",
+      "confidence": 0.9587200880050659,
+      "correct": true
+    }
+  ],
   "internal_val_accuracy": {
     "stage1_crop": 0.7651515151515151,
     "stage2_tomato": 0.41346153846153844,
-    "stage2_potato": 0.6129032258064516
+    "stage2_potato": 0.6956521739130435
   },
   "finetuned_checkpoints": {
     "stage1": "stage1_crop_finetuned.pt",

@@ -92,6 +92,23 @@ TARGET_SPOT_HELDOUT_FILES = [
     os.path.join(TARGET_SPOT_MENDELEY_DIR, f"{fn}.jpg") for fn in ["IMG_0653", "IMG_1128", "IMG_0349"]
 ]
 
+# Potato___healthy had ZERO real-world images anywhere (PlantDoc or
+# otherwise). Sourced from the CC BY 4.0 "Potato Leaf (Healthy and Late
+# Blight)" dataset (Mendeley DOI 10.17632/v4w72bsts5.1) -- real photos from
+# a potato farm in Holeta, Ethiopia, cleanly labeled by the dataset authors
+# (no class-index guessing needed, unlike the Target_Spot source). 363
+# healthy images available; 100 sampled (seed 42) for training, 15 held out
+# for an honest post-training check.
+POTATO_HEALTHY_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "potato_healthy_extra")
+POTATO_HEALTHY_TRAIN_FILES = [
+    os.path.join(POTATO_HEALTHY_DIR, "train", fn)
+    for fn in sorted(os.listdir(os.path.join(POTATO_HEALTHY_DIR, "train")))
+] if os.path.isdir(os.path.join(POTATO_HEALTHY_DIR, "train")) else []
+POTATO_HEALTHY_HELDOUT_FILES = [
+    os.path.join(POTATO_HEALTHY_DIR, "heldout", fn)
+    for fn in sorted(os.listdir(os.path.join(POTATO_HEALTHY_DIR, "heldout")))
+] if os.path.isdir(os.path.join(POTATO_HEALTHY_DIR, "heldout")) else []
+
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using device: {device}")
 
@@ -323,12 +340,25 @@ def check_target_spot_heldout(stage2_tomato_checkpoint):
     Target_Spot images, so this is the only real check available for this
     class. n=2 is not a statistically meaningful accuracy number; this is a
     sanity check, not a benchmark."""
-    print(f"\n=== Checking Tomato__Target_Spot on {len(TARGET_SPOT_HELDOUT_FILES)} held-out images (never trained on) ===")
-    model = load_model(stage2_tomato_checkpoint, len(STAGE2_TOMATO_CLASSES))
+    return check_class_heldout(
+        stage2_tomato_checkpoint, STAGE2_TOMATO_CLASSES, TARGET_SPOT_HELDOUT_FILES, "Tomato__Target_Spot"
+    )
+
+
+def check_potato_healthy_heldout(stage2_potato_checkpoint):
+    """Same idea as check_target_spot_heldout, for Potato___healthy."""
+    return check_class_heldout(
+        stage2_potato_checkpoint, STAGE2_POTATO_CLASSES, POTATO_HEALTHY_HELDOUT_FILES, "Potato___healthy"
+    )
+
+
+def check_class_heldout(checkpoint_name, classes, heldout_files, target_class):
+    print(f"\n=== Checking {target_class} on {len(heldout_files)} held-out images (never trained on) ===")
+    model = load_model(checkpoint_name, len(classes))
     model.eval()
     results = []
     with torch.no_grad():
-        for fpath in TARGET_SPOT_HELDOUT_FILES:
+        for fpath in heldout_files:
             fn = os.path.basename(fpath)
             if not os.path.isfile(fpath):
                 continue
@@ -336,9 +366,9 @@ def check_target_spot_heldout(stage2_tomato_checkpoint):
             x = eval_transform(img).unsqueeze(0).to(device)
             probs = F.softmax(model(x), dim=1)[0]
             pred_idx = probs.argmax().item()
-            pred_class = STAGE2_TOMATO_CLASSES[pred_idx]
+            pred_class = classes[pred_idx]
             confidence = probs[pred_idx].item()
-            correct = pred_class == "Tomato__Target_Spot"
+            correct = pred_class == target_class
             print(f"  {fn}: predicted={pred_class} (conf {confidence:.2f})  {'OK' if correct else 'WRONG'}")
             results.append({"file": fn, "predicted": pred_class, "confidence": confidence, "correct": correct})
     n_correct = sum(r["correct"] for r in results)
@@ -364,6 +394,16 @@ def main():
           f"PlantDoc has zero images for this class.")
     tomato_items += target_spot_train
 
+    potato_healthy_train = [
+        (fpath, "Potato___healthy")
+        for fpath in POTATO_HEALTHY_TRAIN_FILES
+        if os.path.isfile(fpath)
+    ]
+    print(f"Adding {len(potato_healthy_train)} real-world Potato___healthy images "
+          f"(Mendeley 'Potato Leaf (Healthy and Late Blight)', CC BY 4.0) -- "
+          f"PlantDoc has zero images for this class.")
+    potato_items += potato_healthy_train
+
     # Always fine-tune from the ORIGINAL PlantVillage-only checkpoints, never
     # from an already-fine-tuned one -- keeps this a single, reproducible
     # PlantVillage -> PlantDoc(+extras) step instead of stacking fine-tunes.
@@ -387,6 +427,7 @@ def main():
 
     eval_result = evaluate_on_plantdoc_test(checkpoints)
     eval_result["target_spot_heldout_check"] = check_target_spot_heldout(checkpoints["stage2_tomato"])
+    eval_result["potato_healthy_heldout_check"] = check_potato_healthy_heldout(checkpoints["stage2_potato"])
     eval_result["internal_val_accuracy"] = {
         "stage1_crop": stage1_val_acc,
         "stage2_tomato": tomato_val_acc,
