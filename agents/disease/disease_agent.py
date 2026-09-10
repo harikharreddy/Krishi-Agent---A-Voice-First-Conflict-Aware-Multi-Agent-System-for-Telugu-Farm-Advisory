@@ -22,6 +22,15 @@ improved or validated against real-world photos and still rely entirely on
 PlantVillage's studio-condition training data. The original
 PlantVillage-only checkpoints are kept as checkpoints/*_plantvillage_only.pt
 for comparison/rollback.
+
+Tried adding 5 real-world Target_Spot photos sourced from a UF/IFAS
+extension publication (see finetune_plantdoc.py's TARGET_SPOT_EXTRA_DIR) --
+NOT promoted, didn't help: the model still couldn't recognize Target_Spot
+on 2 held-out check images, and adding that gradient signal measurably hurt
+accuracy on the classes that already had real data (40.0% -> 37.65%
+end-to-end on the same held-out test set). 5 images isn't enough real
+signal for a 10-way classifier. See
+results/plantdoc_target_spot_experiment.json for the full honest writeup.
 """
 
 import os

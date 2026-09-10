@@ -56,6 +56,20 @@ PLANTDOC_ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "pla
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")
 SEED = 42
 
+# Tomato__Target_Spot has ZERO images anywhere in PlantDoc (train or test) --
+# these 7 are real-world field photos cropped from UF/IFAS EDIS publication
+# PP351 ("Target Spot of Tomato in Florida", (c) University of Florida,
+# https://ask.ifas.ufl.edu/pp351), used here as model-training input only
+# (not redistributed/displayed) for this non-commercial capstone project.
+# 5 are used for fine-tuning; 2 are held out and checked manually at the end
+# since PlantDoc's test split can't score this class at all (no images).
+TARGET_SPOT_EXTRA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "target_spot_extra", "cropped")
+TARGET_SPOT_TRAIN_FILES = [
+    "ts_leaves_topright.jpg", "ts_spotted_closeup.jpg",
+    "ts_leaflet_1.jpg", "ts_leaflet_2.jpg", "ts_leaflet_3.jpg",
+]
+TARGET_SPOT_HELDOUT_FILES = ["ts_leaves_topleft.jpg", "ts_ring_lesion.jpg"]
+
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using device: {device}")
 
@@ -281,6 +295,33 @@ def evaluate_on_plantdoc_test(checkpoints):
     return result
 
 
+def check_target_spot_heldout(stage2_tomato_checkpoint):
+    """The 2 Target_Spot images NEVER used in training or the internal val
+    split (see TARGET_SPOT_HELDOUT_FILES) -- PlantDoc's test split has zero
+    Target_Spot images, so this is the only real check available for this
+    class. n=2 is not a statistically meaningful accuracy number; this is a
+    sanity check, not a benchmark."""
+    print("\n=== Checking Tomato__Target_Spot on 2 held-out UF/IFAS images (never trained on) ===")
+    model = load_model(stage2_tomato_checkpoint, len(STAGE2_TOMATO_CLASSES))
+    model.eval()
+    results = []
+    with torch.no_grad():
+        for fn in TARGET_SPOT_HELDOUT_FILES:
+            fpath = os.path.join(TARGET_SPOT_EXTRA_DIR, fn)
+            if not os.path.isfile(fpath):
+                continue
+            img = Image.open(fpath).convert("RGB")
+            x = eval_transform(img).unsqueeze(0).to(device)
+            probs = F.softmax(model(x), dim=1)[0]
+            pred_idx = probs.argmax().item()
+            pred_class = STAGE2_TOMATO_CLASSES[pred_idx]
+            confidence = probs[pred_idx].item()
+            correct = pred_class == "Tomato__Target_Spot"
+            print(f"  {fn}: predicted={pred_class} (conf {confidence:.2f})  {'OK' if correct else 'WRONG'}")
+            results.append({"file": fn, "predicted": pred_class, "confidence": confidence, "correct": correct})
+    return results
+
+
 def main():
     torch.manual_seed(SEED)
     train_items = list_plantdoc_images("train")
@@ -289,19 +330,38 @@ def main():
     tomato_items = [(f, lbl) for f, lbl in train_items if lbl.startswith("Tomato")]
     potato_items = [(f, lbl) for f, lbl in train_items if lbl.startswith("Potato")]
 
+    target_spot_train = [
+        (os.path.join(TARGET_SPOT_EXTRA_DIR, fn), "Tomato__Target_Spot")
+        for fn in TARGET_SPOT_TRAIN_FILES
+        if os.path.isfile(os.path.join(TARGET_SPOT_EXTRA_DIR, fn))
+    ]
+    print(f"\nAdding {len(target_spot_train)} real-world Tomato__Target_Spot images "
+          f"(UF/IFAS EDIS PP351) -- PlantDoc has zero images for this class.")
+    tomato_items += target_spot_train
+
+    # Always fine-tune from the ORIGINAL PlantVillage-only checkpoints, never
+    # from an already-fine-tuned one -- keeps this a single, reproducible
+    # PlantVillage -> PlantDoc(+extras) step instead of stacking fine-tunes.
+    # Falls back to *_best.pt if the plantvillage_only backup isn't present
+    # (e.g. first-ever run, before any promotion has happened).
+    def source_checkpoint(stem):
+        backup = f"{stem}_plantvillage_only.pt"
+        return backup if os.path.isfile(os.path.join(CHECKPOINT_DIR, backup)) else f"{stem}_best.pt"
+
     checkpoints = {}
     checkpoints["stage1"], stage1_val_acc = finetune_stage(
-        "stage1_crop", "stage1_crop_best.pt", STAGE1_CLASSES, stage1_items
+        "stage1_crop", source_checkpoint("stage1_crop"), STAGE1_CLASSES, stage1_items
     )
     checkpoints["stage2_tomato"], tomato_val_acc = finetune_stage(
-        "stage2_tomato", "stage2_tomato_best.pt", STAGE2_TOMATO_CLASSES, tomato_items
+        "stage2_tomato", source_checkpoint("stage2_tomato"), STAGE2_TOMATO_CLASSES, tomato_items
     )
     checkpoints["stage2_potato"], potato_val_acc = finetune_stage(
-        "stage2_potato", "stage2_potato_best.pt", STAGE2_POTATO_CLASSES, potato_items
+        "stage2_potato", source_checkpoint("stage2_potato"), STAGE2_POTATO_CLASSES, potato_items
     )
     checkpoints = {k: os.path.basename(v) for k, v in checkpoints.items()}
 
     eval_result = evaluate_on_plantdoc_test(checkpoints)
+    eval_result["target_spot_heldout_check"] = check_target_spot_heldout(checkpoints["stage2_tomato"])
     eval_result["internal_val_accuracy"] = {
         "stage1_crop": stage1_val_acc,
         "stage2_tomato": tomato_val_acc,

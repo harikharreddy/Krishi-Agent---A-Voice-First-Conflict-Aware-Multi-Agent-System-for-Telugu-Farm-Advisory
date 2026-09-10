@@ -1,0 +1,15 @@
+{
+  "experiment": "Tried adding 5 real-world Tomato__Target_Spot images (cropped from UF/IFAS EDIS PP351, (c) University of Florida) to the stage2_tomato fine-tuning set, since PlantDoc has zero images for this class anywhere.",
+  "outcome": "NOT PROMOTED -- did not help, and cost a small amount of accuracy elsewhere.",
+  "target_spot_heldout_check": {
+    "description": "2 Target_Spot images never used in training, checked directly after fine-tuning (PlantDoc's test split has zero Target_Spot images, so this was the only real check available).",
+    "result": "0/2 correct -- ts_leaves_topleft.jpg predicted Tomato_Bacterial_spot (conf 0.31), ts_ring_lesion.jpg predicted Tomato_Early_blight (conf 0.82). n=2 is not a statistically meaningful number; it's a sanity check, and it failed."
+  },
+  "collateral_effect": {
+    "description": "Adding the 5th class's gradient signal to the shared stage2_tomato softmax head shifted predictions on the classes that COULD be measured.",
+    "end_to_end_accuracy_without_target_spot": 0.40,
+    "end_to_end_accuracy_with_target_spot": 0.3765,
+    "same_85_image_plantdoc_test_split_both_runs": true
+  },
+  "conclusion": "5 images is not enough real-world signal to teach a 10-way softmax classifier a new class, and trying anyway measurably hurt the classes that already had real data. The active checkpoints (stage2_tomato_best.pt etc.) are unchanged from before this experiment -- still the PlantDoc fine-tune WITHOUT Target_Spot data (see plantdoc_finetuned_results.json). Tomato__Target_Spot remains entirely PlantVillage-only (studio photos), same honest limitation as Potato___healthy. A real fix would need meaningfully more real-world Target_Spot photos (dozens, not single digits) before attempting this again -- finetune_plantdoc.py's TARGET_SPOT_EXTRA_DIR mechanism is left in place for that if more data is ever sourced."
+}
