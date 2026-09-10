@@ -221,6 +221,10 @@ data/*
 *.h5
 *.pt
 *.pth
+# Disease Agent's trained checkpoints ARE tracked, via Git LFS (see
+# .gitattributes) -- the app can't run without them and they were never
+# committed anywhere before now (Sep 2026 fix).
+!agents/disease/checkpoints/*.pt
 .env
 .ipynb_checkpoints/
 
