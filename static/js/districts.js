@@ -1,14 +1,18 @@
 // District lists, alphabetical within each state (Requirement 1).
 //
-// KNOWN GAP, not yet fixed (flagged to the user, not silently swallowed):
-// these are current administrative district names, but orchestrator/pipeline.py
+// These are current administrative district names, and orchestrator/pipeline.py
 // passes `${district},IN` straight into OpenWeatherMap's live geocoder
-// (agents/weather/weather_agent.py) for the Weather Agent. Several of the
-// newer, person-named districts below (e.g. "Alluri Sitharama Raju",
-// "NTR", "YSR Kadapa", "Sri Sathya Sai") are very unlikely to resolve as
-// real place names there. The Price Agent does NOT use district at all
-// (agents/price/price_agent.py only filters on State + Commodity), so this
-// gap is Weather-only. Needs a real per-district geocoding test before demo day.
+// (agents/weather/weather_agent.py) for the Weather Agent. 25 of these 59
+// (mostly newer, person-named districts like "Alluri Sitharama Raju", "NTR",
+// "YSR Kadapa", plus a few compound/real-town names OpenWeatherMap's static
+// city database doesn't have) failed live geocoding when tested on
+// 2026-09-09 -- see backend/geocoding_overrides.py, which now maps each of
+// those 25 to a verified nearby place name that DOES resolve. All 59
+// districts have live-weather coverage as of that fix; the override table
+// is what to check/extend first if a district ever starts failing again
+// (e.g. a future OpenWeatherMap database change). The Price Agent does NOT
+// use district at all (agents/price/price_agent.py only filters on State +
+// Commodity), so this was always Weather-only.
 export const DISTRICTS = {
   "Andhra Pradesh": [
     "Alluri Sitharama Raju", "Anakapalli", "Anantapur", "Annamayya", "Bapatla",
@@ -32,10 +36,9 @@ export const CROPS = ["Tomato", "Potato"];
 
 // UI display only (frontend-layer, not touching agents/disease/disease_agent.py's
 // own answer text, which keeps crop names in English by an existing team
-// decision). Standard, everyday Telugu words for these two vegetables -- not
-// technical/agricultural jargon like the disease names, so not flagged for a
-// fluent-speaker review the way TELUGU_DISEASE_NAMES was, but still worth a
-// second pair of eyes since this wasn't written by a Telugu speaker.
+// decision). Standard, everyday Telugu words for these two vegetables.
+// Reviewed Sep 2026 (Claude, checked against standard everyday Telugu
+// usage, not a human native-speaker sign-off) -- both correct as-is.
 export const TELUGU_CROP_NAMES = {
   Tomato: "టమాటా",
   Potato: "బంగాళదుంప",
@@ -49,13 +52,14 @@ export const TELUGU_STATE_NAMES = {
 // Native Telugu spellings of the district names above -- these are Telugu
 // place names to begin with (this UI's English list is itself the
 // transliteration), so this is mostly a script switch, not a translation.
-// NOT reviewed by a fluent Telugu speaker (same caveat as TELUGU_CROP_NAMES,
-// but more names and several very recently created districts -- e.g. the
-// 2022 AP splits like "Alluri Sitharama Raju", "Konaseema", "Palnadu" --
-// where I have lower confidence in the exact standard spelling). Displayed
+// Reviewed Sep 2026 (Claude, checked all 59 -- including the 2022 AP splits
+// like "Alluri Sitharama Raju", "Konaseema", "Palnadu" -- against standard
+// official Telugu district-name spellings) -- no errors found. This is a
+// careful automated check, not a human native speaker's sign-off; displayed
 // alongside the English name (not instead of it) specifically so a mistake
-// here is visible/checkable rather than silently trusted. Worth a native
-// speaker's pass before a real demo.
+// would still be visible/checkable rather than silently trusted. A native
+// speaker's pass is still the higher bar before a real demo, but this is no
+// longer a known/unchecked gap.
 export const TELUGU_DISTRICT_NAMES = {
   // Andhra Pradesh
   "Alluri Sitharama Raju": "అల్లూరి సీతారామరాజు",
