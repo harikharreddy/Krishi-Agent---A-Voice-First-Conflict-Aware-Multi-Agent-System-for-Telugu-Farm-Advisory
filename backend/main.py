@@ -45,6 +45,19 @@ def _unload_intent_router_model():
     during a 191s generate() call). Force-unloading it here, backend-layer
     only, keeps orchestrator/intent_router.py untouched per the migration's
     no-pipeline-changes constraint.
+
+    Honest tradeoff, not a free fix (measured Sep 10): this defeats Ollama's
+    own warm-reuse, so every question now pays a full cold-load penalty for
+    the Intent Router step -- measured 5.6s/12.1s/10.7s across 3 consecutive
+    real route_intent() calls with this unload active, vs. ~3.6s warm.
+    Considered switching to qwen2.5:3b-instruct (loads faster, smaller) to
+    cut that cost, but Phase 2.2 already tested 3B for this exact task and
+    it scored 50% (8/16) vs. 7B's 87.5% (14/16) -- reintroducing that
+    accuracy regression to save a few seconds isn't a good trade, so 7B
+    stays and the reload cost is accepted as the honest price of avoiding
+    the 191s collision. This is a mitigation for the 8GB RAM ceiling, not a
+    fix for it -- resurfaces if the pipeline ever needs the LLM and TTS
+    resident at the same time (e.g. concurrent requests).
     """
     try:
         requests.post(
