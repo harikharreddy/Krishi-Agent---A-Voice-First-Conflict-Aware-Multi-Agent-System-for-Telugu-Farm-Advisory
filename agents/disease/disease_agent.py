@@ -6,6 +6,22 @@ Extracted from notebooks/phase1_disease_hierarchical_plantdoc.ipynb (Phase 1.4).
 NOTE: Telugu disease-name labels below were reviewed by fluent Telugu
 speakers on the team (Sep 2026, Phase 8 prep) and confirmed correct as-is --
 same review step Phase 3.2's phrasing templates already went through.
+
+NOTE (Sep 2026): checkpoints were originally trained on PlantVillage only
+(studio-condition photos; 99.7% val accuracy there, but only ~23-28%
+zero-shot on PlantDoc's real-world field photos). Since then, fine-tuned
+on PlantDoc's own `train` split (see finetune_plantdoc.py) to close some of
+that gap -- honest end-to-end accuracy on PlantDoc's held-out `test` split
+went 28.2% -> 40.0%, and the earlier systematic over-prediction of
+Tomato_Late_blight (49% of test predictions vs a true rate of 12%) is
+resolved (now ~11%, matching the true distribution). See
+results/plantdoc_finetuned_results.json for the full numbers.
+Two classes -- Potato___healthy and Tomato__Target_Spot -- have ZERO
+real-world (PlantDoc) images anywhere, train or test; they could not be
+improved or validated against real-world photos and still rely entirely on
+PlantVillage's studio-condition training data. The original
+PlantVillage-only checkpoints are kept as checkpoints/*_plantvillage_only.pt
+for comparison/rollback.
 """
 
 import os
@@ -140,7 +156,7 @@ def predict_disease(image_path: str) -> dict:
         "answer": answer,
         "confidence": overall_confidence,
         "reason_for_confidence": reason,
-        "source_freshness": f"Hierarchical EfficientNetB0 (PlantVillage-trained), predicted {retrieved_at}",
+        "source_freshness": f"Hierarchical EfficientNetB0 (PlantVillage-trained, PlantDoc-finetuned), predicted {retrieved_at}",
         "predicted_class": pred_class,
         "predicted_crop": pred_crop,
     }

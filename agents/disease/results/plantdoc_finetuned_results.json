@@ -1,0 +1,58 @@
+{
+  "plantdoc_test_images_evaluated": 85,
+  "stage1_crop_accuracy": 0.8235294117647058,
+  "end_to_end_accuracy": 0.4,
+  "per_class": {
+    "Potato___Early_blight": {
+      "accuracy": 0.375,
+      "n": 8
+    },
+    "Potato___Late_blight": {
+      "accuracy": 0.375,
+      "n": 8
+    },
+    "Tomato_Bacterial_spot": {
+      "accuracy": 0.2222222222222222,
+      "n": 9
+    },
+    "Tomato_Early_blight": {
+      "accuracy": 0.4444444444444444,
+      "n": 9
+    },
+    "Tomato_Late_blight": {
+      "accuracy": 0.3,
+      "n": 10
+    },
+    "Tomato_Leaf_Mold": {
+      "accuracy": 0.3333333333333333,
+      "n": 6
+    },
+    "Tomato_Septoria_leaf_spot": {
+      "accuracy": 0.45454545454545453,
+      "n": 11
+    },
+    "Tomato__Tomato_YellowLeaf__Curl_Virus": {
+      "accuracy": 0.6666666666666666,
+      "n": 6
+    },
+    "Tomato__Tomato_mosaic_virus": {
+      "accuracy": 0.4,
+      "n": 10
+    },
+    "Tomato_healthy": {
+      "accuracy": 0.5,
+      "n": 8
+    }
+  },
+  "note": "PlantDoc `test` split only -- never used during fine-tuning. Potato___healthy and Tomato__Target_Spot are absent from PlantDoc entirely and cannot appear in this table.",
+  "internal_val_accuracy": {
+    "stage1_crop": 0.7651515151515151,
+    "stage2_tomato": 0.4158415841584158,
+    "stage2_potato": 0.6129032258064516
+  },
+  "finetuned_checkpoints": {
+    "stage1": "stage1_crop_finetuned.pt",
+    "stage2_tomato": "stage2_tomato_finetuned.pt",
+    "stage2_potato": "stage2_potato_finetuned.pt"
+  }
+}
