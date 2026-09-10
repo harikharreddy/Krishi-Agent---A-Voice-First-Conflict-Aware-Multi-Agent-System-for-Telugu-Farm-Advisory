@@ -33,10 +33,13 @@ Potato___healthy also had ZERO real-world images anywhere. Sourced 100
 real field photos from the CC BY 4.0 "Potato Leaf (Healthy and Late
 Blight)" dataset (Holeta, Ethiopia potato farm, Mendeley DOI
 10.17632/v4w72bsts5.1) -- cleanly labeled by the dataset authors, unlike
-Target_Spot's source. Result: 14/15 correct (93%) on a held-out check,
-with high confidence (86-100%) -- a genuinely reliable fix, unlike
-Target_Spot's. Collateral cost was minimal: 1 fewer correct image (out of
-85) on PlantDoc's test split. Promoted without reservation.
+Target_Spot's source. Initial check: 14/15 correct (93%) on a small
+held-out sample. Re-evaluated on the full remaining 263 unused images
+(everything not in the 100-image training set) for a statistically
+meaningful number: 246/263 correct, 93.54% accuracy, 95% Wilson CI
+[89.89%, 95.93%] -- see results/potato_healthy_expanded_eval.json.
+Collateral cost was minimal: 1 fewer correct image (out of 85) on
+PlantDoc's test split. Promoted without reservation.
 
 Checkpoint lineage kept for comparison/rollback: checkpoints/
 *_plantvillage_only.pt (original, no PlantDoc fine-tuning at all) ->

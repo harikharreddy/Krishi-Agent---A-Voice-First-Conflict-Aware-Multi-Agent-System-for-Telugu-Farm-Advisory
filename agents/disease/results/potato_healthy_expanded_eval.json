@@ -1,0 +1,97 @@
+{
+  "n": 263,
+  "correct": 246,
+  "accuracy": 0.935361216730038,
+  "ci_95_wilson": [
+    0.8989321378225633,
+    0.9592548914862101
+  ],
+  "mean_confidence": 0.7757740774754257,
+  "misclassified": [
+    {
+      "file": "Healthy (15).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.3123139337308487
+    },
+    {
+      "file": "Healthy (20).jpg",
+      "predicted": "Tomato_Bacterial_spot",
+      "confidence": 0.30969870182326
+    },
+    {
+      "file": "Healthy (26).jpg",
+      "predicted": "Potato___Early_blight",
+      "confidence": 0.31994245756726514
+    },
+    {
+      "file": "Healthy (378).jpg",
+      "predicted": "Tomato__Target_Spot",
+      "confidence": 0.4808480648141611
+    },
+    {
+      "file": "Healthy (403).jpg",
+      "predicted": "Tomato__Target_Spot",
+      "confidence": 0.4402893386347415
+    },
+    {
+      "file": "Healthy (404).jpg",
+      "predicted": "Tomato__Target_Spot",
+      "confidence": 0.48593770276093196
+    },
+    {
+      "file": "Healthy (406).jpg",
+      "predicted": "Tomato__Tomato_mosaic_virus",
+      "confidence": 0.20997376235829712
+    },
+    {
+      "file": "Healthy (416).jpg",
+      "predicted": "Tomato_healthy",
+      "confidence": 0.2380522826145679
+    },
+    {
+      "file": "Healthy (457).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.3598382700724514
+    },
+    {
+      "file": "Healthy (475).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.451359989435403
+    },
+    {
+      "file": "Healthy (482).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.43403353528407784
+    },
+    {
+      "file": "Healthy (488).jpg",
+      "predicted": "Tomato_healthy",
+      "confidence": 0.2509926409444674
+    },
+    {
+      "file": "Healthy (493).jpg",
+      "predicted": "Potato___Late_blight",
+      "confidence": 0.4183663417434502
+    },
+    {
+      "file": "Healthy (503).jpg",
+      "predicted": "Tomato_healthy",
+      "confidence": 0.49431884334243037
+    },
+    {
+      "file": "Healthy (504).jpg",
+      "predicted": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+      "confidence": 0.5086544655706362
+    },
+    {
+      "file": "Healthy (505).jpg",
+      "predicted": "Tomato_healthy",
+      "confidence": 0.33434211863111507
+    },
+    {
+      "file": "Healthy (506).jpg",
+      "predicted": "Tomato_healthy",
+      "confidence": 0.2866738542443059
+    }
+  ]
+}
