@@ -11,16 +11,15 @@
 #
 # Fixed Sep 2026 (found via a fresh-clone install test -- this file had
 # never actually been installed from scratch before): originally also
-# pinned streamlit==1.62.0, for ui/app.py (the legacy pre-migration UI, kept
-# as historical/comparison reference, not run by anything current). That's
-# a genuine, unfixable-by-repinning conflict, not a bad version choice:
-# streamlit>=1.62 requires protobuf>=5.26, while descript-audiotools (part
-# of the TTS stack) requires protobuf<5.0.0 -- no single protobuf version
-# satisfies both. Removed streamlit from this shared venv rather than fight
-# it; ui/app.py would need its own separate venv if anyone ever needs to
-# re-run it. Also dropped a redundant top-level pin on descript-audiotools
-# (same commit parler-tts already pulls in transitively) that pip's
-# resolver was treating as a second, conflicting install candidate.
+# pinned streamlit==1.62.0, for the pre-migration Streamlit UI (since
+# deleted -- see git history/README for the latency numbers that drove the
+# migration to this FastAPI backend). That pin was a genuine,
+# unfixable-by-repinning conflict, not a bad version choice: streamlit>=1.62
+# requires protobuf>=5.26, while descript-audiotools (part of the TTS
+# stack) requires protobuf<5.0.0 -- no single protobuf version satisfies
+# both. Also dropped a redundant top-level pin on descript-audiotools (same
+# commit parler-tts already pulls in transitively) that pip's resolver was
+# treating as a second, conflicting install candidate.
 
 absl-py==2.5.0
 altair==6.2.2
