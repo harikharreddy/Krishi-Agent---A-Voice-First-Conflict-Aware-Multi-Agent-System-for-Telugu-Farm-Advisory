@@ -1108,6 +1108,64 @@ body {
   border-radius: 999px;
 }
 
+.disease-confidence-chip {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.disease-confidence-chip.confidence-high {
+  background: var(--color-primary-tint-bg);
+  border-color: var(--color-primary-tint-border);
+}
+
+.disease-confidence-chip.confidence-low {
+  background: var(--color-warn-bg);
+  border-color: var(--color-warn-border);
+}
+
+.disease-confidence-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.disease-confidence-chip.confidence-high .disease-confidence-row {
+  color: var(--color-primary-dark);
+}
+
+.disease-confidence-chip.confidence-low .disease-confidence-row {
+  color: var(--color-warn-text);
+}
+
+.disease-confidence-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--color-text-muted);
+}
+
+.disease-confidence-chip.confidence-high .disease-confidence-dot {
+  background: var(--color-primary);
+}
+
+.disease-confidence-chip.confidence-low .disease-confidence-dot {
+  background: var(--color-accent);
+}
+
+.disease-confidence-caveat {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
 .heard-text {
   margin: 0 0 10px;
   font-size: 14px;

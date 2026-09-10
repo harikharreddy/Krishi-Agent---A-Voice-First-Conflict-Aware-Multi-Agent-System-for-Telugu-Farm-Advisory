@@ -24,7 +24,7 @@ import logging
 
 import requests
 
-from orchestrator.pipeline import run_pipeline
+from orchestrator.pipeline import run_pipeline, DISEASE_CONFIDENCE_CUTOFF
 from orchestrator.intent_router import MODEL as INTENT_ROUTER_MODEL, OLLAMA_URL
 from backend.voice import transcribe_audio, synthesize_speech
 from backend.geocoding_overrides import weather_location_for
@@ -122,6 +122,20 @@ def ask(
     disease_raw = trace.get("disease_raw")
     detected_crop = disease_raw.get("predicted_crop") if disease_raw else None
 
+    # Confidence honesty: the Disease Agent's own confidence score, surfaced
+    # plainly so a low-confidence guess (e.g. its apparent default/attractor
+    # prediction of Tomato_Late_Blight) doesn't read as certain as a
+    # high-confidence one. Uses the same cutoff as the pipeline's own
+    # treat_now/monitor split (orchestrator/pipeline.py) so the UI's "high"
+    # vs "low" label always agrees with what the pipeline actually did with
+    # this prediction -- not a separate, UI-only threshold.
+    disease_confidence = None
+    disease_confidence_level = None
+    if disease_raw and disease_raw.get("predicted_class"):
+        confidence = disease_raw.get("confidence", 0.0)
+        disease_confidence = round(confidence * 100)
+        disease_confidence_level = "high" if confidence >= DISEASE_CONFIDENCE_CUTOFF else "low"
+
     disease_mismatch = None
     if detected_crop and detected_crop != crop:
         disease_mismatch = {
@@ -138,6 +152,8 @@ def ask(
         "answer_text": answer_text,
         "detected_crop": detected_crop,
         "disease_mismatch": disease_mismatch,
+        "disease_confidence": disease_confidence,
+        "disease_confidence_level": disease_confidence_level,
         "sample_rate": sample_rate,
         "audio_wav_b64": _b64(buf.getvalue()),
     }

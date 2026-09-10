@@ -271,6 +271,9 @@ const answerCard = document.getElementById("answer-card");
 const heardTextEl = document.getElementById("heard-text");
 const detectedCropChip = document.getElementById("detected-crop-chip");
 const detectedCropText = document.getElementById("detected-crop-text");
+const diseaseConfidenceChip = document.getElementById("disease-confidence-chip");
+const diseaseConfidenceLabel = document.getElementById("disease-confidence-label");
+const diseaseConfidenceCaveat = document.getElementById("disease-confidence-caveat");
 const answerTextEl = document.getElementById("answer-text");
 const answerAudio = document.getElementById("answer-audio");
 const askAgainBtn = document.getElementById("ask-again-btn");
@@ -496,6 +499,24 @@ function renderAnswer(data, profile) {
     detectedCropChip.hidden = false;
   } else {
     detectedCropChip.hidden = true;
+  }
+
+  if (data.disease_confidence_level) {
+    const pct = data.disease_confidence;
+    diseaseConfidenceChip.classList.remove("confidence-high", "confidence-low");
+    if (data.disease_confidence_level === "high") {
+      diseaseConfidenceChip.classList.add("confidence-high");
+      diseaseConfidenceLabel.textContent = `ఎక్కువ నమ్మకం (~${pct}%) / High confidence (~${pct}%)`;
+    } else {
+      diseaseConfidenceChip.classList.add("confidence-low");
+      diseaseConfidenceLabel.textContent = `తక్కువ నమ్మకం (~${pct}%) / Low confidence (~${pct}%)`;
+    }
+    diseaseConfidenceCaveat.textContent =
+      "ఇది మోడల్ అంచనా మాత్రమే, ఖచ్చితమైన నిర్ధారణ కాదు — వీలైతే నిపుణుడిని సంప్రదించండి. " +
+      "(This is the model's estimate, not a certain diagnosis — confirm with an expert if you can.)";
+    diseaseConfidenceChip.hidden = false;
+  } else {
+    diseaseConfidenceChip.hidden = true;
   }
 
   if (data.disease_mismatch) {
