@@ -45,11 +45,13 @@ const mandiStateWarning = document.getElementById("mandi-state-warning");
 
 const STATE_CODE = { "Andhra Pradesh": "AP", "Telangana": "TG" };
 
-// Soft warning only (never blocks Save) -- matches the typed mandi against
-// MANDI_STATE_HINTS (real data, see districts.js) and flags it if it looks
-// like a market from the OTHER state than the one selected. No match at
-// all (mandi just isn't in that list) is silent, not a warning -- this
-// can't and shouldn't claim to validate every real mandi in existence.
+// Matches the typed mandi against MANDI_STATE_HINTS (real data, see
+// districts.js) and flags it if it looks like a market from the OTHER
+// state than the one selected. No match at all (mandi just isn't in that
+// list) is silent, not a warning -- this can't and shouldn't claim to
+// validate every real mandi in existence. When this IS showing, the submit
+// handler below blocks Save & Continue until the farmer explicitly
+// confirms they want to save it anyway.
 function checkMandiStateWarning() {
   const typed = mandiInput.value.trim();
   const wantCode = STATE_CODE[stateSelect.value];
@@ -177,6 +179,13 @@ function showAskScreen(profile) {
 
 profileForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  checkMandiStateWarning();
+  if (!mandiStateWarning.hidden) {
+    const proceed = confirm(
+      `${mandiStateWarning.textContent}\n\nఇప్పటికీ సేవ్ చేయాలా? / Save anyway?`
+    );
+    if (!proceed) return;
+  }
   const profile = {
     state: stateSelect.value,
     district: districtSelect.value,
