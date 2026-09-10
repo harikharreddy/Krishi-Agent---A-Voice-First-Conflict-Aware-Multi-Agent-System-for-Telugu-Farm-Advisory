@@ -1,15 +1,33 @@
 {
-  "experiment": "Tried adding 5 real-world Tomato__Target_Spot images (cropped from UF/IFAS EDIS PP351, (c) University of Florida) to the stage2_tomato fine-tuning set, since PlantDoc has zero images for this class anywhere.",
-  "outcome": "NOT PROMOTED -- did not help, and cost a small amount of accuracy elsewhere.",
-  "target_spot_heldout_check": {
-    "description": "2 Target_Spot images never used in training, checked directly after fine-tuning (PlantDoc's test split has zero Target_Spot images, so this was the only real check available).",
-    "result": "0/2 correct -- ts_leaves_topleft.jpg predicted Tomato_Bacterial_spot (conf 0.31), ts_ring_lesion.jpg predicted Tomato_Early_blight (conf 0.82). n=2 is not a statistically meaningful number; it's a sanity check, and it failed."
+  "attempt_1": {
+    "experiment": "Tried adding 5 real-world Tomato__Target_Spot images (cropped from UF/IFAS EDIS PP351, (c) University of Florida) to the stage2_tomato fine-tuning set, since PlantDoc has zero images for this class anywhere.",
+    "outcome": "NOT PROMOTED -- did not help, and cost a small amount of accuracy elsewhere.",
+    "target_spot_heldout_check": {
+      "description": "2 Target_Spot images never used in training, checked directly after fine-tuning (PlantDoc's test split has zero Target_Spot images, so this was the only real check available).",
+      "result": "0/2 correct -- ts_leaves_topleft.jpg predicted Tomato_Bacterial_spot (conf 0.31), ts_ring_lesion.jpg predicted Tomato_Early_blight (conf 0.82). n=2 is not a statistically meaningful number; it's a sanity check, and it failed."
+    },
+    "collateral_effect": {
+      "description": "Adding the 5th class's gradient signal to the shared stage2_tomato softmax head shifted predictions on the classes that COULD be measured.",
+      "end_to_end_accuracy_without_target_spot": 0.40,
+      "end_to_end_accuracy_with_target_spot": 0.3765,
+      "same_85_image_plantdoc_test_split_both_runs": true
+    },
+    "conclusion": "5 images is not enough real-world signal to teach a 10-way softmax classifier a new class, and trying anyway measurably hurt the classes that already had real data."
   },
-  "collateral_effect": {
-    "description": "Adding the 5th class's gradient signal to the shared stage2_tomato softmax head shifted predictions on the classes that COULD be measured.",
-    "end_to_end_accuracy_without_target_spot": 0.40,
-    "end_to_end_accuracy_with_target_spot": 0.3765,
-    "same_85_image_plantdoc_test_split_both_runs": true
+  "attempt_2": {
+    "experiment": "Sourced 15 more real-world Target_Spot photos (20 total with attempt 1's images) from a second source: the CC BY 4.0 'Tomato Leaf Dataset' (Imtiaz et al., American International University Bangladesh, Mendeley Data DOI 10.17632/bpfd9cns5g.2) -- real field photos from tomato gardens in Bangladesh. That dataset ships YOLO bounding-box labels with no class-name file; class index 0 was identified as Target_Spot by downloading its labeled images and visually confirming the characteristic concentric-ring lesion against the UF/IFAS reference photos (18 of 20 class-0-labeled images showed a clearly visible lesion on inspection; 2, IMG_0303/IMG_0304, showed no visible symptom in frame and were excluded).",
+    "outcome": "PROMOTED -- a human judgment call (see conversation), not a clean win. Real progress, still unreliable.",
+    "target_spot_heldout_check": {
+      "description": "5 Target_Spot images never used in training (2 UF/IFAS + 3 Mendeley), checked directly after fine-tuning.",
+      "result": "1/5 correct -- IMG_0349.jpg correctly predicted Tomato__Target_Spot (conf 0.85). The other 4 (ts_leaves_topleft.jpg, ts_ring_lesion.jpg, IMG_0653.jpg, IMG_1128.jpg) were misclassified as Bacterial_spot, Early_blight, Leaf_Mold, and Septoria_leaf_spot respectively. n=5 is still a small sample; this is a sanity check, not a benchmark."
+    },
+    "collateral_effect": {
+      "description": "Same shared-softmax-head effect as attempt 1, smaller this time.",
+      "end_to_end_accuracy_without_target_spot": 0.40,
+      "end_to_end_accuracy_with_target_spot": 0.3882,
+      "same_85_image_plantdoc_test_split_both_runs": true
+    },
+    "conclusion": "20 real images moved Target_Spot from 'always wrong' (0/2) to 'right 1 time in 5' (1/5), at a smaller collateral cost (-1.2pp vs attempt 1's -2.35pp) than before. Promoted on the user's explicit call that some real ability beats none, but this is NOT a fix -- it is still wrong on the large majority of real Target_Spot photos. A more reliable result would need substantially more real data still (the other 9 tomato classes have 44-140 real images each; Target_Spot has 20)."
   },
-  "conclusion": "5 images is not enough real-world signal to teach a 10-way softmax classifier a new class, and trying anyway measurably hurt the classes that already had real data. The active checkpoints (stage2_tomato_best.pt etc.) are unchanged from before this experiment -- still the PlantDoc fine-tune WITHOUT Target_Spot data (see plantdoc_finetuned_results.json). Tomato__Target_Spot remains entirely PlantVillage-only (studio photos), same honest limitation as Potato___healthy. A real fix would need meaningfully more real-world Target_Spot photos (dozens, not single digits) before attempting this again -- finetune_plantdoc.py's TARGET_SPOT_EXTRA_DIR mechanism is left in place for that if more data is ever sourced."
+  "active_checkpoint": "attempt_2's checkpoints are the currently active checkpoints/*_best.pt. Rollback path: *_plantdoc_no_target_spot.pt (pre-attempt-1 PlantDoc fine-tune) -> *_plantvillage_only.pt (original, no real-world fine-tuning at all)."
 }

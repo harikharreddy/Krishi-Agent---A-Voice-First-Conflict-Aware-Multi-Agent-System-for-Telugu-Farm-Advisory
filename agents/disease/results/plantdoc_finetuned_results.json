@@ -1,7 +1,7 @@
 {
   "plantdoc_test_images_evaluated": 85,
   "stage1_crop_accuracy": 0.8235294117647058,
-  "end_to_end_accuracy": 0.4,
+  "end_to_end_accuracy": 0.38823529411764707,
   "per_class": {
     "Potato___Early_blight": {
       "accuracy": 0.375,
@@ -16,11 +16,11 @@
       "n": 9
     },
     "Tomato_Early_blight": {
-      "accuracy": 0.4444444444444444,
+      "accuracy": 0.5555555555555556,
       "n": 9
     },
     "Tomato_Late_blight": {
-      "accuracy": 0.3,
+      "accuracy": 0.2,
       "n": 10
     },
     "Tomato_Leaf_Mold": {
@@ -28,7 +28,7 @@
       "n": 6
     },
     "Tomato_Septoria_leaf_spot": {
-      "accuracy": 0.45454545454545453,
+      "accuracy": 0.5454545454545454,
       "n": 11
     },
     "Tomato__Tomato_YellowLeaf__Curl_Virus": {
@@ -36,18 +36,50 @@
       "n": 6
     },
     "Tomato__Tomato_mosaic_virus": {
-      "accuracy": 0.4,
+      "accuracy": 0.3,
       "n": 10
     },
     "Tomato_healthy": {
-      "accuracy": 0.5,
+      "accuracy": 0.375,
       "n": 8
     }
   },
   "note": "PlantDoc `test` split only -- never used during fine-tuning. Potato___healthy and Tomato__Target_Spot are absent from PlantDoc entirely and cannot appear in this table.",
+  "target_spot_heldout_check": [
+    {
+      "file": "ts_leaves_topleft.jpg",
+      "predicted": "Tomato_Bacterial_spot",
+      "confidence": 0.32668253779411316,
+      "correct": false
+    },
+    {
+      "file": "ts_ring_lesion.jpg",
+      "predicted": "Tomato_Early_blight",
+      "confidence": 0.8564395904541016,
+      "correct": false
+    },
+    {
+      "file": "IMG_0653.jpg",
+      "predicted": "Tomato_Leaf_Mold",
+      "confidence": 0.33181992173194885,
+      "correct": false
+    },
+    {
+      "file": "IMG_1128.jpg",
+      "predicted": "Tomato_Septoria_leaf_spot",
+      "confidence": 0.26704397797584534,
+      "correct": false
+    },
+    {
+      "file": "IMG_0349.jpg",
+      "predicted": "Tomato__Target_Spot",
+      "confidence": 0.8538962006568909,
+      "correct": true
+    }
+  ],
   "internal_val_accuracy": {
     "stage1_crop": 0.7651515151515151,
-    "stage2_tomato": 0.4158415841584158,
+    "stage2_tomato": 0.41346153846153844,
     "stage2_potato": 0.6129032258064516
   },
   "finetuned_checkpoints": {

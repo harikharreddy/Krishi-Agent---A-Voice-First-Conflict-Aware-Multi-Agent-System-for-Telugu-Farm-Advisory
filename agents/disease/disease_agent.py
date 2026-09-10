@@ -12,25 +12,31 @@ NOTE (Sep 2026): checkpoints were originally trained on PlantVillage only
 zero-shot on PlantDoc's real-world field photos). Since then, fine-tuned
 on PlantDoc's own `train` split (see finetune_plantdoc.py) to close some of
 that gap -- honest end-to-end accuracy on PlantDoc's held-out `test` split
-went 28.2% -> 40.0%, and the earlier systematic over-prediction of
+went 28.2% -> 38.8%, and the earlier systematic over-prediction of
 Tomato_Late_blight (49% of test predictions vs a true rate of 12%) is
 resolved (now ~11%, matching the true distribution). See
 results/plantdoc_finetuned_results.json for the full numbers.
-Two classes -- Potato___healthy and Tomato__Target_Spot -- have ZERO
-real-world (PlantDoc) images anywhere, train or test; they could not be
-improved or validated against real-world photos and still rely entirely on
-PlantVillage's studio-condition training data. The original
-PlantVillage-only checkpoints are kept as checkpoints/*_plantvillage_only.pt
-for comparison/rollback.
 
-Tried adding 5 real-world Target_Spot photos sourced from a UF/IFAS
-extension publication (see finetune_plantdoc.py's TARGET_SPOT_EXTRA_DIR) --
-NOT promoted, didn't help: the model still couldn't recognize Target_Spot
-on 2 held-out check images, and adding that gradient signal measurably hurt
-accuracy on the classes that already had real data (40.0% -> 37.65%
-end-to-end on the same held-out test set). 5 images isn't enough real
-signal for a 10-way classifier. See
-results/plantdoc_target_spot_experiment.json for the full honest writeup.
+Tomato__Target_Spot had ZERO real-world images anywhere in PlantDoc. A
+first attempt (5 UF/IFAS extension photos) failed outright -- 0/2 on a
+held-out check, and it cost accuracy elsewhere -- and was not promoted
+(see results/plantdoc_target_spot_experiment.json). A second attempt added
+15 more real field photos from the CC BY 4.0 "Tomato Leaf Dataset"
+(Bangladesh tomato gardens, Mendeley DOI 10.17632/bpfd9cns5g.2), for 20
+training images total. Result: 1/5 correct on a held-out check (up from
+0/2), at a small additional cost elsewhere (38.8% vs 40.0% end-to-end
+without any Target_Spot data). This WAS promoted -- net honest judgment
+call: some real ability to recognize Target_Spot beats none, but it is
+still wrong 4 times out of 5 on held-out real photos. Not "fixed," don't
+represent it as reliable.
+
+Potato___healthy still has ZERO real-world images anywhere and is
+unaddressed -- still entirely PlantVillage-only (studio conditions).
+
+Checkpoint lineage kept for comparison/rollback: checkpoints/
+*_plantvillage_only.pt (original, no PlantDoc fine-tuning at all) ->
+*_plantdoc_no_target_spot.pt (PlantDoc fine-tuned, before the Target_Spot
+attempts) -> *_best.pt (current, includes the 20-image Target_Spot data).
 """
 
 import os

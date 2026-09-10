@@ -56,19 +56,41 @@ PLANTDOC_ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "pla
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")
 SEED = 42
 
-# Tomato__Target_Spot has ZERO images anywhere in PlantDoc (train or test) --
-# these 7 are real-world field photos cropped from UF/IFAS EDIS publication
-# PP351 ("Target Spot of Tomato in Florida", (c) University of Florida,
-# https://ask.ifas.ufl.edu/pp351), used here as model-training input only
-# (not redistributed/displayed) for this non-commercial capstone project.
-# 5 are used for fine-tuning; 2 are held out and checked manually at the end
-# since PlantDoc's test split can't score this class at all (no images).
+# Tomato__Target_Spot has ZERO images anywhere in PlantDoc (train or test).
+# Two real-world sources used instead, as model-training input only (not
+# redistributed/displayed), for this non-commercial capstone project:
+#
+# 1. 7 images cropped from UF/IFAS EDIS publication PP351 ("Target Spot of
+#    Tomato in Florida", (c) University of Florida, https://ask.ifas.ufl.edu/pp351).
+# 2. 20 images from the CC BY 4.0 "Tomato Leaf Dataset" (Imtiaz et al.,
+#    American International University Bangladesh, Mendeley Data DOI
+#    10.17632/bpfd9cns5g.2) -- real field photos from tomato gardens in
+#    Bangladesh. That dataset ships YOLO bounding-box labels but no
+#    class-name file; class index 0 was identified as Target Spot by
+#    downloading its labeled images and visually confirming the
+#    characteristic concentric-ring lesion against the UF/IFAS reference
+#    photos. 18 of 20 class-0-labeled images showed a clearly visible
+#    lesion on inspection (2, IMG_0303/IMG_0304, showed no visible symptom
+#    in frame and were excluded rather than trusted blindly).
 TARGET_SPOT_EXTRA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "target_spot_extra", "cropped")
+TARGET_SPOT_MENDELEY_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "target_spot_extra", "mendeley")
 TARGET_SPOT_TRAIN_FILES = [
-    "ts_leaves_topright.jpg", "ts_spotted_closeup.jpg",
-    "ts_leaflet_1.jpg", "ts_leaflet_2.jpg", "ts_leaflet_3.jpg",
+    os.path.join(TARGET_SPOT_EXTRA_DIR, fn) for fn in [
+        "ts_leaves_topright.jpg", "ts_spotted_closeup.jpg",
+        "ts_leaflet_1.jpg", "ts_leaflet_2.jpg", "ts_leaflet_3.jpg",
+    ]
+] + [
+    os.path.join(TARGET_SPOT_MENDELEY_DIR, f"{fn}.jpg") for fn in [
+        "IMG_0229", "IMG_0322", "IMG_0323", "IMG_0324", "IMG_0325", "IMG_0326",
+        "IMG_0348", "IMG_0350", "IMG_0374", "IMG_0654", "IMG_0655", "IMG_0656",
+        "IMG_1035", "IMG_1036", "IMG_1126",
+    ]
 ]
-TARGET_SPOT_HELDOUT_FILES = ["ts_leaves_topleft.jpg", "ts_ring_lesion.jpg"]
+TARGET_SPOT_HELDOUT_FILES = [
+    os.path.join(TARGET_SPOT_EXTRA_DIR, fn) for fn in ["ts_leaves_topleft.jpg", "ts_ring_lesion.jpg"]
+] + [
+    os.path.join(TARGET_SPOT_MENDELEY_DIR, f"{fn}.jpg") for fn in ["IMG_0653", "IMG_1128", "IMG_0349"]
+]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -301,13 +323,13 @@ def check_target_spot_heldout(stage2_tomato_checkpoint):
     Target_Spot images, so this is the only real check available for this
     class. n=2 is not a statistically meaningful accuracy number; this is a
     sanity check, not a benchmark."""
-    print("\n=== Checking Tomato__Target_Spot on 2 held-out UF/IFAS images (never trained on) ===")
+    print(f"\n=== Checking Tomato__Target_Spot on {len(TARGET_SPOT_HELDOUT_FILES)} held-out images (never trained on) ===")
     model = load_model(stage2_tomato_checkpoint, len(STAGE2_TOMATO_CLASSES))
     model.eval()
     results = []
     with torch.no_grad():
-        for fn in TARGET_SPOT_HELDOUT_FILES:
-            fpath = os.path.join(TARGET_SPOT_EXTRA_DIR, fn)
+        for fpath in TARGET_SPOT_HELDOUT_FILES:
+            fn = os.path.basename(fpath)
             if not os.path.isfile(fpath):
                 continue
             img = Image.open(fpath).convert("RGB")
@@ -319,6 +341,8 @@ def check_target_spot_heldout(stage2_tomato_checkpoint):
             correct = pred_class == "Tomato__Target_Spot"
             print(f"  {fn}: predicted={pred_class} (conf {confidence:.2f})  {'OK' if correct else 'WRONG'}")
             results.append({"file": fn, "predicted": pred_class, "confidence": confidence, "correct": correct})
+    n_correct = sum(r["correct"] for r in results)
+    print(f"  {n_correct}/{len(results)} correct")
     return results
 
 
@@ -331,12 +355,13 @@ def main():
     potato_items = [(f, lbl) for f, lbl in train_items if lbl.startswith("Potato")]
 
     target_spot_train = [
-        (os.path.join(TARGET_SPOT_EXTRA_DIR, fn), "Tomato__Target_Spot")
-        for fn in TARGET_SPOT_TRAIN_FILES
-        if os.path.isfile(os.path.join(TARGET_SPOT_EXTRA_DIR, fn))
+        (fpath, "Tomato__Target_Spot")
+        for fpath in TARGET_SPOT_TRAIN_FILES
+        if os.path.isfile(fpath)
     ]
     print(f"\nAdding {len(target_spot_train)} real-world Tomato__Target_Spot images "
-          f"(UF/IFAS EDIS PP351) -- PlantDoc has zero images for this class.")
+          f"(UF/IFAS EDIS PP351 + Mendeley Tomato Leaf Dataset, CC BY 4.0) -- "
+          f"PlantDoc has zero images for this class.")
     tomato_items += target_spot_train
 
     # Always fine-tune from the ORIGINAL PlantVillage-only checkpoints, never
