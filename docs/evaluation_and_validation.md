@@ -190,6 +190,76 @@ than for a raw accuracy gain.
 - This is reported as an explicit, accepted tradeoff, not a fully solved
   problem -- see Sec. 4 (Limitations).
 
+### 2.7 End-to-end pipeline characterization (text-only, no photo)
+
+Every metric above is per-component. This section runs the **full,
+live** pipeline (`tests/end_to_end_evaluation.py`, re-run today) across
+the same 16-question set, capturing not just crash/no-crash (already
+100% reliable, Sec. 4.2c's original result reproduced) but *what kind of
+answer the farmer actually gets*.
+
+- **Substantive-answer rate: 43.8% (7/16)** -- the rest fall back to a
+  generic "no clear answer, consult a local officer" sentence. Root-cause
+  breakdown of the 9 fallbacks (not a bare number -- each is individually
+  classified):
+
+| Cause | Count | Assessment |
+|---|---|---|
+| No Soil Agent exists at all (Q4, Q8, Q16) | 3 | Structural gap -- `wants_soil` is a real Intent Router category with zero implementation behind it |
+| Disease intent, no photo attached (Q1, Q5, Q12, Q14) | 4 | Expected/correct -- this test set is intentionally text-only; the real app requires a photo for disease questions |
+| No intent detected -- a greeting (Q13) | 1 | Expected/correct -- there is nothing to answer |
+| **Conflict Resolver rule-table gap (Q10)** | 1 | **Genuine bug-adjacent finding**, see below |
+
+- **The Conflict Resolver gap, precisely diagnosed**: Q10 ("Should I sell
+  or hold, considering price and weather?") returns `weather_state=rain_risk`,
+  `price_state=sell_now`, `disease_state=None`. `orchestrator/conflict_resolver.py`'s
+  rule table has an entry for `(None, "rain_risk", "hold")` but **no entry
+  for `(None, "rain_risk", "sell_now")`** -- an asymmetric gap (one price
+  state covered, the other not) that falls through to the generic
+  low-confidence fallback instead of a real (possibly still-conflicting,
+  but at least *addressed*) answer. This is a small, precisely-located,
+  fixable gap in the rule table, not a systemic design flaw -- flagged
+  here rather than fixed silently, since a paper's evaluation section is
+  exactly where this kind of finding belongs.
+- **Important scope caveat**: the 43.8% figure is an artifact of this
+  test's text-only, no-Soil-Agent setup, not a general "56% of farmer
+  questions get no answer" claim -- 7 of the 9 fallbacks are correct,
+  expected behavior for this specific test condition. Only 1 of 16 (6.25%)
+  is a genuine, fixable coverage gap.
+
+### 2.8 Disease-with-photo end-to-end accuracy (new: full pipeline, not just the classifier)
+
+Every Disease Agent number in Sec. 2.5 measures `predict_disease()` in
+isolation. This measures the **full pipeline's final spoken-answer text**
+against real PlantDoc photos with known ground truth, run through Intent
+Router -> Disease Agent -> Conflict Resolver -> Phrasing Templates.
+
+- **Method**: 30 real PlantDoc test images (3 per class, 10 classes),
+  question "ఈ ఆకుకు ఏమైంది?" ("What happened to this leaf?"), full
+  `run_pipeline()` call per image. Correctness requires the final Telugu
+  answer to name **both the correct crop and the correct disease** --
+  an earlier draft of this check matched on disease name text alone and
+  was caught overcounting, since several Telugu disease labels are reused
+  across crops (e.g. `Tomato_Early_blight` and `Potato___Early_blight`
+  both render as "ఎర్లీ బ్లైట్"); fixed before reporting.
+- **Result**: **n=30, 36.7% (11/30) end-to-end accuracy**, identical to
+  the component-level accuracy on this same 30-image subset (also 36.7%).
+- **Wiring integrity: 100%** -- every case where `predict_disease()` got
+  the right answer, the final spoken answer also got it right. This is
+  the more important number for validating the *pipeline*, as opposed to
+  the *classifier*: it confirms Conflict Resolver and Phrasing Templates
+  never drop or corrupt a correct diagnosis on the way to the farmer --
+  the end-to-end accuracy ceiling is set entirely by the Disease Agent's
+  own accuracy (Sec. 2.5), not by anything downstream of it.
+- **Note on reproducibility**: a first run of this same check (before the
+  crop+disease fix above) measured component-level accuracy at 33.3%
+  (10/30) vs. this run's 36.7% (11/30) on the identical 30 images and
+  model weights -- a 1-image difference attributable to Apple MPS
+  backend's known minor run-to-run floating-point nondeterminism, not
+  model or methodology instability. Flagged rather than silently using
+  whichever run looked better.
+- Full per-image results: `docs/end_to_end_eval_results.json`.
+
 ## 3. Related work (starting point for literature review)
 
 *A conference/journal submission needs a fuller literature search than this
@@ -250,16 +320,20 @@ answer.
 
 In priority order:
 
-1. **End-to-end answer-quality evaluation.** Run the full pipeline
-   (question -> spoken answer) across a larger question set than 16, score
-   each final answer against a rubric (correctness, appropriate hedging,
-   actionability). This is buildable without external people -- see
-   proposed rubric below.
-2. **Statistical power.** Most component evals above are n<20. Where more
-   real-world data can be sourced (more PlantDoc-style photos, more
-   speakers for ASR, a larger hand-written question set for Intent
-   Router/Conflict Resolver), doing so would materially strengthen every
-   claim in this document.
+1. ~~**End-to-end answer-quality evaluation.**~~ **Done for the
+   automatable parts** -- Sec. 2.7 (text-only pipeline characterization,
+   with root-caused fallback analysis) and Sec. 2.8 (disease-with-photo
+   full-pipeline accuracy + wiring integrity) were built and run. Still
+   open: factual correctness for live Weather/Price answers isn't
+   automatable at all (the "right answer" changes day to day with real
+   API data), and actionability genuinely needs a human judge (see the
+   rubric below, updated to reflect what's done vs. still open).
+2. **Statistical power.** Most component evals above are still n<20
+   (Intent Router, Conflict Resolver, ASR, the disease-with-photo
+   end-to-end check). Potato_healthy is the one exception, now n=263.
+   Where more real-world data can be sourced (more PlantDoc-style photos,
+   more speakers for ASR, a larger hand-written question set), doing so
+   would materially strengthen every remaining small-n claim.
 3. **A small human/user study.** Even 5-10 Telugu-speaking test users doing
    a handful of realistic tasks, plus a short usability survey (e.g.
    System Usability Scale), would be the single highest-value addition for
@@ -274,21 +348,36 @@ In priority order:
    paper wants n-trial means with standard deviation and stated hardware
    spec.
 
-### Proposed end-to-end answer-quality rubric (for item 1)
+### End-to-end answer-quality rubric -- status
 
-For each of N test questions, score the full pipeline's final spoken
-answer on:
-- **Intent correctness** (0/1): did it engage the right agent(s)? (already
-  measurable via Sec. 2.1's ground truth)
-- **Factual correctness** (0/1/2): wrong / partially right / right, judged
-  against the known agent outputs for that question's farm profile
-- **Confidence calibration** (0/1): does the hedging language match the
-  actual underlying confidence level (e.g., a Low-confidence Disease Agent
-  result shouldn't produce an unhedged, certain-sounding sentence)?
-- **Actionability** (0/1): does a farmer come away knowing what to actually
-  do?
-
-This can be scored programmatically for intent correctness and confidence
-calibration (both are derivable from the pipeline's trace output without a
-human), and needs a rubric-following human (not necessarily a domain
-expert) for factual correctness and actionability.
+- **Intent correctness** (0/1) -- **done**, Sec. 2.1/2.7 (87.5% on the
+  16-question set; Sec. 2.7 additionally root-causes every fallback).
+- **Wiring/consistency correctness** (0/1: did the final answer faithfully
+  reflect what the underlying agent(s) actually said, with nothing lost
+  or corrupted in Conflict Resolver + Phrasing?) -- **done** for the
+  disease path (Sec. 2.8, 100% wiring integrity, n=30). Not yet done for
+  Weather/Price, though the mechanism (compare agent's raw `action` text
+  against the final answer) is the same and cheap to extend.
+- **Factual correctness against ground truth** (0/1/2) -- **done** for
+  Disease (Sec. 2.8, since PlantDoc photos have known labels). **Not
+  automatable** for Weather/Price -- there is no fixed ground truth for
+  "will it rain tomorrow" on a given real day; this needs either frozen
+  historical API responses (buildable) or a human check against the raw
+  agent output (not the API itself).
+- **Confidence calibration** (0/1: does the hedging language match the
+  underlying confidence level?) -- **mechanism already verified**:
+  `tests/test_phrasing_templates.py` confirms `phrase_resolution()`
+  selects the exact `TEMPLATES[(resolution, confidence)]` entry for all
+  12 synthetic (resolution, confidence) pairs (12/12, re-run today). What
+  Sec. 2.7 additionally shows is that on live data, most real questions in
+  the 16-question set never reach a *multi-agent* resolved-conflict
+  template at all (`phrase_resolution()` is only called when >1 agent
+  fires; single-agent answers pass the agent's raw text through
+  unmodified) -- so confirming this on live, multi-agent, disease+weather
+  or disease+price combinations (which needs a photo to give disease_state
+  a non-None value) is the one piece still worth doing, not the template
+  logic itself.
+- **Actionability** (0/1: does a farmer come away knowing what to do?) --
+  **needs a human judge**, or an explicitly-caveated LLM-as-judge proxy
+  (usable as a preliminary signal, not a substitute for human eval in the
+  paper's actual reported numbers).

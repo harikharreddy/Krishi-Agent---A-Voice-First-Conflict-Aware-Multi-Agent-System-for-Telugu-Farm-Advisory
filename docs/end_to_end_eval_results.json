@@ -1,0 +1,521 @@
+{
+  "text_only_characterization": {
+    "n": 16,
+    "substantive_answer_rate": 0.4375,
+    "fallback_count": 9,
+    "fallback_breakdown": {
+      "UNEXPLAINED -- possible Conflict Resolver coverage gap": 1,
+      "expected -- disease intent with no photo attached is a documented skip": 4,
+      "structural gap -- no Soil Agent is implemented": 3,
+      "expected (no intent detected -- e.g. a greeting)": 1
+    },
+    "unexplained_fallbacks": [
+      {
+        "id": 10,
+        "gloss": "Should I sell or hold, considering price and weather?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": true,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "UNEXPLAINED -- possible Conflict Resolver coverage gap",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      }
+    ],
+    "records": [
+      {
+        "id": 1,
+        "gloss": "Spots on my tomato leaves, what disease is this?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "expected -- disease intent with no photo attached is a documented skip",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 2,
+        "gloss": "Will it rain tomorrow?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": true,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "High",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%)."
+      },
+      {
+        "id": 3,
+        "gloss": "What's today's tomato price?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "Medium",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది."
+      },
+      {
+        "id": 4,
+        "gloss": "Is my field's soil good?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": true
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "structural gap -- no Soil Agent is implemented",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 5,
+        "gloss": "Potato leaves turning yellow, why?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "expected -- disease intent with no photo attached is a documented skip",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 6,
+        "gloss": "How's the weather this week?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": true,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "High",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%)."
+      },
+      {
+        "id": 7,
+        "gloss": "Will potato market price rise?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "Medium",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది."
+      },
+      {
+        "id": 8,
+        "gloss": "What soil pH is needed for tomato?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": true
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "structural gap -- no Soil Agent is implemented",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 9,
+        "gloss": "Should I spray if rain is coming?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": true,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "High",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%)."
+      },
+      {
+        "id": 10,
+        "gloss": "Should I sell or hold, considering price and weather?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": true,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "UNEXPLAINED -- possible Conflict Resolver coverage gap",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 11,
+        "gloss": "Leaves have disease, price is also low, what do I do?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "Medium",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది."
+      },
+      {
+        "id": 12,
+        "gloss": "I want full advice on my tomato crop",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "expected -- disease intent with no photo attached is a documented skip",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 13,
+        "gloss": "Hello",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "expected (no intent detected -- e.g. a greeting)",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 14,
+        "gloss": "Where can I get this pesticide?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "expected -- disease intent with no photo attached is a documented skip",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      },
+      {
+        "id": 15,
+        "gloss": "Crop leaves drying up, is it due to lack of rain?",
+        "intents_detected": {
+          "wants_disease": true,
+          "wants_weather": true,
+          "wants_price": false,
+          "wants_soil": false
+        },
+        "resolution": "single_agent_passthrough",
+        "confidence": "High",
+        "is_fallback": false,
+        "fallback_reason": null,
+        "final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%)."
+      },
+      {
+        "id": 16,
+        "gloss": "Is nitrogen low in my soil, should I fertilize?",
+        "intents_detected": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": false,
+          "wants_soil": true
+        },
+        "resolution": "unresolved_conflict",
+        "confidence": "Low",
+        "is_fallback": true,
+        "fallback_reason": "structural gap -- no Soil Agent is implemented",
+        "final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."
+      }
+    ]
+  },
+  "disease_photo_end_to_end": {
+    "n": 30,
+    "component_level_accuracy": 0.36666666666666664,
+    "end_to_end_accuracy": 0.36666666666666664,
+    "wiring_integrity": 1.0,
+    "wiring_integrity_note": "Fraction of component-correct predictions that survived intact through Conflict Resolver + Phrasing into the final answer.",
+    "records": [
+      {
+        "image": "Tomato leaf/1684.jpg",
+        "true_class": "Tomato_healthy",
+        "predicted_class": "Tomato_healthy",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'ఆరోగ్యంగా ఉంది' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf/2013-08-20-06.jpg",
+        "true_class": "Tomato_healthy",
+        "predicted_class": "Tomato__Tomato_mosaic_virus",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'మొజాయిక్ వైరస్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf/90e2c0.jpg",
+        "true_class": "Tomato_healthy",
+        "predicted_class": "Tomato__Tomato_mosaic_virus",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'మొజాయిక్ వైరస్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Early blight leaf/039b47d574bc4bb8a14259a1cd96a741.jpg",
+        "true_class": "Tomato_Early_blight",
+        "predicted_class": "Tomato_Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Early blight leaf/100983448.jpg",
+        "true_class": "Tomato_Early_blight",
+        "predicted_class": "Tomato_Early_blight",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Early blight leaf/1234080-Early-Blight.jpg",
+        "true_class": "Tomato_Early_blight",
+        "predicted_class": "Tomato_Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf bacterial spot/%2320+Bacterial+Spot+and+Speck.jpg",
+        "true_class": "Tomato_Bacterial_spot",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf bacterial spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg",
+        "true_class": "Tomato_Bacterial_spot",
+        "predicted_class": "Tomato__Target_Spot",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'టార్గెట్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf bacterial spot/Bacterial_spots563.jpg",
+        "true_class": "Tomato_Bacterial_spot",
+        "predicted_class": "Potato___Early_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf late blight/110822-206-Tomato-blight.jpg",
+        "true_class": "Tomato_Late_blight",
+        "predicted_class": "Tomato_Late_blight",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf late blight/18c.jpg",
+        "true_class": "Tomato_Late_blight",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf late blight/636368370164094909-late-blight-15-.jpg",
+        "true_class": "Tomato_Late_blight",
+        "predicted_class": "Tomato_Late_blight",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf mosaic virus/9511.img.jpg",
+        "true_class": "Tomato__Tomato_mosaic_virus",
+        "predicted_class": "Tomato__Target_Spot",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'టార్గెట్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf mosaic virus/D%29AlfMov.jpg",
+        "true_class": "Tomato__Tomato_mosaic_virus",
+        "predicted_class": "Tomato_Septoria_leaf_spot",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'సెప్టోరియా లీఫ్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf mosaic virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+        "true_class": "Tomato__Tomato_mosaic_virus",
+        "predicted_class": "Tomato_Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf yellow virus/11-40580_5.jpg",
+        "true_class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "predicted_class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'ఎల్లో లీఫ్ కర్ల్ వైరస్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf yellow virus/17fc47.jpg",
+        "true_class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "predicted_class": "Potato___Early_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato leaf yellow virus/8226402877_9abf151b5b_b.jpg",
+        "true_class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "predicted_class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'ఎల్లో లీఫ్ కర్ల్ వైరస్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato mold leaf/49%20Leafmold%20Bottom.jpg",
+        "true_class": "Tomato_Leaf_Mold",
+        "predicted_class": "Tomato_Leaf_Mold",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'లీఫ్ మోల్డ్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato mold leaf/50%20Leafmold%20Top.jpg",
+        "true_class": "Tomato_Leaf_Mold",
+        "predicted_class": "Tomato_Early_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato mold leaf/BIGSD.jpg",
+        "true_class": "Tomato_Leaf_Mold",
+        "predicted_class": "Tomato_Early_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Septoria leaf spot/0.jpg",
+        "true_class": "Tomato_Septoria_leaf_spot",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Septoria leaf spot/2STEM.jpg",
+        "true_class": "Tomato_Septoria_leaf_spot",
+        "predicted_class": "Tomato_Septoria_leaf_spot",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'సెప్టోరియా లీఫ్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Tomato Septoria leaf spot/2septoria-tomato.jpg",
+        "true_class": "Tomato_Septoria_leaf_spot",
+        "predicted_class": "Tomato_Septoria_leaf_spot",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Tomato ఆకులో 'సెప్టోరియా లీఫ్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf early blight/3023.jpg",
+        "true_class": "Potato___Early_blight",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf early blight/backus-056-potato-blight.jpg",
+        "true_class": "Potato___Early_blight",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf early blight/early-blight-alternaria-alternata-leaf-spotting-on-potato-leaf-X91XJE.jpg",
+        "true_class": "Potato___Early_blight",
+        "predicted_class": "Potato___Early_blight",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Potato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf late blight/1421_0.jpeg?itok=FMtmgePj.jpg",
+        "true_class": "Potato___Late_blight",
+        "predicted_class": "Potato___Early_blight",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Potato ఆకులో 'ఎర్లీ బ్లైట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf late blight/20090710-lateblight.jpg",
+        "true_class": "Potato___Late_blight",
+        "predicted_class": "Tomato_Bacterial_spot",
+        "component_correct": false,
+        "final_answer_names_correct_disease": false,
+        "final_answer": "Tomato ఆకులో 'బాక్టీరియల్ స్పాట్' కనిపిస్తోంది."
+      },
+      {
+        "image": "Potato leaf late blight/2540_600.jpg",
+        "true_class": "Potato___Late_blight",
+        "predicted_class": "Potato___Late_blight",
+        "component_correct": true,
+        "final_answer_names_correct_disease": true,
+        "final_answer": "Potato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది."
+      }
+    ]
+  }
+}
