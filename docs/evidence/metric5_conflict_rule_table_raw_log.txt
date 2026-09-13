@@ -1,0 +1,98 @@
+Conflict-Rule Table Pass Rate — Raw Evidence Log
+Run timestamp: 2026-09-13 09:12:03 UTC
+Git commit: 96c8f9e12d5e0615097aa172a36192f8298eefb1
+Command: python3 tests/test_pipeline.py
+======================================================================
+14:42:04 [INFO] Question: Early blight detected, heavy rain expected in 24h
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.95) -> state=treat_now
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'delay_treatment', 'action': 'Wait until rain clears, then spray — do not skip treatment', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: వర్షం రాబోతోంది, కాబట్టి వర్షం ఆగిన తర్వాత మందు కొట్టండి — చికిత్స మానకండి.
+14:42:04 [INFO] Question: Storm risk to standing crop, prices currently rising
+14:42:04 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+14:42:04 [INFO] Price Agent: pct_diff=-0.15 -> state=hold
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+14:42:04 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+14:42:04 [INFO] Question: Moderate disease infection, price dropping
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.95) -> state=treat_now
+14:42:04 [INFO] Price Agent: pct_diff=0.15 -> state=sell_now
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'treat_first', 'action': 'Treat the crop first — untreated disease compounds losses faster than a price dip', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: ధర గురించి ఆలోచించే ముందు, మీ పంటకు చికిత్స చేయడం మంచిది.
+14:42:04 [INFO] Question: Drought stress on crop, price signal says sell now
+14:42:04 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=False -> state=drought_risk
+14:42:04 [INFO] Price Agent: pct_diff=0.15 -> state=sell_now
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'protect_crop', 'action': 'Irrigate/protect crop if not yet ready for harvest — price advice assumes a harvestable crop exists', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: ముందుగా మీ పంటను కాపాడుకోవడంపై దృష్టి పెట్టండి — నీటిపారుదల లేదా కోత; ధర తర్వాత చూడవచ్చు.
+14:42:04 [INFO] Question: Mild early-stage disease, favorable weather, hold on price
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.50) -> state=monitor
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=False -> state=favorable
+14:42:04 [INFO] Price Agent: pct_diff=-0.15 -> state=hold
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'no_conflict', 'action': 'Continue monitoring crop; no urgent action needed', 'confidence': 'High'}
+14:42:04 [INFO] Final answer: ప్రస్తుతానికి అంతా బాగానే ఉంది — మీ పంటను గమనిస్తూ ఉండండి.
+14:42:04 [INFO] Question: Healthy crop, drought risk, neutral price
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_healthy (conf 0.90) -> state=no_action
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=False -> state=drought_risk
+14:42:04 [INFO] Price Agent: pct_diff=0.0 -> state=neutral
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_action', 'action': 'Irrigate due to drought risk — no disease/price conflict involved', 'confidence': 'High'}
+14:42:04 [INFO] Final answer: కరువు ప్రమాదం ఉన్నందున నీటిపారుదల చేయండి — ప్రస్తుతానికి వేరే సమస్య ఏమీ లేదు.
+14:42:04 [INFO] Question: Disease needs treatment, drought stress, price says hold
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.95) -> state=treat_now
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=False -> state=drought_risk
+14:42:04 [INFO] Price Agent: pct_diff=-0.15 -> state=hold
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'treat_and_irrigate', 'action': 'Treat disease immediately (fastest-compounding risk); irrigate if feasible; price trend is secondary info', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: వెంటనే పంటకు చికిత్స చేయండి, వీలైతే నీరు కూడా పెట్టండి.
+14:42:04 [INFO] Question: Disease needs treatment, weather forecast unclear
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.95) -> state=treat_now
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=None -> state=uncertain
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'treat_with_caution', 'action': 'Treat now with a caution note about unclear weather — do not wait indefinitely for forecast clarity', 'confidence': 'Low'}
+14:42:04 [INFO] Final answer: ఇప్పుడు చికిత్స చేయండి, కానీ వాతావరణ సూచన ఖచ్చితంగా లేదని గమనించండి.
+14:42:04 [INFO] Question: Mild disease, rain risk, good sell price
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.50) -> state=monitor
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+14:42:04 [INFO] Price Agent: pct_diff=0.15 -> state=sell_now
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest now to capture price and avoid rain damage; treatment can wait since disease is mild', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: మీ పంటను ఇప్పుడు కోయడం మంచిదని అనిపిస్తుంది, వర్షం మరియు ధరను దృష్టిలో ఉంచుకుని.
+14:42:04 [INFO] Question: Severe disease, favorable weather, sell price good
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.95) -> state=treat_now
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=False -> state=favorable
+14:42:04 [INFO] Price Agent: pct_diff=0.15 -> state=sell_now
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'treat_now_synergy', 'action': 'Treat now — favorable weather is actually the best spray window available', 'confidence': 'High'}
+14:42:04 [INFO] Final answer: ఇప్పుడు చికిత్స చేయడానికి మంచి సమయం — వాతావరణం కూడా అనుకూలంగా ఉంది.
+14:42:04 [INFO] Question: Healthy crop, storm risk, price says hold
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_healthy (conf 0.90) -> state=no_action
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+14:42:04 [INFO] Price Agent: pct_diff=-0.15 -> state=hold
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'protect_crop', 'action': 'Check harvest readiness and protect crop from storm; price optimization is secondary', 'confidence': 'Medium'}
+14:42:04 [INFO] Final answer: ముందుగా మీ పంటను కాపాడుకోవడంపై దృష్టి పెట్టండి — నీటిపారుదల లేదా కోత; ధర తర్వాత చూడవచ్చు.
+14:42:04 [INFO] Question: Mild disease, uncertain weather, neutral price — all low-signal
+14:42:04 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+14:42:04 [INFO] Disease Agent: Tomato_Late_blight (conf 0.50) -> state=monitor
+14:42:04 [INFO] Weather Agent (Warangal,IN): rain_expected=None -> state=uncertain
+14:42:04 [INFO] Price Agent: pct_diff=0.0 -> state=neutral
+14:42:04 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+14:42:04 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+[PASS] Scenario 1: Early blight detected, heavy rain expected in 24h
+[PASS] Scenario 2: Storm risk to standing crop, prices currently rising
+[PASS] Scenario 3: Moderate disease infection, price dropping
+[PASS] Scenario 4: Drought stress on crop, price signal says sell now
+[PASS] Scenario 5: Mild early-stage disease, favorable weather, hold on price
+[PASS] Scenario 6: Healthy crop, drought risk, neutral price
+[PASS] Scenario 7: Disease needs treatment, drought stress, price says hold
+[PASS] Scenario 8: Disease needs treatment, weather forecast unclear
+[PASS] Scenario 9: Mild disease, rain risk, good sell price
+[PASS] Scenario 10: Severe disease, favorable weather, sell price good
+[PASS] Scenario 11: Healthy crop, storm risk, price says hold
+[PASS] Scenario 12: Mild disease, uncertain weather, neutral price — all low-signal
+
+12/12 passed (0 skipped -- see module docstring)
