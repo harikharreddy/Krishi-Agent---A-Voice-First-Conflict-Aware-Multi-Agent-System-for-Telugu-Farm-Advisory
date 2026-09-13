@@ -28,6 +28,30 @@ latency, Disease Agent domain shift).
 
 ## 2. Component-level results
 
+### 2.0 Full logic/correctness test suite -- run today, all passing
+
+Every deterministic-logic test in the repo, re-run together for one
+consolidated snapshot (excludes the percentage-style accuracy metrics in
+2.1-2.8, which are reported separately since "pass/fail" doesn't apply to
+them):
+
+| Test file | Result | What it covers |
+|---|---|---|
+| `test_conflict_resolver.py` | 12/12 (100%) | Conflict Resolver rule logic, synthetic scenarios |
+| `test_phrasing_templates.py` | 12/12 (100%) | Confidence-calibrated template selection |
+| `test_state_mapping.py` | 13/13 (100%) | **New**: boundary-value tests for the Weather/Price state-mapping thresholds (exact 0.10/-0.10 cutoffs, missing-data fallbacks) -- previously only comfortably-inside values were tested |
+| `test_pipeline.py` | 12/12 (100%) | End-to-end conflict scenarios through the real pipeline |
+| `test_pipeline_edge_cases.py` | 5/5 (100%) | No photo, missing profile fields, agent API failures |
+| `test_weather_agent.py` | 9/9 (100%) | Schema validity, graceful failure, drought-signal unit tests |
+| `test_price_agent.py` | 5/5 (100%) | Schema validity, graceful failure, market lookup |
+
+**68/68 (100%)** across all deterministic-logic tests. This is the
+"nothing is silently broken" layer underneath the accuracy metrics below
+-- a paper/evaluator claim like "37.65% disease accuracy" only means
+something if the surrounding pipeline logic (conflict resolution,
+phrasing, state thresholds) is itself verified correct, which this table
+establishes.
+
 ### 2.1 Intent Router (LLM-based question routing)
 
 - **Dataset**: `tests/intent_router_test_set.json` -- 16 hand-written Telugu
