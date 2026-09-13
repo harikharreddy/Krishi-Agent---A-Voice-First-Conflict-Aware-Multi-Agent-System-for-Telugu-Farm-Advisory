@@ -1,0 +1,18 @@
+{
+  "heard_text": null,
+  "timing": {
+    "intent_router_s": 11.857745791003254,
+    "weather_agent_s": 0.18403570800001035,
+    "conflict_resolver_s": 2.8959002520423383e-05,
+    "pipeline_total_s": 12.045010708003247,
+    "intent_router_unload_s": 0.013579542002844391,
+    "tts_s": 35.660763208998105,
+    "request_total_s": 47.72678987499967
+  },
+  "answer_text": "రాబోయే 1 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+  "detected_crop": null,
+  "disease_mismatch": null,
+  "disease_confidence": null,
+  "disease_confidence_level": null,
+  "sample_rate": 44100
+}

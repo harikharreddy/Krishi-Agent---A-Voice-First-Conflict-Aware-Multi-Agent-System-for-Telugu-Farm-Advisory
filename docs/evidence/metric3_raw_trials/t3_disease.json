@@ -1,0 +1,18 @@
+{
+  "heard_text": null,
+  "timing": {
+    "intent_router_s": 14.497501958998328,
+    "disease_agent_s": 0.7694116670027142,
+    "conflict_resolver_s": 4.687499676947482e-05,
+    "pipeline_total_s": 15.268287457998667,
+    "intent_router_unload_s": 0.038148583000293,
+    "tts_s": 23.07504437500029,
+    "request_total_s": 38.39013824999711
+  },
+  "answer_text": "Tomato ఆకులో 'లేట్ బ్లైట్' కనిపిస్తోంది.",
+  "detected_crop": "Tomato",
+  "disease_mismatch": null,
+  "disease_confidence": 65,
+  "disease_confidence_level": "low",
+  "sample_rate": 44100
+}

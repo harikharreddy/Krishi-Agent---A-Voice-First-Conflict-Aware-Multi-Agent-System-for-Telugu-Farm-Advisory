@@ -1,0 +1,18 @@
+{
+  "heard_text": null,
+  "timing": {
+    "intent_router_s": 11.7385573749998,
+    "price_agent_s": 1.1871607909997692,
+    "conflict_resolver_s": 2.3124997824197635e-05,
+    "pipeline_total_s": 12.931387625001662,
+    "intent_router_unload_s": 0.012898958000732819,
+    "tts_s": 67.92748316699726,
+    "request_total_s": 80.8771870840028
+  },
+  "answer_text": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+  "detected_crop": null,
+  "disease_mismatch": null,
+  "disease_confidence": null,
+  "disease_confidence_level": null,
+  "sample_rate": 44100
+}

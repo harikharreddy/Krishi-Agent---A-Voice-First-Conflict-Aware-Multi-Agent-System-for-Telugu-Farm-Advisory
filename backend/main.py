@@ -11,6 +11,7 @@ Run from the repo root:
 import io
 import os
 import tempfile
+import time
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form, UploadFile, File
@@ -89,13 +90,18 @@ def ask(
         "crop": crop,
     }
 
+    request_t_start = time.perf_counter()
+    timing = {}
+
     heard_text = None
     if audio is not None:
+        t0 = time.perf_counter()
         audio_bytes = audio.file.read()
         try:
             heard_text = transcribe_audio(audio_bytes)
         except ValueError as e:
             return JSONResponse({"error": "bad_audio", "detail": str(e)}, status_code=400)
+        timing["asr_s"] = time.perf_counter() - t0
         final_question = heard_text
     elif question:
         final_question = question
@@ -115,9 +121,12 @@ def ask(
     finally:
         if image_path:
             os.unlink(image_path)
+    timing.update(trace.get("timing", {}))
 
     answer_text = trace["final_answer"]
+    t0 = time.perf_counter()
     _unload_intent_router_model()
+    timing["intent_router_unload_s"] = time.perf_counter() - t0
 
     disease_raw = trace.get("disease_raw")
     detected_crop = disease_raw.get("predicted_crop") if disease_raw else None
@@ -143,12 +152,17 @@ def ask(
             "profile_crop": crop,
         }
 
+    t0 = time.perf_counter()
     audio_arr, sample_rate = synthesize_speech(answer_text)
+    timing["tts_s"] = time.perf_counter() - t0
     buf = io.BytesIO()
     sf.write(buf, audio_arr, sample_rate, format="WAV")
 
+    timing["request_total_s"] = time.perf_counter() - request_t_start
+
     return {
         "heard_text": heard_text,
+        "timing": timing,
         "answer_text": answer_text,
         "detected_crop": detected_crop,
         "disease_mismatch": disease_mismatch,

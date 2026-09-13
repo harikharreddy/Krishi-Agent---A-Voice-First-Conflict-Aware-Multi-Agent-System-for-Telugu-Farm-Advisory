@@ -27,6 +27,7 @@ KNOWN LIMITATIONS (honest, not hidden -- see Phase 8 report):
 import logging
 import sys
 import os
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -98,9 +99,14 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     for logging/debugging (Phase 4.2 will lean on this for test failures).
     """
     trace = {"question": question, "farm_profile": farm_profile, "image_path": image_path}
+    timing = {}
+    trace["timing"] = timing
+    t_start = time.perf_counter()
 
     logger.info(f"Question: {question}")
+    t0 = time.perf_counter()
     intents = route_intent(question)
+    timing["intent_router_s"] = time.perf_counter() - t0
     trace["intents"] = intents
     logger.info(f"Intents: {intents}")
 
@@ -108,7 +114,9 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     disease_raw = None
     if intents.get("wants_disease"):
         if image_path:
+            t0 = time.perf_counter()
             disease_raw = predict_disease(image_path)
+            timing["disease_agent_s"] = time.perf_counter() - t0
             disease_state = _map_disease_state(disease_raw)
             logger.info(f"Disease Agent: {disease_raw.get('predicted_class')} "
                         f"(conf {disease_raw.get('confidence', 0):.2f}) -> state={disease_state}")
@@ -124,7 +132,9 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
             logger.warning("Weather intent detected but Farm Profile is missing 'district' -- skipping Weather Agent.")
         else:
             location = f"{farm_profile['district']},IN"
+            t0 = time.perf_counter()
             weather_raw = get_weather_advice(location)
+            timing["weather_agent_s"] = time.perf_counter() - t0
             weather_state = _map_weather_state(weather_raw)
             logger.info(f"Weather Agent ({location}): rain_expected="
                         f"{weather_raw.get('rain_expected')} -> state={weather_state}")
@@ -138,6 +148,7 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
         if missing:
             logger.warning(f"Price intent detected but Farm Profile is missing {missing} -- skipping Price Agent.")
         else:
+            t0 = time.perf_counter()
             try:
                 price_raw = get_price_advice(
                     farm_profile["state"], farm_profile["crop"], farm_profile.get("mandi")
@@ -151,6 +162,7 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
                 logger.warning(f"Price Agent raised an exception -- treating as unavailable: {e}")
                 price_raw = None
                 price_state = None
+            timing["price_agent_s"] = time.perf_counter() - t0
     trace["price_raw"] = price_raw
     trace["price_state"] = price_state
 
@@ -166,6 +178,7 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
         if state is not None
     ]
 
+    t0 = time.perf_counter()
     if len(active_agents) == 1:
         _, single_raw = active_agents[0]
         resolution = {
@@ -179,6 +192,7 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     else:
         resolution = resolve_conflict(disease_state, weather_state, price_state)
         final_answer = phrase_resolution(resolution["resolution"], resolution["confidence"])
+    timing["conflict_resolver_s"] = time.perf_counter() - t0
 
     trace["resolution"] = resolution
     logger.info(f"Conflict Resolver: {resolution}")
@@ -186,6 +200,7 @@ def run_pipeline(question: str, farm_profile: dict, image_path: str = None) -> d
     trace["final_answer"] = final_answer
     logger.info(f"Final answer: {final_answer}")
 
+    timing["pipeline_total_s"] = time.perf_counter() - t_start
     return trace
 
 

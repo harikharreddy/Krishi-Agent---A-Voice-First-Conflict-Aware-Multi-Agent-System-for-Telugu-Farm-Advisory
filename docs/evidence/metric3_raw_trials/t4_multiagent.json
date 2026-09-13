@@ -1,0 +1,19 @@
+{
+  "heard_text": null,
+  "timing": {
+    "intent_router_s": 12.471265333999327,
+    "weather_agent_s": 0.2720602909976151,
+    "price_agent_s": 0.8266200830003072,
+    "conflict_resolver_s": 2.749999111983925e-06,
+    "pipeline_total_s": 13.578686459000892,
+    "intent_router_unload_s": 0.01547408400074346,
+    "tts_s": 38.94498575000034,
+    "request_total_s": 52.546190084001864
+  },
+  "answer_text": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+  "detected_crop": null,
+  "disease_mismatch": null,
+  "disease_confidence": null,
+  "disease_confidence_level": null,
+  "sample_rate": 44100
+}
