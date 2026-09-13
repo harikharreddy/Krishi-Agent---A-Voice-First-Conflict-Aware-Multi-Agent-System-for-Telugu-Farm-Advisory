@@ -159,6 +159,11 @@ def main():
     # finding; the before/after gap comparison is demoted to a clearly
     # labeled footnote, since it is not statistically supportable on its own.
     citable_summary = (
+        f"[EXPLORATORY ONLY -- not the project's headline Disease Agent result. "
+        f"The headline is the zero-shot PlantDoc accuracy (23.45%/28.24%), "
+        f"confirmed with Dr. Nagaraju 2026-09-13 for consistency with Phase 1's "
+        f"original zero-shot commitment. Everything below describes the "
+        f"fine-tuned checkpoint, a secondary result.]\n\n"
         f"PRIMARY FINDING: fine-tuning on PlantDoc shifted the Disease Agent's "
         f"confidence distribution down across the board on the 85 held-out "
         f"PlantDoc test images -- {old_cutoff['n_above']}/85 images scored "
@@ -190,6 +195,19 @@ def main():
 
     evidence = {
         "metric": "Confidence-calibration spot-check -- is the 0.7 treat_now/monitor cutoff supported by data, and did it change after fine-tuning?",
+        "reporting_status": (
+            "EXPLORATORY ONLY -- confirmed with Dr. Nagaraju 2026-09-13 "
+            "(see docs/evidence/model_lineage.md's Decision section). The "
+            "project's headline Disease Agent accuracy is the ZERO-SHOT "
+            "PlantDoc result (model lineage row 2: 23.45%/28.24%), for "
+            "methodological consistency with Phase 1's original zero-shot "
+            "commitment. The 'after_finetuned' checkpoint in this comparison "
+            "(row 5) is a secondary, fine-tuned result -- it is NOT the "
+            "reported/deployed-headline finding, and this before/after "
+            "comparison should NOT be cited as 'the' calibration result. "
+            "Present it, if at all, explicitly labeled exploratory, "
+            "alongside that same caveat -- not as a validated improvement."
+        ),
         "checkpoints_compared": {
             "before": "checkpoints/stage1_crop_plantvillage_only.pt + stage2_tomato_plantvillage_only.pt + stage2_potato_plantvillage_only.pt -- PlantVillage-only, zero-shot on PlantDoc, never fine-tuned on it. This is model lineage table row 2 -- see docs/evidence/model_lineage.md.",
             "after": "checkpoints/stage1_crop_best.pt + stage2_tomato_best.pt + stage2_potato_best.pt -- fine-tuned on PlantDoc's train split (+ 2 external datasets). This IS the checkpoint orchestrator/pipeline.py loads and deploys right now. Model lineage table row 5.",

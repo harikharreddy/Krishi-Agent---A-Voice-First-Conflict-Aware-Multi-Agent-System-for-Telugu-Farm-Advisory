@@ -1,0 +1,52 @@
+ASR Word Error Rate (Metric #2) — Raw Evidence Log — PRELIMINARY, 1/4 speakers
+Run timestamp: 2026-09-13 09:46:18 UTC
+Git commit: c12c8b007cc4542de8262c52b3f2282a1ab1135f
+Command: python3 tests/check_all_wer.py
+======================================================================
+Speakers found: ['speaker1'] (1/4 planned)
+Please check FRAME_DURATION_MS. The timestamps can be inaccurate
+Please check FRAME_DURATION_MS. The timestamps can be inaccurate
+Fetching 404 files:   0%|          | 0/404 [00:00<?, ?it/s]Fetching 404 files: 100%|██████████| 404/404 [00:00<00:00, 8643.37it/s]
+Please check FRAME_DURATION_MS. The timestamps can be inaccurate
+[speaker1] q1  WER=0.000  ref: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+                  hyp: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+[speaker1] q2  WER=0.000  ref: రేపు వర్షం పడుతుందా
+                  hyp: రేపు వర్షం పడుతుందా
+[speaker1] q3  WER=0.400  ref: ఈ రోజు టమాటా ధర ఎంత
+                  hyp: ఈరోజు టమాటా ధర ఎంత
+[speaker1] q4  WER=0.000  ref: నా పొలంలో మట్టి బాగుందా
+                  hyp: నా పొలంలో మట్టి బాగుందా
+[speaker1] q5  WER=0.167  ref: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+                  hyp: బంగాళదుంప ఆకులు పసుపు రంగుల్లోకి మారుతున్నాయి ఎందుకు
+[speaker1] q6  WER=0.000  ref: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+                  hyp: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+[speaker1] q7  WER=0.500  ref: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా
+                  hyp: మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
+[speaker1] q8  WER=0.167  ref: నేల pH ఎంత ఉండాలి టమాటా కోసం
+                  hyp: నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
+[speaker1] q9  WER=0.000  ref: వర్షం వస్తే మందు కొట్టాలా
+                  hyp: వర్షం వస్తే మందు కొట్టాలా
+[speaker1] q10 WER=0.100  ref: నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+                  hyp: నా పంట అమ్మాలా ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+[speaker1] q11 WER=0.111  ref: ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+                  hyp: ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+[speaker1] q12 WER=0.143  ref: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+                  hyp: నా టమాటా పట్టా గురించి పూర్తి సలహా కావాలి
+[speaker1] q13 WER=0.000  ref: నమస్కారం
+                  hyp: నమస్కారం
+[speaker1] q14 WER=0.000  ref: ఈ మందు ఎక్కడ దొరుకుతుంది
+                  hyp: ఈ మందు ఎక్కడ దొరుకుతుంది
+[speaker1] q15 WER=0.167  ref: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా
+                  hyp: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+[speaker1] q16 WER=0.000  ref: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
+                  hyp: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
+
+[speaker1] mean WER across 16/16: 0.1096
+
+
+======================================================================
+OVERALL: 16/64 recordings evaluated (1/4 speakers)
+Mean WER (all recordings evaluated so far): 0.1096
+⚠ PRELIMINARY -- only 1/4 speakers present. This mean WER reflects 1 speaker only, not the full multi-speaker methodology (16 questions x 4 speakers). Do not report as final until all 4 speakers are recorded.
+
+Saved -> /Users/harikharreddy/krishi-agent/tests/audio/wer_eval/wer_results.json

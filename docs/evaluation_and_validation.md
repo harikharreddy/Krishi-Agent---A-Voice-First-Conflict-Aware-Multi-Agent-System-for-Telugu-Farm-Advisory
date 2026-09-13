@@ -91,7 +91,11 @@ establishes.
 - **Method**: `tests/check_all_wer.py`, word error rate via `jiwer`, text
   normalized (punctuation/whitespace stripped) before scoring.
 - **Result**: **mean WER 10.96%** across 16 utterances (full per-question
-  table in `tests/audio/wer_eval/speaker1_results.json`). Most individual
+  table in `tests/audio/wer_eval/wer_results.json`, which now
+  auto-discovers however many of the planned 4 speakers are recorded --
+  currently 1/4, explicitly flagged `PRELIMINARY` in that file until
+  Speakers 2-4 are done; see `docs/evidence/metric2_wer_recording_instructions.md`).
+  Most individual
   "errors" are spacing/ZWNJ artifacts (e.g. `ఈరోజు` vs `ఈ రోజు`), not
   content mistakes; a few are genuine substitutions (e.g. `పట్టా` for
   `పంట`).

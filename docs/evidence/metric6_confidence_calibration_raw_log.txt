@@ -1,10 +1,10 @@
 Confidence-Calibration Spot-Check (Metric #6) — Raw Evidence Log
-Run timestamp: 2026-09-13 09:34:34 UTC
-Git commit: 8c0d6009b9300c677a93d80be45d6509fc297444
-Update: restructured per review -- distribution-shift is now the PRIMARY
-        finding, 0.7-cutoff gap demoted to a labeled footnote, checkpoints
-        named explicitly, added a median-split analysis as the well-powered
-        answer to whether 0.7 should still gate treat_now/monitor.
+Run timestamp: 2026-09-13 09:45:11 UTC
+Git commit: c12c8b007cc4542de8262c52b3f2282a1ab1135f
+Update: added reporting_status field + inline exploratory-only label
+        in the citable summary itself, per confirmed decision with
+        Dr. Nagaraju (2026-09-13) -- zero-shot is the headline,
+        fine-tuned comparison is exploratory-only.
 Command: python3 agents/disease/generate_confidence_calibration_evidence.py
 ======================================================================
 OLD (zero-shot, test-only n=85):  accuracy=0.2824  above-0.7=0.3269 (n=52)  below-0.7=0.2121 (n=33)  gap=+0.1148
@@ -17,6 +17,8 @@ Median-split (cutoff=0.364, sized to the fine-tuned model's own distribution):
   below-median: n=42 accuracy=0.2143
 
 --- Citable summary (paste verbatim, caveat travels with the number) ---
+[EXPLORATORY ONLY -- not the project's headline Disease Agent result. The headline is the zero-shot PlantDoc accuracy (23.45%/28.24%), confirmed with Dr. Nagaraju 2026-09-13 for consistency with Phase 1's original zero-shot commitment. Everything below describes the fine-tuned checkpoint, a secondary result.]
+
 PRIMARY FINDING: fine-tuning on PlantDoc shifted the Disease Agent's confidence distribution down across the board on the 85 held-out PlantDoc test images -- 52/85 images scored >=0.7 confidence on the zero-shot checkpoint (stage*_plantvillage_only.pt) vs. only 4/85 on the deployed fine-tuned checkpoint (stage*_best.pt). Operational consequence: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with the deployed model almost every real prediction on unfamiliar photos now routes to 'monitor' rather than 'treat_now' -- consistent with the confidence-honesty UI mostly showing 'low confidence' during manual testing. A cutoff placed at THIS model's own median confidence (0.364) instead of the fixed 0.7 produces a well-populated split (n=43 vs n=42, accuracy 53% vs 21%) -- whether 0.7 is still the right operating point for this model is an open, unresolved question. 
 
 FOOTNOTE, not a finding: the raw 0.7-cutoff accuracy gap moved +11.48% (zero-shot) -> +39.20% (fine-tuned) on the same 85 images. This number is NOT statistically reliable and should NOT be cited as 'calibration improved' -- the fine-tuned side rests on only n=4 images (95% CI [30%, 95%]), an interval wide enough to be consistent with the true accuracy being anywhere from roughly a quarter to nearly all of that bucket. The honest state of the evidence is: we cannot currently tell whether the 0.7 cutoff is better or worse calibrated after fine-tuning, because too few predictions cross that threshold to say.

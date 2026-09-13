@@ -75,40 +75,60 @@ of what changed and why, not a defense that nothing changed:
   re-examined and either reaffirmed or explicitly superseded. That's a
   real gap in this session's own rigor, not just a documentation gap.
 
-## What this document does NOT decide
+## Decision (recorded)
 
-Whether the deployed system's headline claim should be the zero-shot
-number (22-23%, methodologically pure, matches Phase 1's original
-commitment) or the fine-tuned number (37.65%, better performance, a
-narrower and different claim) is **a decision for the team and Dr.
-Nagaraju, not something resolved by this evidence document or by Claude
-Code unilaterally**. Both numbers are real, both are honestly measured,
-and both are now clearly attributed to a specific, named checkpoint in
-the table above. What the project's report claims as *the* result should
-follow from that conversation, not precede it.
+**Confirmed with Dr. Nagaraju, 2026-09-13.** The question above has been
+resolved, not by this document or by Claude Code:
 
-If there is a separate literature-survey document (referenced in
-`orchestrator/intent_router_results.md`'s citation of "Radeva et al. [16]",
-and in `docs/krish_agent_project.md`'s instruction to run the literature
-survey as a standalone parallel thread) that frames "strict zero-shot
-methodology" as part of the project's novelty claim, that document is
-**not in this repository and Claude Code has not read it** — its exact
-framing could not be verified before writing this reconciliation. If it
-exists and makes that claim, it needs to be reconciled against row 5
-being the deployed system, as part of the same conversation above.
+- **The zero-shot PlantDoc result (row 2: 23.45% / 28.24% test-only)
+  is the headline real-world accuracy number for the Disease Agent.**
+- **The PlantDoc-fine-tuned result (rows 3-5, including the currently
+  deployed row 5 at 37.65%) is demoted to a secondary, clearly-labeled
+  *exploratory* result — not presented as a comparison against the
+  zero-shot number, since row 5 was fine-tuned on PlantDoc and is no
+  longer methodologically comparable to a zero-shot claim, contaminated
+  in the dataset-level sense even though the specific 85 test images were
+  properly held out.**
+
+**Reasoning, as given**: (1) the zero-shot number is what the literature
+survey's comparison points expect and can be meaningfully placed against
+— a fine-tuned number Would need its own, different category of
+comparison this project hasn't done; (2) methodological consistency with
+Phase 1's original decision (`docs/claude_phase1-summary.md:34`) — the
+project committed once to keeping the generalization test honest, and
+this decision restores that commitment rather than letting it be quietly
+superseded by a later, better-performing but differently-scoped number.
+
+**What this means downstream**: any report section, slide, or evidence
+summary that cites "the" Disease Agent accuracy should cite row 2
+(23.45% / 28.24%), not row 5. Row 5 and the fine-tuning work remain fully
+documented (nothing is deleted or hidden) but must be labeled exploratory
+wherever it appears — metric #6's evidence has been updated accordingly
+(see `metric6_confidence_calibration_evidence.json`'s new
+`reporting_status` field).
+
+If the separate literature-survey document (referenced in
+`orchestrator/intent_router_results.md`'s citation of "Radeva et al. [16]")
+turns out to frame things differently once read directly, that's a reason
+to revisit this entry, not a reason to have waited on it — this decision
+is now the team's committed position either way.
 
 ## Next
 
-Once the v2 checkpoint (row 6) is available, the same three checks applied
-to rows 3-5 this session will be applied to it before its PlantDoc number
-is reported anywhere:
+The v2 checkpoint (row 6) has not arrived yet. Per the decision above,
+**it starts from a favorable position, not the fine-tuned model's
+caution**: it was trained on PlantVillage only and never touched
+PlantDoc, so once evaluated it will be a second, genuinely clean
+zero-shot data point — directly comparable to row 2, not row 5. When it
+lands:
 1. Confirm exactly what it was trained on (PlantVillage only, per its
-   description — to be verified against the actual checkpoint/training
-   log if available, not assumed from the filename).
-2. Evaluate on PlantDoc's test split only for any headline number; if an
-   aggregate over train+test is computed for any reason, label it
-   explicitly and separately, the same way this row's honest_gaps do for
-   the other checkpoints.
-3. State plainly in whatever evidence file is produced which row of this
-   table it becomes, so it can't be compared against row 5 without a
-   reader knowing whether it's a zero-shot or fine-tuned number.
+   description — verify against the actual checkpoint/training log if
+   available, not assumed from the filename alone).
+2. Run it through `plantdoc_confidence_eval.py` un-restricted (train+test
+   combined is fine for THIS checkpoint specifically, unlike row 5,
+   *because* it never trained on any PlantDoc images at all — the
+   contamination check that mattered for row 5 does not apply here, and
+   should not be applied reflexively without re-confirming that first).
+3. Report it as row 6 explicitly, alongside row 2, as a second zero-shot
+   result — not folded into or compared against the exploratory
+   fine-tuned numbers.
