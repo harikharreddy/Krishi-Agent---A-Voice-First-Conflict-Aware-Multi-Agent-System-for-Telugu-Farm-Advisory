@@ -28,6 +28,7 @@ before/after comparison stays apples-to-apples.
 """
 
 import json
+import math
 import os
 import sys
 
@@ -52,15 +53,32 @@ def bucket_table(records):
     return table
 
 
+def wilson_ci(correct, n, z=1.96):
+    """95% Wilson score confidence interval -- same method used for the
+    Potato_healthy n=263 check elsewhere in this evaluation, applied here
+    to show explicitly how wide the interval gets at small n."""
+    if n == 0:
+        return None
+    p = correct / n
+    denom = 1 + z**2 / n
+    center = (p + z**2 / (2 * n)) / denom
+    margin = (z * math.sqrt(p * (1 - p) / n + z**2 / (4 * n**2))) / denom
+    return {"point_estimate": p, "ci_95_low": max(0.0, center - margin), "ci_95_high": min(1.0, center + margin)}
+
+
 def cutoff_split(records, cutoff=0.7):
     above = [r for r in records if r["confidence"] >= cutoff]
     below = [r for r in records if r["confidence"] < cutoff]
-    above_acc = sum(1 for r in above if r["correct"]) / len(above) if above else None
-    below_acc = sum(1 for r in below if r["correct"]) / len(below) if below else None
+    above_correct = sum(1 for r in above if r["correct"])
+    below_correct = sum(1 for r in below if r["correct"])
+    above_acc = above_correct / len(above) if above else None
+    below_acc = below_correct / len(below) if below else None
     gap = (above_acc - below_acc) if (above_acc is not None and below_acc is not None) else None
     return {
         "n_above": len(above), "accuracy_above": above_acc,
+        "accuracy_above_95_CI": wilson_ci(above_correct, len(above)) if above else None,
         "n_below": len(below), "accuracy_below": below_acc,
+        "accuracy_below_95_CI": wilson_ci(below_correct, len(below)) if below else None,
         "gap_above_minus_below": gap,
     }
 
@@ -98,16 +116,19 @@ def main():
 
     SMALL_N_WARN = 10
     small_n_flags = []
+    new_above_ci = new_cutoff["accuracy_above_95_CI"]
     if new_cutoff["n_above"] < SMALL_N_WARN:
+        ci_txt = (f"95% CI [{new_above_ci['ci_95_low']:.0%}, {new_above_ci['ci_95_high']:.0%}]"
+                   if new_above_ci else "CI undefined")
         small_n_flags.append(
             f"AFTER's 'above 0.7' bucket has only n={new_cutoff['n_above']} images "
-            f"(75.0% accuracy = 3/4 correct). One image flipping correct/incorrect "
-            f"moves that accuracy by 25 percentage points. The fine-tuned model "
-            f"rarely outputs confidence >=0.7 on this 85-image test set at all -- "
-            f"most of its mass sits below the cutoff (n=81). The 'gap widened' "
-            f"headline above is technically true but is NOT a statistically "
-            f"robust finding at this sample size; report the raw numbers, not "
-            f"the verdict, if this is cited."
+            f"(75.0% accuracy = 3/4 correct, {ci_txt}). One image flipping "
+            f"correct/incorrect moves that accuracy by 25 percentage points. The "
+            f"fine-tuned model rarely outputs confidence >=0.7 on this 85-image "
+            f"test set at all -- most of its mass sits below the cutoff (n=81). "
+            f"The 'gap widened' headline above is technically true but is NOT a "
+            f"statistically robust finding at this sample size; report the raw "
+            f"numbers, not the verdict, if this is cited."
         )
     if old_cutoff["n_above"] < SMALL_N_WARN or old_cutoff["n_below"] < SMALL_N_WARN:
         small_n_flags.append(
@@ -116,6 +137,25 @@ def main():
         )
     if small_n_flags:
         gap_verdict += " -- ⚠ SEE small_sample_size_warning IN THIS FILE BEFORE CITING THIS COMPARISON."
+
+    # Single self-contained string, safe to paste verbatim into a slide or
+    # report -- the caveat travels WITH the number, not in a separate field
+    # that can be dropped when only the headline gets copied.
+    citable_summary = (
+        f"Confidence-cutoff accuracy gap (>=0.7 vs <0.7): {gap_before:+.2%} before "
+        f"fine-tuning -> {gap_after:+.2%} after, on the same 85 held-out PlantDoc "
+        f"test images. NOT STATISTICALLY RELIABLE AS STATED: the 'after' side is "
+        f"{new_cutoff['accuracy_above']:.0%} accuracy on only n={new_cutoff['n_above']} "
+        f"images (95% CI [{new_above_ci['ci_95_low']:.0%}, {new_above_ci['ci_95_high']:.0%}]"
+        f" -- consistent with anywhere from roughly a quarter to nearly all of that "
+        f"bucket being correct). The more defensible finding is not the gap number: "
+        f"fine-tuning shifted the model's confidence distribution down across the "
+        f"board ({old_cutoff['n_above']}/85 images scored >=0.7 before vs. "
+        f"{new_cutoff['n_above']}/85 after), so DISEASE_CONFIDENCE_CUTOFF=0.7 in "
+        f"orchestrator/pipeline.py now routes nearly every real prediction to "
+        f"'monitor' rather than 'treat_now' -- an operational question for the "
+        f"team, not just a reporting footnote."
+    )
 
     evidence = {
         "metric": "Confidence-calibration spot-check -- is the 0.7 treat_now/monitor cutoff supported by data, and did it change after fine-tuning?",
@@ -159,6 +199,7 @@ def main():
             },
             "did_fine_tuning_improve_the_CONFIDENCE_SIGNAL_not_just_accuracy": gap_verdict,
             "small_sample_size_warning": small_n_flags if small_n_flags else None,
+            "CITABLE_SUMMARY_paste_this_verbatim_into_reports": citable_summary,
             "additional_finding_confidence_distribution_shifted": (
                 f"BEFORE: {old_cutoff['n_above']}/85 images ({old_cutoff['n_above']/85:.0%}) "
                 f"scored >=0.7 confidence. AFTER: only {new_cutoff['n_above']}/85 "
@@ -199,10 +240,13 @@ def main():
           f"below-0.7={old_cutoff['accuracy_below']:.4f} (n={old_cutoff['n_below']})  "
           f"gap={old_cutoff['gap_above_minus_below']:+.4f}")
     print(f"NEW (fine-tuned, test-only n=85): accuracy={new_test_acc:.4f}  "
-          f"above-0.7={new_cutoff['accuracy_above']:.4f} (n={new_cutoff['n_above']})  "
+          f"above-0.7={new_cutoff['accuracy_above']:.4f} (n={new_cutoff['n_above']}, "
+          f"95% CI [{new_above_ci['ci_95_low']:.2f}, {new_above_ci['ci_95_high']:.2f}])  "
           f"below-0.7={new_cutoff['accuracy_below']:.4f} (n={new_cutoff['n_below']})  "
           f"gap={new_cutoff['gap_above_minus_below']:+.4f}")
     print(f"\n{gap_verdict}")
+    print(f"\n--- Citable summary (paste verbatim, caveat travels with the number) ---")
+    print(citable_summary)
     print(f"\n[FLAGGED, not used for comparison] 967-image contaminated accuracy: {new_contaminated_acc:.4f} "
           f"(train-only: {new_train_acc:.4f}, test-only: {new_test_acc:.4f})")
 

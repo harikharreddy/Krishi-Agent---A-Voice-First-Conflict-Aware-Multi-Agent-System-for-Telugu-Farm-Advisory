@@ -1,16 +1,18 @@
 Confidence-Calibration Spot-Check (Metric #6) — Raw Evidence Log
-Run timestamp: 2026-09-13 09:22:12 UTC
-Git commit: 6dc7ac51e8b329fed7f9a54a53be32420e847c63
-Step 1: python3 agents/disease/plantdoc_confidence_eval.py (re-run against current checkpoints)
-======================================================================
-[full output already captured earlier this run -- see git commit's checkpoint state; re-running step 2 below]
-
-Step 2: python3 agents/disease/generate_confidence_calibration_evidence.py
+Run timestamp: 2026-09-13 09:25:38 UTC
+Git commit: 6f66625e355595f2e99a98af0c3d1a4782b895ac
+Update: added Wilson 95% CI and a self-contained citable summary string
+        per Dr. Nagaraju's feedback -- the n=4 caveat must travel with
+        the number wherever it's quoted, not just live in a JSON field.
+Command: python3 agents/disease/generate_confidence_calibration_evidence.py
 ======================================================================
 OLD (zero-shot, test-only n=85):  accuracy=0.2824  above-0.7=0.3269 (n=52)  below-0.7=0.2121 (n=33)  gap=+0.1148
-NEW (fine-tuned, test-only n=85): accuracy=0.3765  above-0.7=0.7500 (n=4)  below-0.7=0.3580 (n=81)  gap=+0.3920
+NEW (fine-tuned, test-only n=85): accuracy=0.3765  above-0.7=0.7500 (n=4, 95% CI [0.30, 0.95])  below-0.7=0.3580 (n=81)  gap=+0.3920
 
 WIDENED (on the raw numbers): +0.1148 -> +0.3920 -- ⚠ SEE small_sample_size_warning IN THIS FILE BEFORE CITING THIS COMPARISON.
+
+--- Citable summary (paste verbatim, caveat travels with the number) ---
+Confidence-cutoff accuracy gap (>=0.7 vs <0.7): +11.48% before fine-tuning -> +39.20% after, on the same 85 held-out PlantDoc test images. NOT STATISTICALLY RELIABLE AS STATED: the 'after' side is 75% accuracy on only n=4 images (95% CI [30%, 95%] -- consistent with anywhere from roughly a quarter to nearly all of that bucket being correct). The more defensible finding is not the gap number: fine-tuning shifted the model's confidence distribution down across the board (52/85 images scored >=0.7 before vs. 4/85 after), so DISEASE_CONFIDENCE_CUTOFF=0.7 in orchestrator/pipeline.py now routes nearly every real prediction to 'monitor' rather than 'treat_now' -- an operational question for the team, not just a reporting footnote.
 
 [FLAGGED, not used for comparison] 967-image contaminated accuracy: 0.4519 (train-only: 0.4592, test-only: 0.3765)
 

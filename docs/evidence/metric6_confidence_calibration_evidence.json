@@ -54,8 +54,18 @@
       "cutoff_0.7": {
         "n_above": 52,
         "accuracy_above": 0.3269230769230769,
+        "accuracy_above_95_CI": {
+          "point_estimate": 0.3269230769230769,
+          "ci_95_low": 0.2152190173110406,
+          "ci_95_high": 0.46244064860111084
+        },
         "n_below": 33,
         "accuracy_below": 0.21212121212121213,
+        "accuracy_below_95_CI": {
+          "point_estimate": 0.21212121212121213,
+          "ci_95_low": 0.1067588656643618,
+          "ci_95_high": 0.3775197758712936
+        },
         "gap_above_minus_below": 0.1148018648018648
       }
     },
@@ -102,15 +112,26 @@
       "cutoff_0.7": {
         "n_above": 4,
         "accuracy_above": 0.75,
+        "accuracy_above_95_CI": {
+          "point_estimate": 0.75,
+          "ci_95_low": 0.3006360524426366,
+          "ci_95_high": 0.9544139373553637
+        },
         "n_below": 81,
         "accuracy_below": 0.35802469135802467,
+        "accuracy_below_95_CI": {
+          "point_estimate": 0.35802469135802467,
+          "ci_95_low": 0.26223516972228395,
+          "ci_95_high": 0.4666714044111599
+        },
         "gap_above_minus_below": 0.39197530864197533
       }
     },
     "did_fine_tuning_improve_the_CONFIDENCE_SIGNAL_not_just_accuracy": "WIDENED (on the raw numbers): +0.1148 -> +0.3920 -- ⚠ SEE small_sample_size_warning IN THIS FILE BEFORE CITING THIS COMPARISON.",
     "small_sample_size_warning": [
-      "AFTER's 'above 0.7' bucket has only n=4 images (75.0% accuracy = 3/4 correct). One image flipping correct/incorrect moves that accuracy by 25 percentage points. The fine-tuned model rarely outputs confidence >=0.7 on this 85-image test set at all -- most of its mass sits below the cutoff (n=81). The 'gap widened' headline above is technically true but is NOT a statistically robust finding at this sample size; report the raw numbers, not the verdict, if this is cited."
+      "AFTER's 'above 0.7' bucket has only n=4 images (75.0% accuracy = 3/4 correct, 95% CI [30%, 95%]). One image flipping correct/incorrect moves that accuracy by 25 percentage points. The fine-tuned model rarely outputs confidence >=0.7 on this 85-image test set at all -- most of its mass sits below the cutoff (n=81). The 'gap widened' headline above is technically true but is NOT a statistically robust finding at this sample size; report the raw numbers, not the verdict, if this is cited."
     ],
+    "CITABLE_SUMMARY_paste_this_verbatim_into_reports": "Confidence-cutoff accuracy gap (>=0.7 vs <0.7): +11.48% before fine-tuning -> +39.20% after, on the same 85 held-out PlantDoc test images. NOT STATISTICALLY RELIABLE AS STATED: the 'after' side is 75% accuracy on only n=4 images (95% CI [30%, 95%] -- consistent with anywhere from roughly a quarter to nearly all of that bucket being correct). The more defensible finding is not the gap number: fine-tuning shifted the model's confidence distribution down across the board (52/85 images scored >=0.7 before vs. 4/85 after), so DISEASE_CONFIDENCE_CUTOFF=0.7 in orchestrator/pipeline.py now routes nearly every real prediction to 'monitor' rather than 'treat_now' -- an operational question for the team, not just a reporting footnote.",
     "additional_finding_confidence_distribution_shifted": "BEFORE: 52/85 images (61%) scored >=0.7 confidence. AFTER: only 4/85 (5%). This is the actual reason the 'above 0.7' bucket shrank to n=4 -- the fine-tuned model became systematically less willing to output high confidence on this held-out set, not merely more accurate. Operational consequence for the deployed pipeline: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with this model almost every real prediction on unfamiliar (test-like) photos now routes to 'monitor' rather than 'treat_now' -- consistent with what the confidence-honesty UI was independently observed showing mostly 'low confidence' labels during manual testing earlier in this project. Whether this cutoff is still the right operating point for THIS model's confidence distribution (as opposed to the zero-shot model it was never formally chosen against either) is an open question this spot-check surfaces but does not answer."
   },
   "INVALID_for_comparison_train_plus_test_combined_n967": {
@@ -120,8 +141,18 @@
       "cutoff_0.7": {
         "n_above": 505,
         "accuracy_above": 0.26534653465346536,
+        "accuracy_above_95_CI": {
+          "point_estimate": 0.26534653465346536,
+          "ci_95_low": 0.22871419866567325,
+          "ci_95_high": 0.30552199585930273
+        },
         "n_below": 462,
         "accuracy_below": 0.19913419913419914,
+        "accuracy_below_95_CI": {
+          "point_estimate": 0.19913419913419914,
+          "ci_95_low": 0.16526536667151295,
+          "ci_95_high": 0.23796525936102683
+        },
         "gap_above_minus_below": 0.06621233551926622
       }
     },
@@ -130,8 +161,18 @@
       "cutoff_0.7": {
         "n_above": 66,
         "accuracy_above": 0.8787878787878788,
+        "accuracy_above_95_CI": {
+          "point_estimate": 0.8787878787878788,
+          "ci_95_low": 0.7786234136612515,
+          "ci_95_high": 0.9372822929663172
+        },
         "n_below": 901,
         "accuracy_below": 0.42064372918978915,
+        "accuracy_below_95_CI": {
+          "point_estimate": 0.42064372918978915,
+          "ci_95_low": 0.3888126727929457,
+          "ci_95_high": 0.4531486163431861
+        },
         "gap_above_minus_below": 0.45814414959808963
       },
       "train_split_accuracy_882img": 0.45918367346938777,
