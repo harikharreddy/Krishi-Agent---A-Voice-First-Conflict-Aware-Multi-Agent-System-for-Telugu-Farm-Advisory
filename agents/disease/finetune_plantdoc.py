@@ -239,6 +239,7 @@ def finetune_stage(name, checkpoint_name, classes, items, epochs=8, batch_size=1
 
     best_val_acc = -1.0
     best_state = None
+    history = []
 
     for epoch in range(1, epochs + 1):
         model.train()
@@ -255,14 +256,19 @@ def finetune_stage(name, checkpoint_name, classes, items, epochs=8, batch_size=1
 
         model.eval()
         correct, total = 0, 0
+        val_running_loss = 0.0
         with torch.no_grad():
             for x, y in val_loader:
                 x, y = x.to(device), y.to(device)
-                pred = model(x).argmax(1)
+                out = model(x)
+                val_running_loss += criterion(out, y).item() * x.size(0)
+                pred = out.argmax(1)
                 correct += (pred == y).sum().item()
                 total += y.size(0)
         val_acc = correct / total if total else 0.0
-        print(f"  epoch {epoch}/{epochs}  train_loss={train_loss:.4f}  internal_val_acc={val_acc:.4f}")
+        val_loss = val_running_loss / max(len(val_ds), 1)
+        print(f"  epoch {epoch}/{epochs}  train_loss={train_loss:.4f}  val_loss={val_loss:.4f}  internal_val_acc={val_acc:.4f}")
+        history.append({"epoch": epoch, "train_loss": train_loss, "val_loss": val_loss, "val_acc": val_acc})
 
         if val_acc >= best_val_acc:
             best_val_acc = val_acc
@@ -271,7 +277,7 @@ def finetune_stage(name, checkpoint_name, classes, items, epochs=8, batch_size=1
     out_path = os.path.join(CHECKPOINT_DIR, f"{name}_finetuned.pt")
     torch.save(best_state, out_path)
     print(f"  saved best checkpoint (internal_val_acc={best_val_acc:.4f}) -> {out_path}")
-    return out_path, best_val_acc
+    return out_path, best_val_acc, history
 
 
 def evaluate_on_plantdoc_test(checkpoints):
@@ -414,13 +420,13 @@ def main():
         return backup if os.path.isfile(os.path.join(CHECKPOINT_DIR, backup)) else f"{stem}_best.pt"
 
     checkpoints = {}
-    checkpoints["stage1"], stage1_val_acc = finetune_stage(
+    checkpoints["stage1"], stage1_val_acc, stage1_history = finetune_stage(
         "stage1_crop", source_checkpoint("stage1_crop"), STAGE1_CLASSES, stage1_items
     )
-    checkpoints["stage2_tomato"], tomato_val_acc = finetune_stage(
+    checkpoints["stage2_tomato"], tomato_val_acc, tomato_history = finetune_stage(
         "stage2_tomato", source_checkpoint("stage2_tomato"), STAGE2_TOMATO_CLASSES, tomato_items
     )
-    checkpoints["stage2_potato"], potato_val_acc = finetune_stage(
+    checkpoints["stage2_potato"], potato_val_acc, potato_history = finetune_stage(
         "stage2_potato", source_checkpoint("stage2_potato"), STAGE2_POTATO_CLASSES, potato_items
     )
     checkpoints = {k: os.path.basename(v) for k, v in checkpoints.items()}
@@ -434,6 +440,11 @@ def main():
         "stage2_potato": potato_val_acc,
     }
     eval_result["finetuned_checkpoints"] = checkpoints
+    eval_result["training_history"] = {
+        "stage1_crop": stage1_history,
+        "stage2_tomato": tomato_history,
+        "stage2_potato": potato_history,
+    }
 
     os.makedirs(RESULTS_DIR, exist_ok=True)
     out_path = os.path.join(RESULTS_DIR, "plantdoc_finetuned_results.json")
