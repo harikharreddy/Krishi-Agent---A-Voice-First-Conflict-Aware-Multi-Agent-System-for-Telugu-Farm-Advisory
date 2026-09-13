@@ -1,21 +1,16 @@
-End-to-End Latency Per Pipeline Stage (Metric #3) — Raw Evidence Log
-Run timestamp: 2026-09-13 14:26:41 UTC
-Git commit: 491d15fa23fd60ee9eaf3e418885b026a6a24ecd
-Command: python3 latency_proof/compile_metric3_evidence.py
-======================================================================
 n trials: 6
 
 Per-stage summary:
-  asr_s                        n=1  mean=11.97s  min=11.97s  max=11.97s
-  conflict_resolver_s          n=6  mean=0.00s  min=0.00s  max=0.00s
-  disease_agent_s              n=1  mean=0.77s  min=0.77s  max=0.77s
-  intent_router_s              n=6  mean=14.37s  min=11.74s  max=23.73s
-  intent_router_unload_s       n=6  mean=0.02s  min=0.01s  max=0.04s
-  pipeline_total_s             n=6  mean=15.02s  min=12.05s  max=24.09s
-  price_agent_s                n=2  mean=1.01s  min=0.83s  max=1.19s
-  request_total_s              n=6  mean=55.76s  min=38.39s  max=80.88s
-  tts_s                        n=6  mean=38.72s  min=23.08s  max=67.93s
-  weather_agent_s              n=4  mean=0.27s  min=0.18s  max=0.35s
+  asr_s                        n=1  mean=11.97s  median=11.97s  min=11.97s  max=11.97s  p95=not-meaningful-at-this-n
+  conflict_resolver_s          n=6  mean=0.00s  median=0.00s  min=0.00s  max=0.00s  p95=not-meaningful-at-this-n
+  disease_agent_s              n=1  mean=0.77s  median=0.77s  min=0.77s  max=0.77s  p95=not-meaningful-at-this-n
+  intent_router_s              n=6  mean=14.37s  median=12.19s  min=11.74s  max=23.73s  p95=not-meaningful-at-this-n
+  intent_router_unload_s       n=6  mean=0.02s  median=0.01s  min=0.01s  max=0.04s  p95=not-meaningful-at-this-n
+  pipeline_total_s             n=6  mean=15.02s  median=13.26s  min=12.05s  max=24.09s  p95=not-meaningful-at-this-n
+  price_agent_s                n=2  mean=1.01s  median=1.01s  min=0.83s  max=1.19s  p95=not-meaningful-at-this-n
+  request_total_s              n=6  mean=55.76s  median=50.14s  min=38.39s  max=80.88s  p95=not-meaningful-at-this-n
+  tts_s                        n=6  mean=38.72s  median=35.13s  min=23.08s  max=67.93s  p95=not-meaningful-at-this-n
+  weather_agent_s              n=4  mean=0.27s  median=0.27s  min=0.18s  max=0.35s  p95=not-meaningful-at-this-n
 
 TTS dominates end-to-end latency in every trial (23-68s of the 38-81s total per request), 2-6x longer than the Intent Router stage (12-24s) and 10-100x longer than any single agent call (0.18-1.2s each). Conflict Resolver itself is effectively free (microseconds) in every trial -- the bottleneck is unambiguously TTS generation, not orchestration logic.
 

@@ -1,0 +1,61 @@
+q1  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+q2  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+q3  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+q4  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+q5  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+q6  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+q7  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+q8  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+q9  exact_match=True  wrong_labels=none
+    expected: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+q10 exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+q11 exact_match=True  wrong_labels=none
+    expected: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+q12 exact_match=False  wrong_labels=['wants_weather', 'wants_price']
+    expected: {'wants_disease': True, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+q13 exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+q14 exact_match=False  wrong_labels=['wants_disease']
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+q15 exact_match=True  wrong_labels=none
+    expected: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+    actual:   {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+q16 exact_match=True  wrong_labels=none
+    expected: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+    actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+
+======================================================================
+Exact match: 14/16
+Per-intent breakdown:
+  wants_disease   acc=0.938  precision=0.8571428571428571  recall=1.0  f1=0.923076923076923  n_pos=6
+  wants_weather   acc=0.938  precision=1.0  recall=0.8333333333333334  f1=0.9090909090909091  n_pos=6
+  wants_price     acc=0.938  precision=1.0  recall=0.8  f1=0.888888888888889  n_pos=5
+  wants_soil      acc=1.000  precision=1.0  recall=1.0  f1=1.0  n_pos=3
+
+Failure concentration verdict: SPREAD ACROSS MULTIPLE INTENT CATEGORIES
+Wrong-label counts by intent: {'wants_disease': 1, 'wants_weather': 1, 'wants_price': 1, 'wants_soil': 0}
+
+Saved -> /Users/harikharreddy/krishi-agent/docs/evidence/metric_intent_router_per_intent_evidence.json

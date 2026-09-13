@@ -47,9 +47,11 @@ def main():
         per_stage[key] = {
             "n": len(values),
             "mean_s": statistics.mean(values),
+            "median_s": statistics.median(values),
             "min_s": min(values),
             "max_s": max(values),
             "std_s": statistics.stdev(values) if len(values) > 1 else 0.0,
+            "p95_s": None,
         }
 
     evidence = {
@@ -66,6 +68,20 @@ def main():
         ),
         "trials": trials,
         "per_stage_summary": per_stage,
+        "distributional_statistics_note": (
+            "Per external technical review (2026-09-13, Sec 2.4): a single-run point estimate "
+            "doesn't show distributional properties, so median is now reported alongside mean/"
+            "min/max/std for every stage. p95_s is intentionally left as null (not fabricated) "
+            "for every stage -- with n=6 total trials (and n=1-2 for several individual stages, "
+            "e.g. asr_s, disease_agent_s), a 95th-percentile estimate would need roughly 20+ "
+            "independent samples to mean anything; computing 'p95' from 6 points would just be "
+            "reporting the max relabeled with false precision. Request_total_s and "
+            "pipeline_total_s (the two stages with the full n=6) show the widest spread already "
+            "visible in min/max/std (request_total_s: 38.4s-80.9s, std 16.5s) -- that spread IS "
+            "the honest signal about tail latency at this sample size; a fabricated percentile "
+            "would not add information beyond what min/max/std already show. More trials (ideally "
+            "20+) would be needed before a real p95 claim is defensible."
+        ),
         "honest_gaps": [
             (
                 "n=6 total, and most individual stages have n=1-2 -- this is "
@@ -122,8 +138,8 @@ def main():
     print(f"n trials: {len(trials)}")
     print("\nPer-stage summary:")
     for key, stats in per_stage.items():
-        print(f"  {key:<28} n={stats['n']}  mean={stats['mean_s']:.2f}s  "
-              f"min={stats['min_s']:.2f}s  max={stats['max_s']:.2f}s")
+        print(f"  {key:<28} n={stats['n']}  mean={stats['mean_s']:.2f}s  median={stats['median_s']:.2f}s  "
+              f"min={stats['min_s']:.2f}s  max={stats['max_s']:.2f}s  p95=not-meaningful-at-this-n")
     print(f"\n{evidence['headline_finding']}")
     print(f"\nSaved -> {out_path}")
 

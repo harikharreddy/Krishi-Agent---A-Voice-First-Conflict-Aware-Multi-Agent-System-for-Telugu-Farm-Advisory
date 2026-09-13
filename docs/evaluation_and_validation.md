@@ -69,12 +69,42 @@ establishes.
   under-routed a broad "give me full advice" request (missed weather/price
   intents); #14 over-routed a pesticide-availability question as a disease
   question.
+- **Per-intent breakdown** (added per external review, 2026-09-13 -- are
+  the 2 failures concentrated in one intent category, or spread evenly?):
+  scored each of the 4 target labels as its own binary classification task
+  across all 16 questions.
+
+  | Intent | Accuracy | Precision | Recall | F1 | n positive |
+  |---|---|---|---|---|---|
+  | `wants_disease` | 93.8% | 85.7% | 100% | 0.923 | 6 |
+  | `wants_weather` | 93.8% | 100% | 83.3% | 0.909 | 6 |
+  | `wants_price` | 93.8% | 100% | 80.0% | 0.889 | 5 |
+  | `wants_soil` | 100% | 100% | 100% | 1.000 | 3 |
+
+  **Verdict: SPREAD, not concentrated** -- the 2 failures touch 3 different
+  intent labels (`wants_disease` x1, `wants_weather` x1, `wants_price` x1;
+  `wants_soil` is perfect), so this isn't one weak intent category dragging
+  the average down. #12 (the under-routed multi-intent failure) is the more
+  informative case: it's the one question in the set expecting 3
+  simultaneous `true` labels, and the router recovered only 1 of 3 --
+  consistent with the LLM struggling to hold multiple simultaneous
+  judgments on a maximal-intent question specifically, more than with any
+  single intent category being weak. Full breakdown:
+  `docs/evidence/metric_intent_router_per_intent_evidence.json`.
 - **Ablation -- model size**: qwen2.5:3b-instruct was tested on the same set
   in Phase 2.2 and scored **8/16, 50%** -- the 7B model was kept specifically
   because of this gap, at a documented latency cost (Sec. 2.6).
 - **Known limitation**: n=16 is a hand-curated smoke-test set, not a
   statistically powered benchmark. A real paper submission needs a larger,
   more diverse question set (see Sec. 5).
+- **External validity limitation** (per external review, 2026-09-13): 5 of
+  these 16 questions appear verbatim as worked few-shot examples inside
+  `orchestrator/intent_router.py`'s own `SYSTEM_PROMPT` -- the model is
+  being tested partly on phrasing it was directly shown, so 87.5% should
+  not be read as an unbiased estimate of field performance on genuinely
+  novel farmer phrasing. This is not hypothetical: Phase 6 already found a
+  real-world misrouting failure on unvalidated phrasing outside this set
+  (`"ఈ ఆకుకు ఏమి జబ్బు?"`, see `orchestrator/intent_router_results.md`).
 
 ### 2.2 Conflict Resolver
 
@@ -177,6 +207,70 @@ The 71.5-point drop is a textbook train/test domain-shift result, and came
 with a specific, diagnosable failure mode: the model over-predicted
 `Tomato_Late_blight` for **49% of test images** (true rate: 12%) -- an
 attractor-class bias, not just noise.
+
+**Is this one model's fluke, or a structural property of the domain gap?
+Cross-architecture convergence (3 independent checkpoints).** The
+single-checkpoint baseline above (28.2%, 85-image test-only subset) could,
+on its own, be one model's idiosyncrasy -- undertrained, an unlucky
+initialization, a quirk of this specific run. It isn't: two more
+independently-trained EfficientNetB0 checkpoints -- a flat 13-class
+baseline, and a separately-trained flat "v2" checkpoint built from a
+fresh Colab session (full provenance in `docs/evidence/model_lineage.md`)
+-- were evaluated the same way, and all three converge on **three
+independent signals**, not accuracy alone:
+
+1. **Accuracy band convergence**: all three checkpoints' zero-shot
+   PlantDoc accuracy (full train+test combined, n=965-968 -- the valid
+   comparison here since none of these three were ever fine-tuned on
+   PlantDoc) lands in a 2-point band: 22.00% (flat baseline) / 23.45%
+   (hierarchical) / 21.45% (v2 independent) -- **mean 22.30%, stdev 1.03
+   points**. `docs/evidence/metric1_zero_shot_convergence.json`.
+2. **Attractor-class convergence**, now formalized as an actual confusion
+   matrix (previously an informal observation) for the two checkpoints
+   with saved per-image predictions: both independently default to
+   predicting `Tomato_Late_blight`/`Tomato_Early_blight` regardless of
+   true label -- hierarchical checkpoint: `Tomato_Late_blight` predicted
+   522/967 times (54% of ALL predictions, any true class); v2 checkpoint:
+   `Tomato_Late_blight` (425x) + `Tomato_Early_blight` (322x) dominate the
+   same way. Per-class recall on those classes' own true instances stays
+   far below their predicted share (hierarchical: 80.2% recall but only
+   17.0% *precision* on `Tomato_Late_blight` -- the model calls almost
+   everything blight, so it's "right" whenever the true label happens to
+   be blight and wrong almost everywhere else).
+   `docs/evidence/metric1_confusion_matrix_calibration_evidence.json`;
+   matrices in
+   `agents/disease/results/confusion_matrix_row{2,6}_*_zero_shot.png`.
+3. **Calibration-shape convergence**: Expected Calibration Error is
+   nearly identical across the two checkpoints (0.4725 vs. 0.4606), and
+   both reliability diagrams show the same shape -- confidence bins above
+   ~0.5 sit well below the diagonal throughout, i.e. the model is
+   systematically *overconfident*, not just inaccurate, and this
+   overconfidence pattern itself replicates independently.
+   `agents/disease/results/reliability_diagram_row{2,6}_*_zero_shot.png`.
+
+*(These three numbers use each checkpoint's full combined image set,
+n=965-968, matching how the accuracy-band convergence was computed --
+not the 85-image test-only restriction used above and below for the
+fine-tuned-model comparison. Directionally consistent with, not
+contradicting, the 49%-predicted/12%-true `Tomato_Late_blight` figure
+already quoted for the single-checkpoint 85-image baseline.)*
+
+**Read together, these are not three separate findings -- they are the
+same underlying phenomenon viewed at three resolutions of the same
+confusion matrix**, replicated across three independently-trained
+models, two training environments, and two architectures (flat 13-class
+vs. hierarchical 2-stage). The evidence points to a decision boundary
+shaped almost entirely by PlantVillage's uniform lab backgrounds and
+framing -- a "blotchy texture on a leaf-shaped object, pick the nearest
+common label" heuristic -- rather than lesion-specific morphology. This
+is strong evidence the ~22% real-world accuracy ceiling is a **structural
+covariate-shift problem inherent to PlantVillage-only training data, not
+a fixable modeling error specific to one run**, and it is this project's
+most scientifically interesting result. Stated plainly, without hedging:
+**the Disease Agent, as currently trained, should not be presented as
+reliable for field deployment** -- this three-signal convergence is the
+evidence for that limitation and the honest framing of it, not a hidden
+weakness.
 
 **After fine-tuning on PlantDoc's own `train` split** (conservative
 transfer learning: frozen backbone except the last block + classifier
@@ -305,6 +399,30 @@ than for a raw accuracy gain.
   representative.
 - This is reported as an explicit, accepted tradeoff, not a fully solved
   problem -- see Sec. 4 (Limitations).
+
+**Full-request, per-stage latency** (Phase 8.1 metric #3,
+`docs/evidence/metric3_latency_evidence.json`): 6 real end-to-end
+`/api/ask` HTTP trials, covering different request shapes (weather-only,
+price-only, disease-with-photo, multi-agent, voice). Per external review
+(2026-09-13, Sec 2.4): median is now reported alongside mean, since
+mean-vs-median gap is itself informative about skew --
+
+| Stage | n | mean | median | min | max |
+|---|---|---|---|---|---|
+| `request_total_s` (full request) | 6 | 55.76s | 50.14s | 38.39s | 80.88s |
+| `tts_s` | 6 | 38.72s | 35.13s | 23.08s | 67.93s |
+| `intent_router_s` | 6 | 14.37s | 12.19s | 11.74s | 23.73s |
+
+Mean sitting well above median on both `tts_s` and `request_total_s`
+confirms the right-skew already visible in the min/max spread -- a small
+number of slow requests pull the mean up, consistent with the
+already-documented TTS text-length sensitivity and the intent-router
+memory-collision confound (both above). **p95 is deliberately not
+reported** -- at n=6 total trials (n=1-2 for several individual stages),
+a 95th-percentile estimate would just be the max relabeled with false
+statistical precision; roughly 20+ independent trials would be needed
+before a real p95 claim is defensible. The min/max/std spread already
+shown is the honest signal about tail latency at this sample size.
 
 ### 2.7 End-to-end pipeline characterization (text-only, no photo)
 

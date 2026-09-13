@@ -1,0 +1,398 @@
+{
+  "metric": "Intent Router per-intent breakdown -- are the known 87.5% (14/16) result's failures concentrated in one intent category or spread evenly?",
+  "method": "Re-runs the same 16-question test set (tests/intent_router_test_set.json) through the real, unmocked route_intent() -- live Ollama call, qwen2.5:7b-instruct, same model and prompt as production. Each of the 4 target labels (wants_disease/wants_weather/wants_price/wants_soil) is scored independently across all 16 questions as its own binary classification task (TP/FP/TN/FN), in addition to the aggregate exact-match (all 4 labels correct) result already reported elsewhere.",
+  "aggregate_result": {
+    "exact_match": "14/16",
+    "exact_match_pct": 0.875
+  },
+  "per_intent_label_breakdown": {
+    "wants_disease": {
+      "n_positive_in_test_set": 6,
+      "tp": 6,
+      "fp": 1,
+      "tn": 9,
+      "fn": 0,
+      "accuracy": 0.9375,
+      "precision": 0.8571428571428571,
+      "recall": 1.0,
+      "f1": 0.923076923076923
+    },
+    "wants_weather": {
+      "n_positive_in_test_set": 6,
+      "tp": 5,
+      "fp": 0,
+      "tn": 10,
+      "fn": 1,
+      "accuracy": 0.9375,
+      "precision": 1.0,
+      "recall": 0.8333333333333334,
+      "f1": 0.9090909090909091
+    },
+    "wants_price": {
+      "n_positive_in_test_set": 5,
+      "tp": 4,
+      "fp": 0,
+      "tn": 11,
+      "fn": 1,
+      "accuracy": 0.9375,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.888888888888889
+    },
+    "wants_soil": {
+      "n_positive_in_test_set": 3,
+      "tp": 3,
+      "fp": 0,
+      "tn": 13,
+      "fn": 0,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "failure_concentration_analysis": {
+    "n_questions_with_at_least_1_wrong_label": 2,
+    "wrong_label_counts_by_intent": {
+      "wants_disease": 1,
+      "wants_weather": 1,
+      "wants_price": 1,
+      "wants_soil": 0
+    },
+    "verdict": "SPREAD ACROSS MULTIPLE INTENT CATEGORIES",
+    "n_failures_that_were_multi_intent_questions": 1,
+    "note": "A question is 'multi-intent' if the ground truth expects 2+ of the 4 labels true simultaneously (e.g. a combined disease+weather question). If failures cluster on multi-intent questions specifically, that points to a different root cause (the LLM struggling to hold multiple simultaneous judgments) than if they cluster on a single intent category regardless of question complexity."
+  },
+  "raw_comparison_table": [
+    {
+      "id": 1,
+      "gloss": "Spots on my tomato leaves, what disease is this?",
+      "question": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 2,
+      "gloss": "Will it rain tomorrow?",
+      "question": "రేపు వర్షం పడుతుందా?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 3,
+      "gloss": "What's today's tomato price?",
+      "question": "ఈ రోజు టమాటా ధర ఎంత?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 4,
+      "gloss": "Is my field's soil good?",
+      "question": "నా పొలంలో మట్టి బాగుందా?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 5,
+      "gloss": "Potato leaves turning yellow, why?",
+      "question": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 6,
+      "gloss": "How's the weather this week?",
+      "question": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 7,
+      "gloss": "Will potato market price rise?",
+      "question": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 8,
+      "gloss": "What soil pH is needed for tomato?",
+      "question": "నేల pH ఎంత ఉండాలి టమాటా కోసం?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    },
+    {
+      "id": 9,
+      "gloss": "Should I spray if rain is coming?",
+      "question": "వర్షం వస్తే మందు కొట్టాలా?",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 2
+    },
+    {
+      "id": 10,
+      "gloss": "Should I sell or hold, considering price and weather?",
+      "question": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 2
+    },
+    {
+      "id": 11,
+      "gloss": "Leaves have disease, price is also low, what do I do?",
+      "question": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 2
+    },
+    {
+      "id": 12,
+      "gloss": "I want full advice on my tomato crop",
+      "question": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": false,
+      "wrong_labels": [
+        "wants_weather",
+        "wants_price"
+      ],
+      "n_intents_expected_true": 3
+    },
+    {
+      "id": 13,
+      "gloss": "Hello",
+      "question": "నమస్కారం",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 0
+    },
+    {
+      "id": 14,
+      "gloss": "Where can I get this pesticide?",
+      "question": "ఈ మందు ఎక్కడ దొరుకుతుంది?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": false,
+      "wrong_labels": [
+        "wants_disease"
+      ],
+      "n_intents_expected_true": 0
+    },
+    {
+      "id": 15,
+      "gloss": "Crop leaves drying up, is it due to lack of rain?",
+      "question": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?",
+      "expected": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "actual": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 2
+    },
+    {
+      "id": 16,
+      "gloss": "Is nitrogen low in my soil, should I fertilize?",
+      "question": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?",
+      "expected": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "actual": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "exact_match": true,
+      "wrong_labels": [],
+      "n_intents_expected_true": 1
+    }
+  ],
+  "external_validity_limitation": "This same 16-question set supplies the few-shot examples baked into orchestrator/intent_router.py's SYSTEM_PROMPT (5 of these exact questions appear verbatim as worked examples in the prompt) AND is the test set used here and in the original 87.5% result -- the model is being tested partly on phrasing patterns it was directly shown. This is a real external-validity limitation, not just a small-n caveat: an accuracy figure from this set should not be read as an unbiased estimate of field performance on genuinely novel farmer phrasing. Phase 6 already found a real-world misrouting failure on unvalidated phrasing outside this set ('ఈ ఆకుకు ఏమి జబ్బు?', see orchestrator/intent_router_results.md) -- consistent with this concern, not just a hypothetical one. Flagged explicitly per the external review's request, rather than left as an implicit assumption behind the 87.5% number.",
+  "honest_gaps": [
+    "n=16 questions total, and per-label positive-class counts are small for the less-frequent intents (see per_intent_label_breakdown's n_positive_in_test_set per label) -- precision/recall at this n should be read as directional, not tightly estimated.",
+    "The LLM-based router is not deterministic between calls in general (temperature=0.1, not 0) -- this is ONE run, not a repeated-trials stability check. A different run could plausibly produce a different exact_match count on the same 16 questions; this was not tested here (out of scope for this pass, could be added as a future stability check analogous to the Metric #6 cutoff bootstrap)."
+  ]
+}
