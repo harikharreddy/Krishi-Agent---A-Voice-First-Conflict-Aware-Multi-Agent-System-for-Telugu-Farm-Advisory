@@ -28,7 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
-from orchestrator.intent_router import route_intent
+from orchestrator.intent_router import route_intent, SYSTEM_PROMPT
 
 TEST_SET_PATH = os.path.join(HERE, "intent_router_test_set.json")
 LABELS = ["wants_disease", "wants_weather", "wants_price", "wants_soil"]
@@ -85,6 +85,21 @@ def main():
         print(f"    expected: {expected}")
         print(f"    actual:   {actual}")
 
+    # Held-out subset check, requested after the review flagged that 5 of
+    # these 16 questions are verbatim few-shot examples inside
+    # orchestrator/intent_router.py's own SYSTEM_PROMPT -- the model is
+    # tested partly on phrasing it was directly shown for those 5. Membership
+    # determined programmatically (exact substring match against the actual
+    # SYSTEM_PROMPT the LLM receives, not against the whole source file --
+    # an earlier whole-file check incorrectly flagged question 1 as
+    # "few-shot," when it only appears in this file's own
+    # `if __name__ == "__main__":` dev smoke-test block, which is never
+    # part of what the LLM sees).
+    few_shot_ids = {item["id"] for item in test_set if item["question"] in SYSTEM_PROMPT}
+    held_out_rows = [r for r in rows if r["id"] not in few_shot_ids]
+    held_out_exact_match = sum(1 for r in held_out_rows if r["exact_match"])
+    held_out_failures = [r["id"] for r in held_out_rows if not r["exact_match"]]
+
     per_label_metrics = {}
     for label in LABELS:
         c = per_label_counts[label]
@@ -127,6 +142,35 @@ def main():
         "aggregate_result": {
             "exact_match": f"{exact_match_count}/{len(rows)}",
             "exact_match_pct": exact_match_count / len(rows),
+        },
+        "held_out_only_result": {
+            "context": (
+                "Recomputed using only the questions that do NOT appear as worked few-shot "
+                "examples inside orchestrator/intent_router.py's own SYSTEM_PROMPT -- the more "
+                "honest estimate of real-world performance, since the full-set number partly "
+                "tests the model on phrasing it was directly shown."
+            ),
+            "few_shot_example_question_ids": sorted(few_shot_ids),
+            "held_out_question_ids": sorted(r["id"] for r in held_out_rows),
+            "n_held_out": len(held_out_rows),
+            "exact_match": f"{held_out_exact_match}/{len(held_out_rows)}",
+            "exact_match_pct": held_out_exact_match / len(held_out_rows) if held_out_rows else None,
+            "failed_question_ids": held_out_failures,
+            "verdict": (
+                f"WORSE than the full-set number: held-out accuracy is "
+                f"{held_out_exact_match}/{len(held_out_rows)} "
+                f"({held_out_exact_match / len(held_out_rows):.1%}) vs. the full-set "
+                f"{exact_match_count}/{len(rows)} ({exact_match_count / len(rows):.1%}). "
+                f"Both of the full-set's 2 failures (questions {held_out_failures}) fall inside "
+                f"the held-out 11 -- neither failure was 'absorbed' by the few-shot-exposed "
+                f"subset scoring artificially well, so removing that subset doesn't just shrink "
+                f"the denominator, it concentrates the SAME 2 errors onto a smaller base. The "
+                f"held-out {held_out_exact_match}/{len(held_out_rows)} figure is the more honest "
+                f"estimate of real-world performance on genuinely unseen phrasing, and it is "
+                f"worse than 87.5% suggests, not just smaller-sample-noisier."
+                if held_out_rows and held_out_exact_match / len(held_out_rows) < exact_match_count / len(rows)
+                else "Held-out accuracy is not worse than the full-set number this run."
+            ),
         },
         "per_intent_label_breakdown": per_label_metrics,
         "failure_concentration_analysis": {
@@ -177,8 +221,12 @@ def main():
         json.dump(evidence, f, ensure_ascii=False, indent=2)
 
     print(f"\n{'='*70}")
-    print(f"Exact match: {exact_match_count}/{len(rows)}")
-    print(f"Per-intent breakdown:")
+    print(f"Exact match (full set, n=16): {exact_match_count}/{len(rows)} ({exact_match_count/len(rows):.1%})")
+    print(f"Exact match (held-out only, n={len(held_out_rows)}): {held_out_exact_match}/{len(held_out_rows)} "
+          f"({held_out_exact_match/len(held_out_rows):.1%})" if held_out_rows else "n/a")
+    print(f"Few-shot example ids (excluded from held-out): {sorted(few_shot_ids)}")
+    print(f"Held-out failures: {held_out_failures}")
+    print(f"\nPer-intent breakdown:")
     for label, m in per_label_metrics.items():
         print(f"  {label:<15} acc={m['accuracy']:.3f}  precision={m['precision']}  recall={m['recall']}  f1={m['f1']}  n_pos={m['n_positive_in_test_set']}")
     print(f"\nFailure concentration verdict: {evidence['failure_concentration_analysis']['verdict']}")

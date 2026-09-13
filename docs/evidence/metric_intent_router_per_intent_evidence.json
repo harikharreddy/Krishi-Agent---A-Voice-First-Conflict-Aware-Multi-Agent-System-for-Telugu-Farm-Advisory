@@ -5,6 +5,37 @@
     "exact_match": "14/16",
     "exact_match_pct": 0.875
   },
+  "held_out_only_result": {
+    "context": "Recomputed using only the questions that do NOT appear as worked few-shot examples inside orchestrator/intent_router.py's own SYSTEM_PROMPT -- the more honest estimate of real-world performance, since the full-set number partly tests the model on phrasing it was directly shown.",
+    "few_shot_example_question_ids": [
+      3,
+      4,
+      9,
+      10,
+      13
+    ],
+    "held_out_question_ids": [
+      1,
+      2,
+      5,
+      6,
+      7,
+      8,
+      11,
+      12,
+      14,
+      15,
+      16
+    ],
+    "n_held_out": 11,
+    "exact_match": "9/11",
+    "exact_match_pct": 0.8181818181818182,
+    "failed_question_ids": [
+      12,
+      14
+    ],
+    "verdict": "WORSE than the full-set number: held-out accuracy is 9/11 (81.8%) vs. the full-set 14/16 (87.5%). Both of the full-set's 2 failures (questions [12, 14]) fall inside the held-out 11 -- neither failure was 'absorbed' by the few-shot-exposed subset scoring artificially well, so removing that subset doesn't just shrink the denominator, it concentrates the SAME 2 errors onto a smaller base. The held-out 9/11 figure is the more honest estimate of real-world performance on genuinely unseen phrasing, and it is worse than 87.5% suggests, not just smaller-sample-noisier."
+  },
   "per_intent_label_breakdown": {
     "wants_disease": {
       "n_positive_in_test_set": 6,

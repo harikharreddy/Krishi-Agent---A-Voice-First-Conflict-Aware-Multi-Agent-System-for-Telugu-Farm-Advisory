@@ -48,7 +48,11 @@ q16 exact_match=True  wrong_labels=none
     actual:   {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
 
 ======================================================================
-Exact match: 14/16
+Exact match (full set, n=16): 14/16 (87.5%)
+Exact match (held-out only, n=11): 9/11 (81.8%)
+Few-shot example ids (excluded from held-out): [3, 4, 9, 10, 13]
+Held-out failures: [12, 14]
+
 Per-intent breakdown:
   wants_disease   acc=0.938  precision=0.8571428571428571  recall=1.0  f1=0.923076923076923  n_pos=6
   wants_weather   acc=0.938  precision=1.0  recall=0.8333333333333334  f1=0.9090909090909091  n_pos=6

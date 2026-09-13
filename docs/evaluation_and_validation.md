@@ -63,12 +63,45 @@ establishes.
 - **Method**: `tests/test_intent_router.py`, live calls to `route_intent()`
   against the running Ollama model. Exact-match scoring (all 4 boolean
   fields must match).
-- **Result (re-run today)**: **14/16 correct, 87.5%**. Matches the
-  originally-measured Phase 2.2 number exactly, confirming reproducibility.
+- **Result (re-run today)**: **14/16 correct, 87.5%** on the full set.
+  Matches the originally-measured Phase 2.2 number exactly, confirming
+  reproducibility. **But 5 of these 16 questions are verbatim few-shot
+  examples inside the router's own `SYSTEM_PROMPT`** (see External
+  validity below) -- recomputing on only the 11 genuinely held-out
+  questions gives **9/11, 81.8%**, which is the more honest estimate of
+  real-world performance. **This is worse news than 87.5% suggests, not
+  just a smaller, noisier sample**: both of the full set's 2 failures
+  (#12, #14) fall inside the 11 held-out questions, so neither was
+  "propped up" by the few-shot-exposed subset scoring artificially well --
+  removing that subset concentrates the same 2 errors onto a smaller base
+  rather than diluting them. Both numbers are reported side by side going
+  forward; **81.8% (held-out), not 87.5% (full set), is the number that
+  should be cited as this component's real-world accuracy estimate.**
 - **Failure modes** (both n=1 cases, illustrative not statistical): #12
   under-routed a broad "give me full advice" request (missed weather/price
   intents); #14 over-routed a pesticide-availability question as a disease
   question.
+- **Headline limitation: compound-intent questions are where this breaks.**
+  Question #12 ("నా టమాటా పంట గురించి పూర్తి సలహా కావాలి" / "I want full
+  advice on my tomato crop") is the *only* question in the 16-question set
+  whose ground truth expects three intents simultaneously
+  (`wants_disease=wants_weather=wants_price=True`), and it's exactly the
+  one the router does worst on -- recovering only 1 of the 3 expected
+  labels (`wants_disease` alone; `wants_weather` and `wants_price` both
+  missed). This is a **specific, useful limitation to name plainly**, not
+  just a table row: the model appears able to hold one clear intent
+  judgment reliably, but its ability to affirm *multiple, simultaneous*
+  intents degrades on a maximal, "tell me everything" style question --
+  precisely the kind of open-ended request a real farmer is likely to
+  actually ask ("give me full advice on my crop" is a completely natural
+  compound question, not an edge case constructed to break the system).
+  A farmer asking that exact kind of question today would silently lose
+  the weather and price portions of the answer they expected, with no
+  error or partial-answer indication surfaced anywhere in the pipeline.
+  Flagged as a concrete direction for future work (e.g. a routing prompt
+  that explicitly enumerates each intent as an independent yes/no check
+  rather than one combined judgment), not applied as a fix here --
+  observation only, `orchestrator/intent_router.py` untouched.
 - **Per-intent breakdown** (added per external review, 2026-09-13 -- are
   the 2 failures concentrated in one intent category, or spread evenly?):
   scored each of the 4 target labels as its own binary classification task
@@ -84,26 +117,25 @@ establishes.
   **Verdict: SPREAD, not concentrated** -- the 2 failures touch 3 different
   intent labels (`wants_disease` x1, `wants_weather` x1, `wants_price` x1;
   `wants_soil` is perfect), so this isn't one weak intent category dragging
-  the average down. #12 (the under-routed multi-intent failure) is the more
-  informative case: it's the one question in the set expecting 3
-  simultaneous `true` labels, and the router recovered only 1 of 3 --
-  consistent with the LLM struggling to hold multiple simultaneous
-  judgments on a maximal-intent question specifically, more than with any
-  single intent category being weak. Full breakdown:
+  the average down; the more informative axis is compound- vs. single-
+  intent questions (see headline limitation above), not which specific
+  intent category. Full breakdown, including the held-out-only recompute:
   `docs/evidence/metric_intent_router_per_intent_evidence.json`.
 - **Ablation -- model size**: qwen2.5:3b-instruct was tested on the same set
   in Phase 2.2 and scored **8/16, 50%** -- the 7B model was kept specifically
   because of this gap, at a documented latency cost (Sec. 2.6).
-- **Known limitation**: n=16 is a hand-curated smoke-test set, not a
-  statistically powered benchmark. A real paper submission needs a larger,
-  more diverse question set (see Sec. 5).
-- **External validity limitation** (per external review, 2026-09-13): 5 of
-  these 16 questions appear verbatim as worked few-shot examples inside
-  `orchestrator/intent_router.py`'s own `SYSTEM_PROMPT` -- the model is
-  being tested partly on phrasing it was directly shown, so 87.5% should
-  not be read as an unbiased estimate of field performance on genuinely
-  novel farmer phrasing. This is not hypothetical: Phase 6 already found a
-  real-world misrouting failure on unvalidated phrasing outside this set
+- **Known limitation**: n=16 (11 held-out) is a hand-curated smoke-test
+  set, not a statistically powered benchmark. A real paper submission
+  needs a larger, more diverse question set (see Sec. 5).
+- **External validity limitation** (per external review, 2026-09-13):
+  questions #3, #4, #9, #10, #13 appear verbatim as worked few-shot
+  examples inside `orchestrator/intent_router.py`'s own `SYSTEM_PROMPT` --
+  the model is being tested partly on phrasing it was directly shown for
+  those 5, so 87.5% should not be read as an unbiased estimate of field
+  performance on genuinely novel farmer phrasing (see the 81.8% held-out
+  recompute above, which is why this isn't just a theoretical concern).
+  This is not hypothetical either way: Phase 6 already found a real-world
+  misrouting failure on unvalidated phrasing outside this set
   (`"ఈ ఆకుకు ఏమి జబ్బు?"`, see `orchestrator/intent_router_results.md`).
 
 ### 2.2 Conflict Resolver
