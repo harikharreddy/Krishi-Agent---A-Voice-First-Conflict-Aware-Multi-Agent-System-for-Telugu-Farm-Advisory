@@ -145,3 +145,23 @@ in `docs/evidence/metric1_v2_checkpoint_evidence.json` /
   a separate git repo) between Sep 3 and now; the second was not
   identified. Effect on the headline number is at most ~0.2 percentage
   points — noted for completeness, not treated as invalidating the result.
+
+## Zero-shot convergence across all three independent checkpoints
+
+`agents/disease/compute_zero_shot_convergence.py` /
+`docs/evidence/metric1_zero_shot_convergence.json`.
+
+| Checkpoint | Architecture | Accuracy | n |
+|---|---|---|---|
+| Row 1 (flat baseline) | Flat 13-class EfficientNetB0 | 22.00% | 968 |
+| Row 2 (hierarchical) | 2-stage EfficientNetB0 | 23.45% | 968 |
+| Row 6 (v2) | Flat 13-class EfficientNetB0, independent Colab run | 21.45% | 965 |
+
+**Mean 22.30%, stdev 1.03 points, range 21.45-23.45% (2.00-point spread).**
+Three separately trained models — 2 architectures, 2 training
+environments/runs, none fine-tuned on PlantDoc — converge to within a
+2-point band. Framed as convergence evidence: the same argument already
+made from the shared `Tomato_Late_blight` attractor bias (both zero-shot
+checkpoints independently defaulting to blight-type diagnoses) is now
+also supported by the aggregate accuracy number landing in a tight range
+across genuinely independent runs, not just one model's idiosyncrasy.

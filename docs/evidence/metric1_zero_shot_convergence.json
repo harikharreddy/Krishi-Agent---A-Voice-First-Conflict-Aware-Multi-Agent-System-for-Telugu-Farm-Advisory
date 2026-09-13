@@ -1,0 +1,29 @@
+{
+  "metric": "Zero-shot PlantDoc accuracy convergence across 3 independent checkpoints",
+  "reporting_status": "All three are genuine zero-shot results (model lineage rows 1, 2, 6) -- none fine-tuned on PlantDoc. Framed as convergence evidence: three separately trained models (2 architectures, 2 training environments/runs) landing in a ~2-point band supports this being a structural property of the PlantVillage-to-PlantDoc domain gap, not one model's idiosyncrasy -- the SAME argument already made for the shared Late_blight attractor bias (see model_lineage.md), now backed by the aggregate accuracy number too.",
+  "checkpoints": {
+    "row_1_flat_baseline": {
+      "architecture": "Flat 13-class EfficientNetB0 (original)",
+      "accuracy": 0.22004132231404958,
+      "n": 968
+    },
+    "row_2_hierarchical": {
+      "architecture": "Hierarchical 2-stage EfficientNetB0 (original, deployed lineage before fine-tuning)",
+      "accuracy": 0.23450413223140495,
+      "n": 968
+    },
+    "row_6_v2_flat": {
+      "architecture": "Flat 13-class EfficientNetB0 (independent Colab training run)",
+      "accuracy": 0.21450777202072538,
+      "n": 965
+    }
+  },
+  "mean_accuracy": 0.22301774218872664,
+  "stdev_accuracy": 0.010325110743793104,
+  "range_accuracy": {
+    "min": 0.21450777202072538,
+    "max": 0.23450413223140495,
+    "range_points": 0.019996360210679576
+  },
+  "note_on_n": "Rows 1/2 evaluated on n=968 (train+test PlantDoc combined, per the original Sep 3 methodology); row 6 on n=965 (2-image discrepancy investigated and documented in metric1_v2_checkpoint_evidence.json, effect negligible). Not perfectly identical sample sizes, but close enough (99.7% overlap) that this doesn't undermine the convergence claim."
+}
