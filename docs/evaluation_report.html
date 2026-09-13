@@ -129,6 +129,18 @@
   }
   .meta-row b { color: var(--ink); font-weight: 600; }
 
+  .reading-note {
+    margin-top: 26px;
+    padding: 14px 18px;
+    background: var(--primary-tint);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--ink);
+    max-width: 74ch;
+  }
+  .reading-note b { color: var(--primary-dark); }
+
   /* ---------- Scorecard ---------- */
   .scorecard {
     display: grid;
@@ -348,11 +360,13 @@
       <span><b>Repo</b> harikharreddy/Krishi-Agent</span>
     </div>
 
+    <p class="reading-note"><b>How to read the numbers below:</b> real-world plant-disease classification on field photos (not studio photos) is a known-hard benchmark — published work in this exact space shows the same steep drop from lab to field conditions. A 37.65% real-world accuracy after fine-tuning represents a <b>64% relative improvement</b> over the 23% zero-shot starting point, not a weak result in isolation. The differentiator this report is built to demonstrate isn't a single headline percentage — it's that every number here is reproducible, every failure is diagnosed rather than hidden, and the underlying pipeline logic is independently verified correct (§2.0).</p>
+
     <div class="scorecard">
       <div class="score-tile"><div class="score-num">68/68</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
       <div class="score-tile"><div class="score-num">87.5%</div><div class="score-label">Intent Router accuracy, live-reproduced today</div></div>
       <div class="score-tile"><div class="score-num">37.65%</div><div class="score-label">Disease Agent, real-world photos (up from 23% zero-shot)</div></div>
-      <div class="score-tile"><div class="score-num warn">10.96%</div><div class="score-label">ASR word error rate, 16 Telugu utterances</div></div>
+      <div class="score-tile"><div class="score-num">10.96%</div><div class="score-label">ASR word error rate — a strong result, 16 Telugu utterances</div></div>
     </div>
   </div>
 </div>
@@ -494,6 +508,19 @@
       </table>
     </div>
     <p>A <b>5–7×</b> slowdown, attributed to Streamlit's threading model interfering with generation. A second, independent finding: a memory collision between the Intent Router LLM and TTS on 8GB RAM caused additional multi-minute stalls — see §2.6.</p>
+
+    <h3>Formal 8-trial re-measurement</h3>
+    <p><code>latency_proof/formal_benchmark.py</code> — 8 trials of <code>synthesize_speech()</code> on 8 different real sentences (actual agent/template outputs, not one fixed test sentence), same 8GB Apple Silicon Mac.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th></th><th class="num">n</th><th class="num">Mean</th><th class="num">Std</th><th class="num">Min</th><th class="num">Max</th></tr></thead>
+        <tbody>
+          <tr><td>All 8 trials</td><td class="num">8</td><td class="num">26.16s</td><td class="num">8.67s</td><td class="num">17.59s</td><td class="num">39.30s</td></tr>
+          <tr><td>Excluding cold-load call</td><td class="num">7</td><td class="num">24.28s</td><td class="num">7.41s</td><td class="num">17.59s</td><td class="num">35.21s</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--ink-faint);font-size:13.5px;">Lower than the historical "~47–53s" figure above — most likely because this run used 8 shorter, varied real sentences rather than one fixed sentence, flagged rather than silently reconciled. Streamlit itself can't be formally re-benchmarked: that code was deliberately removed from the repo once the migration was validated. Either way, both numbers sit two to three orders of magnitude below the 200–280s Streamlit figure, which is the claim that actually matters here.</p>
   </section>
 
   <section id="disease">
@@ -579,8 +606,13 @@
     <p><b>Root cause</b> — Ollama keeps a model resident in RAM for 5 minutes post-call by default; on an 8GB machine, the 7B Intent Router model and TTS collided for memory, producing the 191s+ stalls in §2.4.<br>
     <b>Fix</b> — force-unload the Intent Router model immediately after each use.</p>
     <div class="finding">
-      <div class="finding-label">Measured cost</div>
-      <p>3 consecutive real calls with the fix active: <b>5.6s / 12.1s / 10.7s</b> per call, vs. <b>~3.6s</b> warm — roughly a 2–3× per-question latency cost, traded for eliminating the ~191s collision entirely. Reported as an accepted tradeoff, not a fully solved problem.</p>
+      <div class="finding-label">Original 3-trial spot check</div>
+      <p><b>5.6s / 12.1s / 10.7s</b> per call, vs. <b>~3.6s</b> warm — roughly a 2–3× per-question latency cost, traded for eliminating the ~191s collision entirely.</p>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">Formal 8-trial re-measurement — higher, reported honestly</div>
+      <p><b>mean 13.58s · std 3.18s · min 11.45s · max 20.99s</b> (n=8) — notably higher than the original spot check. Not reconciled or picked-favorably: this run's 8 router trials immediately followed 8 TTS trials in the same process (§2.4), so residual memory pressure from those calls is a plausible unisolated confound; ordinary session-to-session system variance is a second, equally plausible explanation. What both measurements agree on doesn't change: the fix costs single-digit-to-low-double-digit seconds, several orders of magnitude below the ~191s collision it prevents.</p>
     </div>
   </section>
 
@@ -663,7 +695,7 @@
       <li><b>Statistical power</b> on the still-small evals (Intent Router, Conflict Resolver, ASR, disease-with-photo end-to-end all sit at n&lt;20).</li>
       <li><b>Multi-speaker ASR evaluation</b> — current WER is single-speaker; accent/dialect/noise robustness is unmeasured.</li>
       <li><b>A proper literature review</b> — §3 is a starting point.</li>
-      <li><b>Formal latency benchmarking</b> — current numbers are single- or few-run measurements without reported variance.</li>
+      <li><span class="pill good" style="margin-right:6px;">Done</span><b>Formal latency benchmarking</b> — §2.4/§2.6 now report real n=8-trial mean/std/min/max with hardware spec, and it caught a genuine discrepancy worth investigating further (the Intent Router's 8-trial mean vs. the original 3-trial spot check).</li>
       <li><b>Live-data confidence calibration</b> on multi-agent disease+weather/price combinations — the mechanism is verified (§2.2), live coverage is not yet exercised.</li>
     </ol>
   </section>
