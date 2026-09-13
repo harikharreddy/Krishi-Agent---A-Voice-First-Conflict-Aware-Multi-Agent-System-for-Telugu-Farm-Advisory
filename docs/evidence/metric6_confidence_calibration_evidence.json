@@ -1,0 +1,141 @@
+{
+  "metric": "Confidence-calibration spot-check -- is the 0.7 treat_now/monitor cutoff supported by data, and did it change after fine-tuning?",
+  "method": "agents/disease/plantdoc_confidence_eval.py re-run against the current fine-tuned checkpoints (unchanged script, unchanged PLANTDOC_MAP). Bucket boundaries and 0.7-cutoff logic reused verbatim from plantdoc_confidence_analysis.py (imported BUCKETS constant, not redefined) so any change below is attributable to the model, not the analysis method.",
+  "apples_to_apples_check": {
+    "old_total_images": 967,
+    "new_total_images": 967,
+    "old_test_only_images": 85,
+    "new_test_only_images": 85,
+    "same_image_set_confirmed": true,
+    "same_missing_folder_caveat": "Tomato two spotted spider mites leaf -- missing from PlantDoc entirely, same in both runs"
+  },
+  "CRITICAL_METHODOLOGY_FLAG": "The fine-tuned model was trained on PlantDoc's train split. Its aggregate accuracy over all 967 images (train+test combined) is 0.4519 (437/967) -- but 882 of those images were used in fine-tuning and the model has already fit to them (train-only accuracy: 0.4592). This number is NOT valid for before/after comparison and is included below only for transparency, clearly labeled. The only valid comparison uses the 85 held-out test-only images, which the fine-tuned model never saw during training -- exactly the same restriction used everywhere else in docs/evaluation_and_validation.md.",
+  "valid_comparison_test_only_n85": {
+    "before_zero_shot": {
+      "overall_accuracy": 0.2823529411764706,
+      "bucket_table": [
+        {
+          "range": "0.9 - 1.0",
+          "n": 33,
+          "correct": 11,
+          "accuracy": 0.3333333333333333
+        },
+        {
+          "range": "0.8 - 0.9",
+          "n": 11,
+          "correct": 5,
+          "accuracy": 0.45454545454545453
+        },
+        {
+          "range": "0.7 - 0.8",
+          "n": 8,
+          "correct": 1,
+          "accuracy": 0.125
+        },
+        {
+          "range": "0.6 - 0.7",
+          "n": 4,
+          "correct": 1,
+          "accuracy": 0.25
+        },
+        {
+          "range": "0.5 - 0.6",
+          "n": 10,
+          "correct": 1,
+          "accuracy": 0.1
+        },
+        {
+          "range": "below 0.5",
+          "n": 19,
+          "correct": 5,
+          "accuracy": 0.2631578947368421
+        }
+      ],
+      "cutoff_0.7": {
+        "n_above": 52,
+        "accuracy_above": 0.3269230769230769,
+        "n_below": 33,
+        "accuracy_below": 0.21212121212121213,
+        "gap_above_minus_below": 0.1148018648018648
+      }
+    },
+    "after_finetuned": {
+      "overall_accuracy": 0.3764705882352941,
+      "bucket_table": [
+        {
+          "range": "0.9 - 1.0",
+          "n": 0,
+          "correct": 0,
+          "accuracy": null
+        },
+        {
+          "range": "0.8 - 0.9",
+          "n": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        {
+          "range": "0.7 - 0.8",
+          "n": 3,
+          "correct": 2,
+          "accuracy": 0.6666666666666666
+        },
+        {
+          "range": "0.6 - 0.7",
+          "n": 7,
+          "correct": 5,
+          "accuracy": 0.7142857142857143
+        },
+        {
+          "range": "0.5 - 0.6",
+          "n": 11,
+          "correct": 7,
+          "accuracy": 0.6363636363636364
+        },
+        {
+          "range": "below 0.5",
+          "n": 63,
+          "correct": 17,
+          "accuracy": 0.2698412698412698
+        }
+      ],
+      "cutoff_0.7": {
+        "n_above": 4,
+        "accuracy_above": 0.75,
+        "n_below": 81,
+        "accuracy_below": 0.35802469135802467,
+        "gap_above_minus_below": 0.39197530864197533
+      }
+    },
+    "did_fine_tuning_improve_the_CONFIDENCE_SIGNAL_not_just_accuracy": "WIDENED (on the raw numbers): +0.1148 -> +0.3920 -- ⚠ SEE small_sample_size_warning IN THIS FILE BEFORE CITING THIS COMPARISON.",
+    "small_sample_size_warning": [
+      "AFTER's 'above 0.7' bucket has only n=4 images (75.0% accuracy = 3/4 correct). One image flipping correct/incorrect moves that accuracy by 25 percentage points. The fine-tuned model rarely outputs confidence >=0.7 on this 85-image test set at all -- most of its mass sits below the cutoff (n=81). The 'gap widened' headline above is technically true but is NOT a statistically robust finding at this sample size; report the raw numbers, not the verdict, if this is cited."
+    ],
+    "additional_finding_confidence_distribution_shifted": "BEFORE: 52/85 images (61%) scored >=0.7 confidence. AFTER: only 4/85 (5%). This is the actual reason the 'above 0.7' bucket shrank to n=4 -- the fine-tuned model became systematically less willing to output high confidence on this held-out set, not merely more accurate. Operational consequence for the deployed pipeline: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with this model almost every real prediction on unfamiliar (test-like) photos now routes to 'monitor' rather than 'treat_now' -- consistent with what the confidence-honesty UI was independently observed showing mostly 'low confidence' labels during manual testing earlier in this project. Whether this cutoff is still the right operating point for THIS model's confidence distribution (as opposed to the zero-shot model it was never formally chosen against either) is an open question this spot-check surfaces but does not answer."
+  },
+  "INVALID_for_comparison_train_plus_test_combined_n967": {
+    "note": "Included ONLY for transparency about what the raw script output looks like -- do not cite this as evidence of calibration change.",
+    "before_zero_shot_967img": {
+      "overall_accuracy": 0.23371251292657705,
+      "cutoff_0.7": {
+        "n_above": 505,
+        "accuracy_above": 0.26534653465346536,
+        "n_below": 462,
+        "accuracy_below": 0.19913419913419914,
+        "gap_above_minus_below": 0.06621233551926622
+      }
+    },
+    "after_finetuned_967img_CONTAMINATED": {
+      "overall_accuracy": 0.45191313340227507,
+      "cutoff_0.7": {
+        "n_above": 66,
+        "accuracy_above": 0.8787878787878788,
+        "n_below": 901,
+        "accuracy_below": 0.42064372918978915,
+        "gap_above_minus_below": 0.45814414959808963
+      },
+      "train_split_accuracy_882img": 0.45918367346938777,
+      "test_split_accuracy_85img": 0.3764705882352941
+    }
+  }
+}

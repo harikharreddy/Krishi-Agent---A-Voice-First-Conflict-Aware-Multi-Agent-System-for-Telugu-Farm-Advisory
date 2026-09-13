@@ -1,0 +1,17 @@
+Confidence-Calibration Spot-Check (Metric #6) — Raw Evidence Log
+Run timestamp: 2026-09-13 09:22:12 UTC
+Git commit: 6dc7ac51e8b329fed7f9a54a53be32420e847c63
+Step 1: python3 agents/disease/plantdoc_confidence_eval.py (re-run against current checkpoints)
+======================================================================
+[full output already captured earlier this run -- see git commit's checkpoint state; re-running step 2 below]
+
+Step 2: python3 agents/disease/generate_confidence_calibration_evidence.py
+======================================================================
+OLD (zero-shot, test-only n=85):  accuracy=0.2824  above-0.7=0.3269 (n=52)  below-0.7=0.2121 (n=33)  gap=+0.1148
+NEW (fine-tuned, test-only n=85): accuracy=0.3765  above-0.7=0.7500 (n=4)  below-0.7=0.3580 (n=81)  gap=+0.3920
+
+WIDENED (on the raw numbers): +0.1148 -> +0.3920 -- ⚠ SEE small_sample_size_warning IN THIS FILE BEFORE CITING THIS COMPARISON.
+
+[FLAGGED, not used for comparison] 967-image contaminated accuracy: 0.4519 (train-only: 0.4592, test-only: 0.3765)
+
+Saved -> /Users/harikharreddy/krishi-agent/agents/disease/../../docs/evidence/metric6_confidence_calibration_evidence.json
