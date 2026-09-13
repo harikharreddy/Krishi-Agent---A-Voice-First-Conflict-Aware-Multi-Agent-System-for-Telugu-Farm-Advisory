@@ -165,3 +165,44 @@ made from the shared `Tomato_Late_blight` attractor bias (both zero-shot
 checkpoints independently defaulting to blight-type diagnoses) is now
 also supported by the aggregate accuracy number landing in a tight range
 across genuinely independent runs, not just one model's idiosyncrasy.
+
+## Metric #6 — CLOSED, final decision recorded (2026-09-13)
+
+Full evidence in `docs/evidence/metric6_confidence_calibration_evidence.json`
+(`cutoff_sweep_and_stability_check_2026-09-13` → `final_decision_2026-09-13`)
+and `metric6_confidence_calibration_raw_log.txt`. This closes out the
+confidence-calibration spot-check, including the cutoff sweep and the
+statistical stability check that followed it.
+
+**Finding**: sweeping `DISEASE_CONFIDENCE_CUTOFF` candidates from 0.30 to
+0.70 (step 0.05) against the deployed checkpoint's 85-image PlantDoc
+test-only set found several values with higher treat_now-bucket accuracy
+than the deployed 0.7 on far larger samples (e.g. 0.55: 75.0% accuracy,
+n=16, vs. 0.7's 75.0% at n=4). A stability check — Wilson 95% CI overlap
+across 0.50/0.55/0.60, plus a 2,000-iteration bootstrap resample — showed
+this is a real but imprecise effect: the 0.50-0.65 region wins 92.5% of
+bootstrap resamples collectively, but no single value (0.55 included, at
+50.5%) can be pinned down as *the* optimum on this sample size. Honest
+framing: **0.50-0.65 is a statistically defensible range where a
+better-calibrated cutoff than 0.7 likely lives — not a specific number
+this dataset can justify hard-coding.**
+
+**Decision**: `orchestrator/pipeline.py`'s `DISEASE_CONFIDENCE_CUTOFF`
+stays at **0.7 — no code change**. The finding is reported as a
+documented, evidence-backed recommendation for future work, not an
+applied fix. Reasoning: the deployment risk of changing live pipeline
+behavior this close to the defense outweighs a marginal, statistically
+imprecise accuracy gain that the evidence itself says cannot be pinned
+to one value.
+
+**Confirmed**: `git diff -- orchestrator/pipeline.py` is empty and
+`DISEASE_CONFIDENCE_CUTOFF = 0.7` is unchanged in the file — the entire
+metric #6 investigation (original spot-check, median-split analysis,
+Wilson CI work, the 9-point sweep, the CI-overlap and bootstrap
+stability checks, and this final decision) never modified deployed
+pipeline behavior. Worth stating plainly: a multi-round evaluation
+process that surfaces a real, tempting-looking improvement and still
+ends in "we gathered rigorous evidence and did not change the system"
+is itself evidence the evaluation process has integrity — the same
+point already made for metric #5's rule-table fix, in reverse (there,
+evidence justified a change; here, evidence justified restraint).

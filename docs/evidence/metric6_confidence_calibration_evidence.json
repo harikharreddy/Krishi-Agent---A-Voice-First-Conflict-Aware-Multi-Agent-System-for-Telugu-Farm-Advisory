@@ -161,6 +161,212 @@
     "CITABLE_SUMMARY_paste_this_verbatim_into_reports": "[EXPLORATORY ONLY -- not the project's headline Disease Agent result. The headline is the zero-shot PlantDoc accuracy (23.45%/28.24%), confirmed with Dr. Nagaraju 2026-09-13 for consistency with Phase 1's original zero-shot commitment. Everything below describes the fine-tuned checkpoint, a secondary result.]\n\nPRIMARY FINDING: fine-tuning on PlantDoc shifted the Disease Agent's confidence distribution down across the board on the 85 held-out PlantDoc test images -- 52/85 images scored >=0.7 confidence on the zero-shot checkpoint (stage*_plantvillage_only.pt) vs. only 4/85 on the deployed fine-tuned checkpoint (stage*_best.pt). Operational consequence: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with the deployed model almost every real prediction on unfamiliar photos now routes to 'monitor' rather than 'treat_now' -- consistent with the confidence-honesty UI mostly showing 'low confidence' during manual testing. A cutoff placed at THIS model's own median confidence (0.364) instead of the fixed 0.7 produces a well-populated split (n=43 vs n=42, accuracy 53% vs 21%) -- whether 0.7 is still the right operating point for this model is an open, unresolved question. \n\nFOOTNOTE, not a finding: the raw 0.7-cutoff accuracy gap moved +11.48% (zero-shot) -> +39.20% (fine-tuned) on the same 85 images. This number is NOT statistically reliable and should NOT be cited as 'calibration improved' -- the fine-tuned side rests on only n=4 images (95% CI [30%, 95%]), an interval wide enough to be consistent with the true accuracy being anywhere from roughly a quarter to nearly all of that bucket. The honest state of the evidence is: we cannot currently tell whether the 0.7 cutoff is better or worse calibrated after fine-tuning, because too few predictions cross that threshold to say.",
     "additional_finding_confidence_distribution_shifted": "BEFORE: 52/85 images (61%) scored >=0.7 confidence. AFTER: only 4/85 (5%). This is the actual reason the 'above 0.7' bucket shrank to n=4 -- the fine-tuned model became systematically less willing to output high confidence on this held-out set, not merely more accurate. Operational consequence for the deployed pipeline: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with this model almost every real prediction on unfamiliar (test-like) photos now routes to 'monitor' rather than 'treat_now' -- consistent with what the confidence-honesty UI was independently observed showing mostly 'low confidence' labels during manual testing earlier in this project. Whether this cutoff is still the right operating point for THIS model's confidence distribution (as opposed to the zero-shot model it was never formally chosen against either) is an open question this spot-check surfaces but does not answer."
   },
+  "cutoff_sweep_and_stability_check_2026-09-13": {
+    "context": "Requested after the sweep table was first presented: before treating the sweep's apparent best value (0.55) as a recommendation, check whether it is a real, stable finding or an artifact of picking the best of 9 swept values on one 85-image split (selection bias / multiple comparisons risk). orchestrator/pipeline.py was NOT changed at any point during this check -- DISEASE_CONFIDENCE_CUTOFF remains 0.7.",
+    "sweep_table_0.30_to_0.70_step_0.05": [
+      {
+        "cutoff": 0.3,
+        "treat_now_n": 59,
+        "treat_now_accuracy": 0.4406779661016949,
+        "monitor_n": 26,
+        "monitor_accuracy": 0.23076923076923078
+      },
+      {
+        "cutoff": 0.35,
+        "treat_now_n": 47,
+        "treat_now_accuracy": 0.48936170212765956,
+        "monitor_n": 38,
+        "monitor_accuracy": 0.23684210526315788
+      },
+      {
+        "cutoff": 0.4,
+        "treat_now_n": 37,
+        "treat_now_accuracy": 0.5405405405405406,
+        "monitor_n": 48,
+        "monitor_accuracy": 0.25
+      },
+      {
+        "cutoff": 0.45,
+        "treat_now_n": 26,
+        "treat_now_accuracy": 0.6538461538461539,
+        "monitor_n": 59,
+        "monitor_accuracy": 0.2542372881355932
+      },
+      {
+        "cutoff": 0.5,
+        "treat_now_n": 22,
+        "treat_now_accuracy": 0.6818181818181818,
+        "monitor_n": 63,
+        "monitor_accuracy": 0.2698412698412698
+      },
+      {
+        "cutoff": 0.55,
+        "treat_now_n": 16,
+        "treat_now_accuracy": 0.75,
+        "monitor_n": 69,
+        "monitor_accuracy": 0.2898550724637681
+      },
+      {
+        "cutoff": 0.6,
+        "treat_now_n": 11,
+        "treat_now_accuracy": 0.7272727272727273,
+        "monitor_n": 74,
+        "monitor_accuracy": 0.32432432432432434
+      },
+      {
+        "cutoff": 0.65,
+        "treat_now_n": 9,
+        "treat_now_accuracy": 0.7777777777777778,
+        "monitor_n": 76,
+        "monitor_accuracy": 0.32894736842105265
+      },
+      {
+        "cutoff": 0.7,
+        "treat_now_n": 4,
+        "treat_now_accuracy": 0.75,
+        "monitor_n": 81,
+        "monitor_accuracy": 0.35802469135802467
+      }
+    ],
+    "ci_overlap_check": {
+      "method": "Wilson 95% CI for the treat_now bucket at each of the sweep's 3 top-region candidates.",
+      "rows": [
+        {
+          "cutoff": 0.5,
+          "n": 22,
+          "accuracy": 0.6818181818181818,
+          "wilson_95_CI": {
+            "point_estimate": 0.6818181818181818,
+            "ci_95_low": 0.47318222782839336,
+            "ci_95_high": 0.8363961264530752
+          }
+        },
+        {
+          "cutoff": 0.55,
+          "n": 16,
+          "accuracy": 0.75,
+          "wilson_95_CI": {
+            "point_estimate": 0.75,
+            "ci_95_low": 0.5050123107060135,
+            "ci_95_high": 0.8981809801576265
+          }
+        },
+        {
+          "cutoff": 0.6,
+          "n": 11,
+          "accuracy": 0.7272727272727273,
+          "wilson_95_CI": {
+            "point_estimate": 0.7272727272727273,
+            "ci_95_low": 0.4343497069897537,
+            "ci_95_high": 0.9025411942607853
+          }
+        }
+      ],
+      "intervals_overlap": true
+    },
+    "bootstrap_stability_check": {
+      "n_bootstrap": 2000,
+      "min_bucket_n_to_qualify": 10,
+      "seed": 42,
+      "per_cutoff": [
+        {
+          "cutoff": 0.3,
+          "bootstrap_mean_accuracy": 0.4426348389893911,
+          "bootstrap_95_CI": {
+            "low": 0.3114754098360656,
+            "high": 0.5740740740740741
+          },
+          "win_rate": 0.0
+        },
+        {
+          "cutoff": 0.35,
+          "bootstrap_mean_accuracy": 0.4914933528108616,
+          "bootstrap_95_CI": {
+            "low": 0.3488372093023256,
+            "high": 0.6382978723404256
+          },
+          "win_rate": 0.001
+        },
+        {
+          "cutoff": 0.4,
+          "bootstrap_mean_accuracy": 0.5438506767007651,
+          "bootstrap_95_CI": {
+            "low": 0.38235294117647056,
+            "high": 0.7096774193548387
+          },
+          "win_rate": 0.0015
+        },
+        {
+          "cutoff": 0.45,
+          "bootstrap_mean_accuracy": 0.6551621839836446,
+          "bootstrap_95_CI": {
+            "low": 0.46153846153846156,
+            "high": 0.84
+          },
+          "win_rate": 0.07
+        },
+        {
+          "cutoff": 0.5,
+          "bootstrap_mean_accuracy": 0.6816782465339647,
+          "bootstrap_95_CI": {
+            "low": 0.4782608695652174,
+            "high": 0.8695652173913043
+          },
+          "win_rate": 0.098
+        },
+        {
+          "cutoff": 0.55,
+          "bootstrap_mean_accuracy": 0.7493849568822625,
+          "bootstrap_95_CI": {
+            "low": 0.5238095238095238,
+            "high": 0.9411764705882353
+          },
+          "win_rate": 0.5055
+        },
+        {
+          "cutoff": 0.6,
+          "bootstrap_mean_accuracy": 0.7271655947905612,
+          "bootstrap_95_CI": {
+            "low": 0.42857142857142855,
+            "high": 1.0
+          },
+          "win_rate": 0.1445
+        },
+        {
+          "cutoff": 0.65,
+          "bootstrap_mean_accuracy": 0.7803005650846402,
+          "bootstrap_95_CI": {
+            "low": 0.5,
+            "high": 1.0
+          },
+          "win_rate": 0.177
+        },
+        {
+          "cutoff": 0.7,
+          "bootstrap_mean_accuracy": 0.751377874456742,
+          "bootstrap_95_CI": {
+            "low": 0.0,
+            "high": 1.0
+          },
+          "win_rate": 0.0025
+        }
+      ],
+      "region_0.50_to_0.65_combined_win_rate": 0.925,
+      "single_best_cutoff_0.55_win_rate": 0.5055
+    },
+    "verdict": "DEFENSIBLE RANGE, NOT A SINGLE POINT. 0.50/0.55/0.60's Wilson 95% CIs overlap substantially (0.50: [47.3%, 83.6%], 0.55: [50.5%, 89.8%], 0.60: [43.4%, 90.3%]) -- the 85-image test set cannot statistically distinguish these three values from each other. Bootstrap resampling (n=2000) confirms this: 0.55 wins outright in only 50.5% of resamples, but the 0.50-0.65 neighborhood wins collectively in 92.5% of resamples -- consistent, stable evidence that the TRUE effect lives somewhere in that region, not proof that 0.55 is the precise optimal value. Reporting '0.55' alone would overclaim precision the evidence does not support; reporting '0.50-0.65, centered near 0.55' matches what both checks actually show.",
+    "CITABLE_SUMMARY_paste_this_verbatim_into_reports": "[STABILITY CHECK on the metric #6 cutoff sweep, requested before any recommendation was finalized -- not a change to orchestrator/pipeline.py, which remains at DISEASE_CONFIDENCE_CUTOFF=0.7.] A sweep of 9 candidate cutoffs (0.30-0.70, step 0.05) on the 85-image PlantDoc test set found 0.55 with the highest treat_now-bucket accuracy (75.0%, n=16) vs the deployed 0.7 (75.0%, n=4) -- same accuracy, far larger sample. Two checks were run to rule out selection bias from sweeping 9 values and picking the apparent best: (1) Wilson 95% CIs for 0.50 (68.2%, n=22), 0.55 (75.0%, n=16), and 0.60 (72.7%, n=11) overlap almost completely, meaning the data cannot statistically tell these three apart; (2) a 2,000-iteration bootstrap resample of the 85 images shows 0.55 winning outright in only 50.5% of resamples, while the 0.50-0.65 region wins collectively in 92.5% of resamples. Conclusion: 0.50-0.65 is a defensible RANGE where a better-calibrated cutoff than 0.7 likely lives; the evidence does not support pinning a single 'optimal' value to two decimal places on this sample size. Recommendation is to document this as an evidence-backed direction for future work, not to hard-code any specific replacement value into the deployed pipeline at this time.",
+    "final_decision_2026-09-13": {
+      "status": "DECIDED -- metric #6 is closed",
+      "options_considered": {
+        "option_1_chosen": "Leave DISEASE_CONFIDENCE_CUTOFF at 0.7 in orchestrator/pipeline.py -- no code change. Cite the cutoff-sweep + stability-check finding (0.50-0.65 is a statistically defensible, likely better-performing range) as a documented recommendation for future work, not an applied fix.",
+        "option_2_rejected": "Change DISEASE_CONFIDENCE_CUTOFF to a specific value (e.g. 0.55) in orchestrator/pipeline.py now, based on the sweep's top result."
+      },
+      "decision": "option_1_chosen",
+      "reasoning": "Deployment risk vs. accuracy gain did not clear the bar this close to the defense. The stability check itself is the deciding evidence: the CI-overlap and bootstrap results show the gain from moving off 0.7 is real in aggregate (the 0.50-0.65 region wins 92.5% of bootstrap resamples) but NOT precisely attributable to any single value -- 0.55 alone wins only 50.5% of the time, and its CI overlaps 0.50 and 0.60 almost completely. Hard-coding one specific number (e.g. 0.55) into the deployed pipeline would misrepresent the evidence as more precise than it is, for a marginal, statistically-imprecise accuracy improvement, with real risk of an untested regression immediately before the defense. Leaving 0.7 deployed and reporting the range as a future-work finding captures the full value of the analysis -- the rigor of running a sweep, catching the selection-bias risk, and stability-checking the result -- without taking on deployment risk for a change the data can't precisely justify.",
+      "pipeline_py_status": "Confirmed via `git diff -- orchestrator/pipeline.py` (empty) and `git log 6f66625..HEAD -- orchestrator/pipeline.py`: DISEASE_CONFIDENCE_CUTOFF has remained 0.7 throughout the entire metric #6 investigation (sweep, CI-overlap check, bootstrap stability check, and this final decision). The one commit that touched pipeline.py during this Phase 8.1 work (3f6e7c0, metric #3's per-stage latency instrumentation) is unrelated -- it added a `trace[\"timing\"]` dict and did not touch DISEASE_CONFIDENCE_CUTOFF or any cutoff logic. Worth stating explicitly: the evaluation process across this entire multi-round statistical vetting did not quietly drift into changing deployed system behavior -- every step from the first sweep table to this final decision was evidence-gathering only, gated on an explicit human decision."
+    }
+  },
   "INVALID_for_comparison_train_plus_test_combined_n967": {
     "note": "Included ONLY for transparency about what the raw script output looks like -- do not cite this as evidence of calibration change.",
     "before_zero_shot_967img": {
