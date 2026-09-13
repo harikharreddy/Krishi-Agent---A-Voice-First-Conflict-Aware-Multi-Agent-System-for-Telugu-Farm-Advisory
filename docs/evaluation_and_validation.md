@@ -692,13 +692,29 @@ the comparison fair.
   this project has no solid agronomic grounding for that assumption --
   picking one arbitrarily would introduce more uncertainty than it
   resolves. Held as explicit future work, not a time-constraint
-  shortcut. The same evidence also surfaced that `hold` fires ~1.7x more
-  often than `sell_now` across every state/commodity combination tested
-  -- traced to the seasonal baseline being an arithmetic mean over a
-  right-skewed price distribution (raw Telangana Tomato price skew 2.23,
-  mean well above median), a mechanical property of the baseline
-  formula, not a market-timing signal; also unfixed, flagged for the
-  same future-work track.
+  shortcut (see Sec. 5 item 8).
+- **The Price Agent's seasonal baseline is an arithmetic mean over a
+  right-skewed price distribution, which mechanically biases it toward
+  triggering `hold` far more often than `sell_now`** -- a distinct
+  finding from the threshold-value question above, not a restatement of
+  it. The same 2026-09-13 distribution check
+  (`docs/evidence/price_threshold_distribution_evidence.json`) found
+  `hold` firing ~1.7x more often than `sell_now` across every
+  state/commodity combination tested (e.g. Telangana Tomato: 56.5% hold
+  vs. 33.8% sell_now). Root cause, verified directly: raw Telangana
+  Tomato modal price has skew 2.23 (mean ₹1,454 vs. median ₹1,000) --
+  a classic right-skewed commodity-price distribution where occasional
+  price-spike days pull the mean well above the price a "typical" day
+  actually sees. Since `_seasonal_baseline()` (`agents/price/
+  price_agent.py`) uses that inflated mean as the reference point, a
+  typical day's price sits below baseline more often than above it by
+  construction -- `hold` fires more often not because market conditions
+  favor holding more often, but because the baseline itself is skewed
+  upward by rare high-price days. This is independent of whatever the
+  "correct" ±10% threshold value turns out to be: even a perfectly
+  chosen threshold applied to a systematically skewed baseline would
+  inherit this same asymmetry. Not fixed here -- see Sec. 5 item 8 for
+  the specific proposed change.
 - **Intent Router latency tradeoff** is accepted, not eliminated (Sec. 2.6).
 - **All evaluation sets in this document are small** by publication
   standards (n=12-85 depending on component) except the newly-expanded
@@ -756,6 +772,24 @@ In priority order:
    sufficient (`data/price_history_ap_telangana.csv`, 2002-2026,
    116K+/39K+ rows for Tomato/Potato) -- this is a scoping/domain-input
    gap, not a data-availability one.
+8. **Switch the Price Agent's seasonal baseline from arithmetic mean to
+   median.** Specific, named fix for the mean-vs-skew asymmetry in Sec.
+   4: `_seasonal_baseline()` (`agents/price/price_agent.py`) currently
+   returns `subset["Modal_Price"].mean()`; switching this one line to
+   `.median()` would make the baseline robust to the rare high-price
+   spike days that currently pull it upward, and should materially
+   reduce (though not by itself validate) the ~1.7x `hold`-over-`sell_now`
+   trigger asymmetry documented in Sec. 4 -- an untested prediction, not
+   a guarantee, since the confidence-bucket thresholds (0.08/0.20) and
+   sell/hold thresholds (±0.10) were never chosen with a median baseline
+   in mind and would need re-characterizing against it (rerun
+   `agents/price/generate_threshold_distribution_evidence.py` against
+   the changed formula) rather than assumed to still be well-placed.
+   Small, mechanical, low-risk change in isolation; explicitly not made
+   in this pass because it changes live pipeline behavior (every
+   `sell_now`/`hold`/`neutral` decision's boundary would shift) and
+   needs its own sign-off and before/after comparison, same discipline
+   as every other pipeline.py change this evaluation phase.
 
 ### End-to-end answer-quality rubric -- status
 
