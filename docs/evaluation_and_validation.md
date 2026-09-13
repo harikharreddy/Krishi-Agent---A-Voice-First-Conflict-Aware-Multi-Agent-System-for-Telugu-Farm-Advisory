@@ -675,6 +675,30 @@ the comparison fair.
   described in-code as "a draft threshold, not yet calibrated" -- a Phase 8
   spot-check found weak but real separation (26.5% vs 19.9% accuracy
   above/below the cutoff), not a rigorously calibrated threshold.
+- **The Price Agent's ±10% sell/hold thresholds** (`SELL_THRESHOLD`/
+  `HOLD_THRESHOLD`, `agents/price/price_agent.py`) are unvalidated
+  constants, the same category of gap the disease confidence cutoff was
+  before that investigation. A descriptive check (2026-09-13,
+  `docs/evidence/price_threshold_distribution_evidence.json`) confirmed
+  the thresholds are at least a non-degenerate operating point on the
+  real 2002-2026 historical distribution (roughly a 34%/56%/10%
+  sell/hold/neutral split for Telangana Tomato, not near-0% or near-100%
+  on either side) -- but this is descriptive only, not a validation that
+  the values are well-calibrated to real farmer outcomes. A rigorous
+  outcome-based backtest (does triggering `sell_now` at a given pct_diff
+  actually correlate with a better outcome than waiting?) was
+  deliberately **not** attempted: it requires an assumed holding horizon
+  (tomatoes are perishable, so "wait N days" needs a specific N), and
+  this project has no solid agronomic grounding for that assumption --
+  picking one arbitrarily would introduce more uncertainty than it
+  resolves. Held as explicit future work, not a time-constraint
+  shortcut. The same evidence also surfaced that `hold` fires ~1.7x more
+  often than `sell_now` across every state/commodity combination tested
+  -- traced to the seasonal baseline being an arithmetic mean over a
+  right-skewed price distribution (raw Telangana Tomato price skew 2.23,
+  mean well above median), a mechanical property of the baseline
+  formula, not a market-timing signal; also unfixed, flagged for the
+  same future-work track.
 - **Intent Router latency tradeoff** is accepted, not eliminated (Sec. 2.6).
 - **All evaluation sets in this document are small** by publication
   standards (n=12-85 depending on component) except the newly-expanded
@@ -720,11 +744,25 @@ In priority order:
    original 3-trial spot check, with a plausible confound noted rather
    than hidden) -- exactly the kind of thing formal benchmarking is
    supposed to catch.
+7. **Price Agent threshold outcome validation.** The descriptive
+   distribution check above (Sec. 4) confirms the ±10% thresholds aren't
+   a degenerate operating point, but doesn't validate them against real
+   farmer outcomes. A proper version needs an outcome-based backtest
+   (does `sell_now` at a given pct_diff actually beat waiting?) against
+   an explicitly-justified holding-horizon assumption -- tomato
+   perishability makes this a real agronomic question, not just a
+   modeling detail, and deserves domain input before being attempted
+   rather than an arbitrarily chosen horizon. Data already available and
+   sufficient (`data/price_history_ap_telangana.csv`, 2002-2026,
+   116K+/39K+ rows for Tomato/Potato) -- this is a scoping/domain-input
+   gap, not a data-availability one.
 
 ### End-to-end answer-quality rubric -- status
 
-- **Intent correctness** (0/1) -- **done**, Sec. 2.1/2.7 (87.5% on the
-  16-question set; Sec. 2.7 additionally root-causes every fallback).
+- **Intent correctness** (0/1) -- **done**, Sec. 2.1/2.7 (81.8%
+  held-out / 87.5% full-set on the 16-question set -- see Sec. 2.1 for
+  why the held-out number is the one to cite; Sec. 2.7 additionally
+  root-causes every fallback).
 - **Wiring/consistency correctness** (0/1: did the final answer faithfully
   reflect what the underlying agent(s) actually said, with nothing lost
   or corrupted in Conflict Resolver + Phrasing?) -- **done** for the

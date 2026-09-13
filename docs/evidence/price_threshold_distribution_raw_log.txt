@@ -1,0 +1,6 @@
+Telangana / Tomato: n=48654, mean=0.000, median=-0.202, sell_now_rate=33.8%, hold_rate=56.5%, neutral_rate=9.7%
+Andhra Pradesh / Tomato: n=67846, mean=0.000, median=-0.234, sell_now_rate=31.2%, hold_rate=59.0%, neutral_rate=9.8%
+Telangana / Potato: n=26021, mean=0.000, median=-0.078, sell_now_rate=38.8%, hold_rate=48.4%, neutral_rate=12.8%
+Andhra Pradesh / Potato: n=13025, mean=0.000, median=-0.192, sell_now_rate=33.5%, hold_rate=58.3%, neutral_rate=8.2%
+
+Saved -> /Users/harikharreddy/krishi-agent/docs/evidence/price_threshold_distribution_evidence.json

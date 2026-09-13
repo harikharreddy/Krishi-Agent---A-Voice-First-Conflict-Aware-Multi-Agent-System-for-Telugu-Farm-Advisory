@@ -35,7 +35,7 @@ from orchestrator.intent_router import route_intent
 from orchestrator.conflict_resolver import resolve_conflict
 from orchestrator.phrasing_templates import phrase_resolution
 from agents.weather.weather_agent import get_weather_advice
-from agents.price.price_agent import get_price_advice
+from agents.price.price_agent import get_price_advice, SELL_THRESHOLD as PRICE_SELL_THRESHOLD, HOLD_THRESHOLD as PRICE_HOLD_THRESHOLD
 from agents.disease.disease_agent import predict_disease
 
 logging.basicConfig(
@@ -77,14 +77,19 @@ def _map_weather_state(weather_result: dict) -> str:
 
 
 def _map_price_state(price_result: dict) -> str:
-    """Map Price Agent output to a Conflict Resolver state,
-    reusing the agent's own SELL/HOLD thresholds (0.10 / -0.10)."""
+    """Map Price Agent output to a Conflict Resolver state, reusing the
+    agent's own SELL/HOLD thresholds via a shared import -- previously
+    hardcoded here as a second, separate 0.10/-0.10 literal pair that
+    happened to match agents/price/price_agent.py's own constants by
+    coincidence, not by reference. Fixed 2026-09-13 (Phase 8.1 Price
+    Agent threshold review) so the two can no longer silently drift out
+    of sync if one is ever changed without the other."""
     if "pct_diff" not in price_result:
         return "neutral"  # API failure / no live price / insufficient history
     pct_diff = price_result["pct_diff"]
-    if pct_diff >= 0.10:
+    if pct_diff >= PRICE_SELL_THRESHOLD:
         return "sell_now"
-    if pct_diff <= -0.10:
+    if pct_diff <= PRICE_HOLD_THRESHOLD:
         return "hold"
     return "neutral"
 

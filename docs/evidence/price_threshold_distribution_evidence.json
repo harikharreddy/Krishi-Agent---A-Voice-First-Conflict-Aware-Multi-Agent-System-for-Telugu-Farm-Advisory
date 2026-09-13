@@ -1,0 +1,106 @@
+{
+  "metric": "Price Agent threshold distribution characterization (descriptive only -- no outcome/correctness claim)",
+  "SCOPE": "Option A of a 3-part review (A: this file, descriptive distribution characterization; D: Limitations-section caveat; plus an unrelated maintainability fix consolidating the duplicated 0.10/-0.10 threshold constants in price_agent.py and pipeline.py into a single shared definition). This file makes NO claim about whether triggering sell_now/hold at a given pct_diff was historically a GOOD decision -- only characterizes how often the current fixed thresholds would trigger on the real historical price distribution, using the exact same seasonal-baseline formula the deployed agent uses. An outcome-based backtest (B/C from the discussed options) is explicitly NOT attempted here -- see honest_gaps.",
+  "method": "For each (state, commodity) combination the deployed system actually supports, reproduces agents/price/price_agent.py's _seasonal_baseline() grouping (mean modal price per calendar month, pooled across all years in the 2002-2026 archive) but computes a LEAVE-ONE-OUT mean per historical row instead of a whole-group mean, so each day's own price is never included in its own baseline (the live agent's baseline and 'today' price are always from separate sources -- archive vs. live API call -- so reusing one dataset for both here required this correction to avoid a self-inclusion bias that would pull every pct_diff slightly toward zero). Same MIN_HISTORICAL_SAMPLES floor (5) applied as the live agent.",
+  "distribution_by_state_commodity": {
+    "Telangana_Tomato": {
+      "n": 48654,
+      "mean": 0.00013431918621457491,
+      "median": -0.20240417214274356,
+      "std": 0.737952217103177,
+      "percentiles": {
+        "p10": -0.6830687256184015,
+        "p25": -0.522948405068907,
+        "p50": -0.20240417214274356,
+        "p75": 0.33654271680626924,
+        "p90": 1.023728225888475
+      },
+      "sell_now_trigger_rate": 0.338451103711925,
+      "hold_trigger_rate": 0.564907304640934,
+      "neutral_rate": 0.09664159164714103,
+      "high_confidence_rate": 0.7996670366259712,
+      "medium_confidence_rate": 0.12504624491305957,
+      "low_confidence_rate": 0.07528671846096929,
+      "state": "Telangana",
+      "commodity": "Tomato",
+      "date_range": "2002-07-23 to 2026-04-20"
+    },
+    "Andhra Pradesh_Tomato": {
+      "n": 67846,
+      "mean": 0.00010693664721954309,
+      "median": -0.23357567722092082,
+      "std": 0.7818416665107362,
+      "percentiles": {
+        "p10": -0.6934582234253719,
+        "p25": -0.5065974160050816,
+        "p50": -0.23357567722092082,
+        "p75": 0.25612679646122993,
+        "p90": 0.9931879119031556
+      },
+      "sell_now_trigger_rate": 0.31192701117236094,
+      "hold_trigger_rate": 0.5902632432273089,
+      "neutral_rate": 0.09780974560033016,
+      "high_confidence_rate": 0.7969077027385549,
+      "medium_confidence_rate": 0.1206113846063143,
+      "low_confidence_rate": 0.08248091265513073,
+      "state": "Andhra Pradesh",
+      "commodity": "Tomato",
+      "date_range": "2002-07-23 to 2026-04-20"
+    },
+    "Telangana_Potato": {
+      "n": 26021,
+      "mean": 0.00011500018733219974,
+      "median": -0.07801587074364817,
+      "std": 0.5019693985753753,
+      "percentiles": {
+        "p10": -0.580191658887523,
+        "p25": -0.4116500128799404,
+        "p50": -0.07801587074364817,
+        "p75": 0.3255773207734528,
+        "p90": 0.6779767906224693
+      },
+      "sell_now_trigger_rate": 0.38757157680335114,
+      "hold_trigger_rate": 0.4840705583951424,
+      "neutral_rate": 0.1283578648015065,
+      "high_confidence_rate": 0.733484493293878,
+      "medium_confidence_rate": 0.16859459667191884,
+      "low_confidence_rate": 0.09792091003420314,
+      "state": "Telangana",
+      "commodity": "Potato",
+      "date_range": "2003-07-31 to 2026-04-20"
+    },
+    "Andhra Pradesh_Potato": {
+      "n": 13025,
+      "mean": 0.00025895811744296935,
+      "median": -0.19154424486457575,
+      "std": 0.529842411137838,
+      "percentiles": {
+        "p10": -0.5130894941634242,
+        "p25": -0.3900605363283344,
+        "p50": -0.19154424486457575,
+        "p75": 0.3079903772283501,
+        "p90": 0.8251102857820249
+      },
+      "sell_now_trigger_rate": 0.33520153550863724,
+      "hold_trigger_rate": 0.5830326295585413,
+      "neutral_rate": 0.0817658349328215,
+      "high_confidence_rate": 0.7887140115163148,
+      "medium_confidence_rate": 0.1527063339731286,
+      "low_confidence_rate": 0.05857965451055662,
+      "state": "Andhra Pradesh",
+      "commodity": "Potato",
+      "date_range": "2003-08-27 to 2026-04-02"
+    }
+  },
+  "consolidated_finding": {
+    "note": "The values used for SELL_THRESHOLD/HOLD_THRESHOLD (±10%) are NOT near-universal triggers nor vanishingly rare events on the real historical distribution -- both sides fire often enough to be a genuinely discriminating operating point (roughly 34% sell_now / 56% hold / 10% neutral for Telangana Tomato). This rules out the thresholds being obviously degenerate (almost never firing, or firing on almost everything) -- it is NOT the same claim as 'the thresholds are optimally calibrated.'",
+    "notable_asymmetry_explained": "hold_rate is roughly 1.7x sell_now_rate across every state/commodity combination -- not a market-timing signal, a mechanical consequence of the baseline being an arithmetic MEAN applied to a right-skewed price distribution (raw Telangana Tomato modal price skew = 2.23; mean 1454 vs. median 1000 -- occasional price-spike days pull the mean well above the typical day's price). Since the seasonal baseline is that same inflated mean, a 'typical' day sits BELOW it more often than above it by construction, so 'hold' (price below baseline) fires more often than 'sell_now' (price above baseline) even with no real asymmetry in market conditions. This is a property of using a MEAN as the reference point for skewed data, already present in the deployed _seasonal_baseline() formula -- this analysis surfaces it, doesn't introduce or fix it. A median-based baseline would likely produce a more symmetric trigger split, but changing the baseline formula itself is a bigger change than a threshold-value tweak and is out of scope here."
+  },
+  "honest_gaps": [
+    "DESCRIPTIVE ONLY -- makes no claim that triggering sell_now/hold at these thresholds is historically associated with a good outcome for the farmer. That would require a forward-looking backtest (compare 'sell now' vs. 'wait and sell later' outcomes), which needs an assumed holding horizon this project has no solid agronomic grounding for -- tomatoes are perishable, so 'wait 30 days' is not a realistic option the way it might be for a non-perishable commodity, and picking an arbitrary horizon (3 days? 7? 14?) would itself be a bigger source of uncertainty than the threshold value being tested. Explicitly held as future work, not attempted here -- see the discussion preceding this evidence for the full reasoning.",
+    "Confidence-bucket thresholds (0.08/0.20) are characterized here (medium/high confidence trigger rates) but are exactly as unvalidated as the sell/hold thresholds -- this file describes their real-world trigger rate, it does not validate the specific cutoff values.",
+    "Leave-one-out corrects the most obvious self-inclusion bias, but the underlying seasonal-baseline METHOD itself (pooling all years' modal prices for a calendar month, no trend/inflation adjustment across a 24-year archive) is unchanged from what the live agent already does -- a 2002 price and a 2025 price for the same month are weighted equally in one baseline average, which is a real methodological simplification already present in production, not something this analysis introduces or resolves.",
+    "Mean-vs-skew asymmetry (see consolidated_finding.notable_asymmetry_explained): the deployed baseline is an arithmetic mean over a right-skewed price distribution, so 'hold' fires substantially more often than 'sell_now' as a mechanical property of that choice, not because the market is more often a 'hold' situation in any deeper sense. Not fixed here -- changing the baseline from mean to median would be a different, larger change than a threshold-value adjustment and needs its own review.",
+    "State-wide aggregation: price_agent.py falls back to a state-wide median across markets when no exact mandi match is found (see _fetch_today_price()). This analysis characterizes state-wide modal-price patterns per commodity, consistent with that fallback behavior, but does not separately characterize per-mandi distributions."
+  ]
+}
