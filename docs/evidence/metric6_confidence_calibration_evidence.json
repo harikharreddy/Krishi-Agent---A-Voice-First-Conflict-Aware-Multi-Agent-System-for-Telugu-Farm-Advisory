@@ -1,5 +1,10 @@
 {
   "metric": "Confidence-calibration spot-check -- is the 0.7 treat_now/monitor cutoff supported by data, and did it change after fine-tuning?",
+  "checkpoints_compared": {
+    "before": "checkpoints/stage1_crop_plantvillage_only.pt + stage2_tomato_plantvillage_only.pt + stage2_potato_plantvillage_only.pt -- PlantVillage-only, zero-shot on PlantDoc, never fine-tuned on it. This is model lineage table row 2 -- see docs/evidence/model_lineage.md.",
+    "after": "checkpoints/stage1_crop_best.pt + stage2_tomato_best.pt + stage2_potato_best.pt -- fine-tuned on PlantDoc's train split (+ 2 external datasets). This IS the checkpoint orchestrator/pipeline.py loads and deploys right now. Model lineage table row 5.",
+    "see_also": "docs/evidence/model_lineage.md for the full checkpoint history and the Phase 1 zero-shot-methodology reconciliation this comparison sits inside of."
+  },
   "method": "agents/disease/plantdoc_confidence_eval.py re-run against the current fine-tuned checkpoints (unchanged script, unchanged PLANTDOC_MAP). Bucket boundaries and 0.7-cutoff logic reused verbatim from plantdoc_confidence_analysis.py (imported BUCKETS constant, not redefined) so any change below is attributable to the model, not the analysis method.",
   "apples_to_apples_check": {
     "old_total_images": 967,
@@ -131,7 +136,28 @@
     "small_sample_size_warning": [
       "AFTER's 'above 0.7' bucket has only n=4 images (75.0% accuracy = 3/4 correct, 95% CI [30%, 95%]). One image flipping correct/incorrect moves that accuracy by 25 percentage points. The fine-tuned model rarely outputs confidence >=0.7 on this 85-image test set at all -- most of its mass sits below the cutoff (n=81). The 'gap widened' headline above is technically true but is NOT a statistically robust finding at this sample size; report the raw numbers, not the verdict, if this is cited."
     ],
-    "CITABLE_SUMMARY_paste_this_verbatim_into_reports": "Confidence-cutoff accuracy gap (>=0.7 vs <0.7): +11.48% before fine-tuning -> +39.20% after, on the same 85 held-out PlantDoc test images. NOT STATISTICALLY RELIABLE AS STATED: the 'after' side is 75% accuracy on only n=4 images (95% CI [30%, 95%] -- consistent with anywhere from roughly a quarter to nearly all of that bucket being correct). The more defensible finding is not the gap number: fine-tuning shifted the model's confidence distribution down across the board (52/85 images scored >=0.7 before vs. 4/85 after), so DISEASE_CONFIDENCE_CUTOFF=0.7 in orchestrator/pipeline.py now routes nearly every real prediction to 'monitor' rather than 'treat_now' -- an operational question for the team, not just a reporting footnote.",
+    "median_split_alternative_to_fixed_0.7_cutoff": {
+      "note": "Answers 'should 0.7 still gate treat_now?' with a cutoff sized to what the fine-tuned model's ACTUAL confidence distribution supports, instead of forcing the old fixed threshold onto a distribution that has shifted down.",
+      "median_confidence_finetuned_model": 0.3639708507102455,
+      "split_at_median": {
+        "n_above": 43,
+        "accuracy_above": 0.5348837209302325,
+        "accuracy_above_95_CI": {
+          "point_estimate": 0.5348837209302325,
+          "ci_95_low": 0.38915389728872773,
+          "ci_95_high": 0.6748917373608144
+        },
+        "n_below": 42,
+        "accuracy_below": 0.21428571428571427,
+        "accuracy_below_95_CI": {
+          "point_estimate": 0.21428571428571427,
+          "ci_95_low": 0.11705668531051237,
+          "ci_95_high": 0.3594013789804373
+        },
+        "gap_above_minus_below": 0.3205980066445182
+      }
+    },
+    "CITABLE_SUMMARY_paste_this_verbatim_into_reports": "PRIMARY FINDING: fine-tuning on PlantDoc shifted the Disease Agent's confidence distribution down across the board on the 85 held-out PlantDoc test images -- 52/85 images scored >=0.7 confidence on the zero-shot checkpoint (stage*_plantvillage_only.pt) vs. only 4/85 on the deployed fine-tuned checkpoint (stage*_best.pt). Operational consequence: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with the deployed model almost every real prediction on unfamiliar photos now routes to 'monitor' rather than 'treat_now' -- consistent with the confidence-honesty UI mostly showing 'low confidence' during manual testing. A cutoff placed at THIS model's own median confidence (0.364) instead of the fixed 0.7 produces a well-populated split (n=43 vs n=42, accuracy 53% vs 21%) -- whether 0.7 is still the right operating point for this model is an open, unresolved question. \n\nFOOTNOTE, not a finding: the raw 0.7-cutoff accuracy gap moved +11.48% (zero-shot) -> +39.20% (fine-tuned) on the same 85 images. This number is NOT statistically reliable and should NOT be cited as 'calibration improved' -- the fine-tuned side rests on only n=4 images (95% CI [30%, 95%]), an interval wide enough to be consistent with the true accuracy being anywhere from roughly a quarter to nearly all of that bucket. The honest state of the evidence is: we cannot currently tell whether the 0.7 cutoff is better or worse calibrated after fine-tuning, because too few predictions cross that threshold to say.",
     "additional_finding_confidence_distribution_shifted": "BEFORE: 52/85 images (61%) scored >=0.7 confidence. AFTER: only 4/85 (5%). This is the actual reason the 'above 0.7' bucket shrank to n=4 -- the fine-tuned model became systematically less willing to output high confidence on this held-out set, not merely more accurate. Operational consequence for the deployed pipeline: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 gates treat_now vs monitor, so with this model almost every real prediction on unfamiliar (test-like) photos now routes to 'monitor' rather than 'treat_now' -- consistent with what the confidence-honesty UI was independently observed showing mostly 'low confidence' labels during manual testing earlier in this project. Whether this cutoff is still the right operating point for THIS model's confidence distribution (as opposed to the zero-shot model it was never formally chosen against either) is an open question this spot-check surfaces but does not answer."
   },
   "INVALID_for_comparison_train_plus_test_combined_n967": {

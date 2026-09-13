@@ -66,6 +66,13 @@ def wilson_ci(correct, n, z=1.96):
     return {"point_estimate": p, "ci_95_low": max(0.0, center - margin), "ci_95_high": min(1.0, center + margin)}
 
 
+def median(values):
+    s = sorted(values)
+    n = len(s)
+    mid = n // 2
+    return s[mid] if n % 2 else (s[mid - 1] + s[mid]) / 2
+
+
 def cutoff_split(records, cutoff=0.7):
     above = [r for r in records if r["confidence"] >= cutoff]
     below = [r for r in records if r["confidence"] < cutoff]
@@ -99,6 +106,13 @@ def main():
     old_cutoff = cutoff_split(old_test)
     new_cutoff = cutoff_split(new_test)
     new_contaminated_cutoff = cutoff_split(new_all)  # explicitly kept, explicitly flagged as invalid below
+
+    # Median-split: answers "should 0.7 still gate treat_now?" with a cutoff
+    # sized to what THIS model's actual confidence distribution can support,
+    # instead of forcing the old (zero-shot-era) fixed threshold onto a
+    # distribution that has since shifted down across the board.
+    new_median = median([r["confidence"] for r in new_test])
+    new_median_split = cutoff_split(new_test, cutoff=new_median)
 
     old_test_acc = sum(r["correct"] for r in old_test) / len(old_test)
     new_test_acc = sum(r["correct"] for r in new_test) / len(new_test)
@@ -140,25 +154,47 @@ def main():
 
     # Single self-contained string, safe to paste verbatim into a slide or
     # report -- the caveat travels WITH the number, not in a separate field
-    # that can be dropped when only the headline gets copied.
+    # that can be dropped when only the headline gets copied. Restructured
+    # per review: the distribution shift is the PRIMARY, well-evidenced
+    # finding; the before/after gap comparison is demoted to a clearly
+    # labeled footnote, since it is not statistically supportable on its own.
     citable_summary = (
-        f"Confidence-cutoff accuracy gap (>=0.7 vs <0.7): {gap_before:+.2%} before "
-        f"fine-tuning -> {gap_after:+.2%} after, on the same 85 held-out PlantDoc "
-        f"test images. NOT STATISTICALLY RELIABLE AS STATED: the 'after' side is "
-        f"{new_cutoff['accuracy_above']:.0%} accuracy on only n={new_cutoff['n_above']} "
-        f"images (95% CI [{new_above_ci['ci_95_low']:.0%}, {new_above_ci['ci_95_high']:.0%}]"
-        f" -- consistent with anywhere from roughly a quarter to nearly all of that "
-        f"bucket being correct). The more defensible finding is not the gap number: "
-        f"fine-tuning shifted the model's confidence distribution down across the "
-        f"board ({old_cutoff['n_above']}/85 images scored >=0.7 before vs. "
-        f"{new_cutoff['n_above']}/85 after), so DISEASE_CONFIDENCE_CUTOFF=0.7 in "
-        f"orchestrator/pipeline.py now routes nearly every real prediction to "
-        f"'monitor' rather than 'treat_now' -- an operational question for the "
-        f"team, not just a reporting footnote."
+        f"PRIMARY FINDING: fine-tuning on PlantDoc shifted the Disease Agent's "
+        f"confidence distribution down across the board on the 85 held-out "
+        f"PlantDoc test images -- {old_cutoff['n_above']}/85 images scored "
+        f">=0.7 confidence on the zero-shot checkpoint "
+        f"(stage*_plantvillage_only.pt) vs. only {new_cutoff['n_above']}/85 on "
+        f"the deployed fine-tuned checkpoint (stage*_best.pt). Operational "
+        f"consequence: orchestrator/pipeline.py's DISEASE_CONFIDENCE_CUTOFF=0.7 "
+        f"gates treat_now vs monitor, so with the deployed model almost every "
+        f"real prediction on unfamiliar photos now routes to 'monitor' rather "
+        f"than 'treat_now' -- consistent with the confidence-honesty UI mostly "
+        f"showing 'low confidence' during manual testing. A cutoff placed at "
+        f"THIS model's own median confidence ({new_median:.3f}) instead of the "
+        f"fixed 0.7 produces a well-populated split (n={new_median_split['n_above']} "
+        f"vs n={new_median_split['n_below']}, accuracy {new_median_split['accuracy_above']:.0%} "
+        f"vs {new_median_split['accuracy_below']:.0%}) -- whether 0.7 is still the "
+        f"right operating point for this model is an open, unresolved question. "
+        f"\n\nFOOTNOTE, not a finding: the raw 0.7-cutoff accuracy gap moved "
+        f"{gap_before:+.2%} (zero-shot) -> {gap_after:+.2%} (fine-tuned) on the "
+        f"same 85 images. This number is NOT statistically reliable and should "
+        f"NOT be cited as 'calibration improved' -- the fine-tuned side rests on "
+        f"only n={new_cutoff['n_above']} images (95% CI "
+        f"[{new_above_ci['ci_95_low']:.0%}, {new_above_ci['ci_95_high']:.0%}]), "
+        f"an interval wide enough to be consistent with the true accuracy being "
+        f"anywhere from roughly a quarter to nearly all of that bucket. The "
+        f"honest state of the evidence is: we cannot currently tell whether the "
+        f"0.7 cutoff is better or worse calibrated after fine-tuning, because "
+        f"too few predictions cross that threshold to say."
     )
 
     evidence = {
         "metric": "Confidence-calibration spot-check -- is the 0.7 treat_now/monitor cutoff supported by data, and did it change after fine-tuning?",
+        "checkpoints_compared": {
+            "before": "checkpoints/stage1_crop_plantvillage_only.pt + stage2_tomato_plantvillage_only.pt + stage2_potato_plantvillage_only.pt -- PlantVillage-only, zero-shot on PlantDoc, never fine-tuned on it. This is model lineage table row 2 -- see docs/evidence/model_lineage.md.",
+            "after": "checkpoints/stage1_crop_best.pt + stage2_tomato_best.pt + stage2_potato_best.pt -- fine-tuned on PlantDoc's train split (+ 2 external datasets). This IS the checkpoint orchestrator/pipeline.py loads and deploys right now. Model lineage table row 5.",
+            "see_also": "docs/evidence/model_lineage.md for the full checkpoint history and the Phase 1 zero-shot-methodology reconciliation this comparison sits inside of.",
+        },
         "method": (
             "agents/disease/plantdoc_confidence_eval.py re-run against the current "
             "fine-tuned checkpoints (unchanged script, unchanged PLANTDOC_MAP). "
@@ -199,6 +235,16 @@ def main():
             },
             "did_fine_tuning_improve_the_CONFIDENCE_SIGNAL_not_just_accuracy": gap_verdict,
             "small_sample_size_warning": small_n_flags if small_n_flags else None,
+            "median_split_alternative_to_fixed_0.7_cutoff": {
+                "note": (
+                    "Answers 'should 0.7 still gate treat_now?' with a cutoff sized "
+                    "to what the fine-tuned model's ACTUAL confidence distribution "
+                    "supports, instead of forcing the old fixed threshold onto a "
+                    "distribution that has shifted down."
+                ),
+                "median_confidence_finetuned_model": new_median,
+                "split_at_median": new_median_split,
+            },
             "CITABLE_SUMMARY_paste_this_verbatim_into_reports": citable_summary,
             "additional_finding_confidence_distribution_shifted": (
                 f"BEFORE: {old_cutoff['n_above']}/85 images ({old_cutoff['n_above']/85:.0%}) "
@@ -245,6 +291,9 @@ def main():
           f"below-0.7={new_cutoff['accuracy_below']:.4f} (n={new_cutoff['n_below']})  "
           f"gap={new_cutoff['gap_above_minus_below']:+.4f}")
     print(f"\n{gap_verdict}")
+    print(f"\nMedian-split (cutoff={new_median:.3f}, sized to the fine-tuned model's own distribution):")
+    print(f"  above-median: n={new_median_split['n_above']} accuracy={new_median_split['accuracy_above']:.4f}")
+    print(f"  below-median: n={new_median_split['n_below']} accuracy={new_median_split['accuracy_below']:.4f}")
     print(f"\n--- Citable summary (paste verbatim, caveat travels with the number) ---")
     print(citable_summary)
     print(f"\n[FLAGGED, not used for comparison] 967-image contaminated accuracy: {new_contaminated_acc:.4f} "
