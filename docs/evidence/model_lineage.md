@@ -206,3 +206,17 @@ ends in "we gathered rigorous evidence and did not change the system"
 is itself evidence the evaluation process has integrity — the same
 point already made for metric #5's rule-table fix, in reverse (there,
 evidence justified a change; here, evidence justified restraint).
+
+## Cross-reference: Metric #4 (voice vs. text ablation) — CLOSED
+
+Out of scope for this document (no Disease Agent checkpoint involved —
+metric #4's test set carries no image, so the Disease Agent never
+fires), included here only as a pointer since this file has become the
+place readers check for closed Phase 8.1 metric status. Full writeup
+lives in `docs/evaluation_and_validation.md` Sec. 2.9 and
+`docs/evidence/metric4_voice_vs_text_ablation_evidence.json`. One-line
+summary: 15/16 stage-by-stage matches between the voice and text paths;
+the one genuine finding was an ASR transliteration of "pH" flipping the
+intent router's classification; a second apparent mismatch was
+investigated and settled as a live Price API fluctuation, not a
+pipeline effect.

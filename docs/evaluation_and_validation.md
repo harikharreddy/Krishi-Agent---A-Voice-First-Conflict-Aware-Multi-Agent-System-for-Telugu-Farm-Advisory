@@ -384,6 +384,72 @@ Router -> Disease Agent -> Conflict Resolver -> Phrasing Templates.
   whichever run looked better.
 - Full per-image results: `docs/end_to_end_eval_results.json`.
 
+### 2.9 Voice vs. text ablation (Phase 8.1, metric #4) -- PRELIMINARY, n=16, single speaker
+
+Does going through ASR change what the pipeline does, compared to typing
+the exact same question? Each of the 16 questions in
+`tests/intent_router_test_set.json` run through the real, unmocked
+`run_pipeline()` twice: once via speaker1's recorded WAV ->
+`backend.voice.transcribe_audio()` (the exact production ASR call path),
+once as the reference text typed directly, no ASR. Both paths use live,
+unmocked agent calls (Weather API, Price API, Ollama intent router). No
+image attached (this test set has none), so the Disease Agent never
+fires. Stage-by-stage comparison, not just final-answer pass/fail, so an
+ASR mishearing and a downstream (intent-router/state-mapping/
+conflict-resolver) difference stay distinguishable rather than collapsed
+into one number.
+
+- **Result**: intent-router output matched 15/16; agents-fired matched
+  15/16; of the 2 apparent final-answer mismatches, one was investigated
+  and ruled out as a live Price API fluctuation unrelated to voice vs.
+  text (see below), leaving **exactly one genuine voice-vs-text pipeline
+  finding out of 16 questions**.
+
+- **Headline finding (question 8, "నేల pH ఎంత ఉండాలి టమాటా కోసం?" / "What
+  soil pH is needed for tomato?")**: ASR transcribed "pH" as its Telugu
+  transliteration "పీహెచ్" instead of the reference text's Latin-script
+  "pH". That single spelling difference flipped the LLM intent router's
+  classification -- the Latin-script version correctly routed to
+  `wants_soil=True`; the Telugu-transliterated version routed instead to
+  `wants_price=True`, so a farmer asking about soil pH by voice would
+  have received a tomato price quote instead. This is a **structural**
+  finding, not an ASR accuracy defect -- the transcription was arguably
+  *more* natural Telugu than the reference text (which embeds a
+  Latin-script technical abbreviation no farmer would actually say), and
+  that naturalness is exactly what caused the behavior change. It shows
+  domain-specific technical terms (soil pH, NPK, pesticide/disease names)
+  crossing the ASR-to-LLM boundary can silently change system behavior in
+  ways a text-only test suite would never catch -- the actual reason to
+  run a voice-vs-text ablation at all. Flagged as a concrete direction for
+  future work (e.g. normalizing known technical terms before intent
+  routing), not applied as a fix here -- this metric is observation only,
+  `orchestrator/pipeline.py` was not touched.
+
+- **One apparent mismatch investigated and ruled out** (question 7,
+  potato market price): same intents, same agents fired on both paths,
+  but a different final price quote. Traced to the Price Agent, which
+  hits `data.gov.in` live with no caching on every call -- checked every
+  price-agent call across the entire 16-question run and found 8 of 9
+  returned the *identical* value to 16 decimal places, including this
+  question's own text-path call made 4 seconds later; only the voice-path
+  call for this question differed. Confirmed via source read (not
+  inference) that `price_agent.py`'s code path cannot differ by
+  invocation source at all -- `get_price_advice()` never receives the
+  question text, only the farm profile's state/crop/mandi fields, which
+  were identical for both calls. Settled, not provisional: a one-off live
+  API fluctuation, not a voice-vs-text pipeline effect.
+
+- **PRELIMINARY**: n=16, single speaker (speaker1) only -- same caveat as
+  Sec. 2.3's WER check at 1/4 speakers. Does not measure cross-speaker or
+  accent robustness; measures whether, for one speaker's recordings, ASR
+  changes pipeline behavior relative to typing the same question. Should
+  be re-run against speakers 2-4 once their WER recordings are available,
+  using the same reusable script.
+- Full evidence, raw log, and reusable generator script:
+  `docs/evidence/metric4_voice_vs_text_ablation_evidence.json`,
+  `docs/evidence/metric4_voice_vs_text_raw_log.txt`,
+  `tests/generate_voice_vs_text_ablation_evidence.py`.
+
 ## 3. Related work (starting point for literature review)
 
 *A conference/journal submission needs a fuller literature search than this
