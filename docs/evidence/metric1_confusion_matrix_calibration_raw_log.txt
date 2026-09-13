@@ -1,0 +1,11 @@
+Row 2 (hierarchical): n=967, acc=0.2337, ECE=0.4725
+  Macro P/R/F1: {'precision': np.float64(0.3100203871085097), 'recall': np.float64(0.2287682357081563), 'f1': np.float64(0.19206833634168638), 'n_classes_evaluable': 9}
+  Top predicted: [{'class': 'Tomato_Late_blight', 'times_predicted': 522, 'recall_on_this_class': np.float64(0.8018018018018018), 'precision_on_this_class': np.float64(0.17049808429118773)}, {'class': 'Tomato_Septoria_leaf_spot', 'times_predicted': 148, 'recall_on_this_class': np.float64(0.37748344370860926), 'precision_on_this_class': np.float64(0.38513513513513514)}, {'class': 'Tomato_Early_blight', 'times_predicted': 140, 'recall_on_this_class': np.float64(0.32954545454545453), 'precision_on_this_class': np.float64(0.20714285714285716)}]
+
+Row 6 (v2): n=965, acc=0.2145, ECE=0.4606
+  Macro P/R/F1: {'precision': np.float64(0.33168067601046963), 'recall': np.float64(0.2813983512853461), 'f1': np.float64(0.1920261455747378), 'n_classes_evaluable': 7}
+  Top predicted: [{'class': 'Tomato_Late_blight', 'times_predicted': 425, 'recall_on_this_class': np.float64(0.7657657657657657), 'precision_on_this_class': np.float64(0.2)}, {'class': 'Tomato_Early_blight', 'times_predicted': 322, 'recall_on_this_class': np.float64(0.6022727272727273), 'precision_on_this_class': np.float64(0.16459627329192547)}, {'class': 'Potato___Early_blight', 'times_predicted': 135, 'recall_on_this_class': np.float64(0.3103448275862069), 'precision_on_this_class': np.float64(0.26666666666666666)}]
+
+Saved -> /Users/harikharreddy/krishi-agent/docs/evidence/metric1_confusion_matrix_calibration_evidence.json
+Plots -> agents/disease/results/confusion_matrix_row2_hierarchical_zero_shot.png, agents/disease/results/reliability_diagram_row2_hierarchical_zero_shot.png
+         agents/disease/results/confusion_matrix_row6_v2_zero_shot.png, agents/disease/results/reliability_diagram_row6_v2_zero_shot.png

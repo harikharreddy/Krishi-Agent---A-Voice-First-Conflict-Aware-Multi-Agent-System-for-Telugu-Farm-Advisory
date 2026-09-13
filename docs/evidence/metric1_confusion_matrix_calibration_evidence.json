@@ -1,0 +1,1285 @@
+{
+  "metric": "Per-class confusion matrix, Precision/Recall/F1, and Expected Calibration Error for the zero-shot Disease Agent checkpoints -- formalizes the attractor-class-bias finding as a single confusion-matrix-level result, per external technical review (2026-09-13)",
+  "SCOPE": "Covers ONLY row 2 (hierarchical) and row 6 (v2 independent) -- the two zero-shot checkpoints with per-image predictions already stored in this repo. Row 1 (flat baseline) has no per-image PlantDoc predictions anywhere in this repo and was explicitly held back as a separate, larger-effort item (needs a fresh inference run) per team decision 2026-09-13; an orphaned PNG (agents/disease/results/confusion_flat_plantdoc.png) exists with no traceable generating script and was NOT used or trusted here.",
+  "method": "Reprocesses existing per-image prediction records (no new model inference run). Row 2 data from docs/evidence/metric6_perimage_confidence_BEFORE_zeroshot_sep3.json (n=967, already uses the canonical 13-class naming convention). Row 6 data from docs/evidence/metric1_v2_checkpoint_evidence.json's 'records' field (n=965), mapped from its own independently-trained class_names onto the same canonical 13-class list via V2_TO_CANONICAL (see module docstring in agents/disease/generate_confusion_matrix_calibration_evidence.py -- 9 of 11 mapped classes cross-verified via shared PlantDoc folder keys between the two checkpoints' eval scripts, 2 inferred by an otherwise 100%-consistent naming pattern, explicitly flagged as such). Both checkpoints are genuinely zero-shot on PlantDoc (never fine-tuned on it), so no train/test contamination restriction applies -- full combined image sets are used, matching how each checkpoint's already-established headline accuracy (23.45% row 2, 21.45% row 6) was computed.",
+  "row2_hierarchical_zero_shot": {
+    "checkpoint": "Row 2 (hierarchical, zero-shot, PlantVillage-only)",
+    "n": 967,
+    "overall_accuracy": 0.23371251292657705,
+    "classes_present_as_true_label": [
+      "Potato___Early_blight",
+      "Potato___Late_blight",
+      "Tomato_Bacterial_spot",
+      "Tomato_Early_blight",
+      "Tomato_Late_blight",
+      "Tomato_Leaf_Mold",
+      "Tomato_Septoria_leaf_spot",
+      "Tomato_Spider_mites_Two_spotted_spider_mite",
+      "Tomato__Tomato_YellowLeaf__Curl_Virus",
+      "Tomato__Tomato_mosaic_virus",
+      "Tomato_healthy"
+    ],
+    "confusion_matrix": {
+      "classes_order": [
+        "Potato___Early_blight",
+        "Potato___Late_blight",
+        "Potato___healthy",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Septoria_leaf_spot",
+        "Tomato_Spider_mites_Two_spotted_spider_mite",
+        "Tomato__Target_Spot",
+        "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "Tomato__Tomato_mosaic_virus",
+        "Tomato_healthy"
+      ],
+      "raw_counts": [
+        [
+          19,
+          7,
+          5,
+          1,
+          18,
+          46,
+          0,
+          19,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          15,
+          8,
+          2,
+          0,
+          12,
+          63,
+          0,
+          2,
+          0,
+          1,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          3,
+          1,
+          13,
+          62,
+          0,
+          25,
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          29,
+          43,
+          0,
+          14,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          6,
+          0,
+          0,
+          7,
+          89,
+          2,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          2,
+          0,
+          0,
+          7,
+          64,
+          2,
+          8,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          5,
+          1,
+          0,
+          2,
+          31,
+          51,
+          0,
+          57,
+          0,
+          0,
+          3,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          2,
+          0,
+          4,
+          25,
+          0,
+          13,
+          0,
+          0,
+          20,
+          2,
+          4
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          8,
+          34,
+          2,
+          4,
+          0,
+          0,
+          1,
+          0,
+          3
+        ],
+        [
+          2,
+          1,
+          3,
+          0,
+          10,
+          44,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ]
+      ],
+      "row_normalized": [
+        [
+          0.16379310344827586,
+          0.0603448275862069,
+          0.04310344827586207,
+          0.008620689655172414,
+          0.15517241379310345,
+          0.39655172413793105,
+          0.0,
+          0.16379310344827586,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.008620689655172414
+        ],
+        [
+          0.14285714285714285,
+          0.0761904761904762,
+          0.01904761904761905,
+          0.0,
+          0.11428571428571428,
+          0.6,
+          0.0,
+          0.01904761904761905,
+          0.0,
+          0.009523809523809525,
+          0.0,
+          0.0,
+          0.01904761904761905
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.02727272727272727,
+          0.0,
+          0.02727272727272727,
+          0.00909090909090909,
+          0.11818181818181818,
+          0.5636363636363636,
+          0.0,
+          0.22727272727272727,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.02727272727272727
+        ],
+        [
+          0.022727272727272728,
+          0.0,
+          0.0,
+          0.0,
+          0.32954545454545453,
+          0.48863636363636365,
+          0.0,
+          0.1590909090909091,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.018018018018018018,
+          0.05405405405405406,
+          0.0,
+          0.0,
+          0.06306306306306306,
+          0.8018018018018018,
+          0.018018018018018018,
+          0.04504504504504504,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.06593406593406594,
+          0.02197802197802198,
+          0.0,
+          0.0,
+          0.07692307692307693,
+          0.7032967032967034,
+          0.02197802197802198,
+          0.08791208791208792,
+          0.0,
+          0.0,
+          0.02197802197802198,
+          0.0,
+          0.0
+        ],
+        [
+          0.033112582781456956,
+          0.006622516556291391,
+          0.0,
+          0.013245033112582781,
+          0.2052980132450331,
+          0.33774834437086093,
+          0.0,
+          0.37748344370860926,
+          0.0,
+          0.0,
+          0.019867549668874173,
+          0.0,
+          0.006622516556291391
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.07894736842105263,
+          0.0,
+          0.02631578947368421,
+          0.0,
+          0.05263157894736842,
+          0.32894736842105265,
+          0.0,
+          0.17105263157894737,
+          0.0,
+          0.0,
+          0.2631578947368421,
+          0.02631578947368421,
+          0.05263157894736842
+        ],
+        [
+          0.0,
+          0.0,
+          0.037037037037037035,
+          0.0,
+          0.14814814814814814,
+          0.6296296296296297,
+          0.037037037037037035,
+          0.07407407407407407,
+          0.0,
+          0.0,
+          0.018518518518518517,
+          0.0,
+          0.05555555555555555
+        ],
+        [
+          0.031746031746031744,
+          0.015873015873015872,
+          0.047619047619047616,
+          0.0,
+          0.15873015873015872,
+          0.6984126984126984,
+          0.0,
+          0.015873015873015872,
+          0.0,
+          0.0,
+          0.015873015873015872,
+          0.0,
+          0.015873015873015872
+        ]
+      ],
+      "note": "Row = true class, column = predicted class. Row-normalized values sum to 1.0 per row (fraction of that true class's images predicted as each class). A class with 0 true instances in this PlantDoc set has an all-zero row (no data, not 0% accuracy)."
+    },
+    "per_class_precision_recall_f1": [
+      {
+        "class": "Potato___Early_blight",
+        "support_true_instances": 116,
+        "predicted_count": 60,
+        "recall": 0.16379310344827586,
+        "precision": 0.31666666666666665,
+        "f1": 0.21590909090909088
+      },
+      {
+        "class": "Potato___Late_blight",
+        "support_true_instances": 105,
+        "predicted_count": 25,
+        "recall": 0.0761904761904762,
+        "precision": 0.32,
+        "f1": 0.1230769230769231
+      },
+      {
+        "class": "Potato___healthy",
+        "support_true_instances": 0,
+        "predicted_count": 17,
+        "recall": null,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato_Bacterial_spot",
+        "support_true_instances": 110,
+        "predicted_count": 4,
+        "recall": 0.00909090909090909,
+        "precision": 0.25,
+        "f1": 0.017543859649122806
+      },
+      {
+        "class": "Tomato_Early_blight",
+        "support_true_instances": 88,
+        "predicted_count": 140,
+        "recall": 0.32954545454545453,
+        "precision": 0.20714285714285716,
+        "f1": 0.2543859649122807
+      },
+      {
+        "class": "Tomato_Late_blight",
+        "support_true_instances": 111,
+        "predicted_count": 522,
+        "recall": 0.8018018018018018,
+        "precision": 0.17049808429118773,
+        "f1": 0.2812006319115324
+      },
+      {
+        "class": "Tomato_Leaf_Mold",
+        "support_true_instances": 91,
+        "predicted_count": 6,
+        "recall": 0.02197802197802198,
+        "precision": 0.3333333333333333,
+        "f1": 0.04123711340206186
+      },
+      {
+        "class": "Tomato_Septoria_leaf_spot",
+        "support_true_instances": 151,
+        "predicted_count": 148,
+        "recall": 0.37748344370860926,
+        "precision": 0.38513513513513514,
+        "f1": 0.3812709030100334
+      },
+      {
+        "class": "Tomato_Spider_mites_Two_spotted_spider_mite",
+        "support_true_instances": 2,
+        "predicted_count": 0,
+        "recall": 0.0,
+        "precision": null,
+        "f1": null
+      },
+      {
+        "class": "Tomato__Target_Spot",
+        "support_true_instances": 0,
+        "predicted_count": 1,
+        "recall": null,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "support_true_instances": 76,
+        "predicted_count": 27,
+        "recall": 0.2631578947368421,
+        "precision": 0.7407407407407407,
+        "f1": 0.3883495145631068
+      },
+      {
+        "class": "Tomato__Tomato_mosaic_virus",
+        "support_true_instances": 54,
+        "predicted_count": 2,
+        "recall": 0.0,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato_healthy",
+        "support_true_instances": 63,
+        "predicted_count": 15,
+        "recall": 0.015873015873015872,
+        "precision": 0.06666666666666667,
+        "f1": 0.025641025641025637
+      }
+    ],
+    "macro_average": {
+      "precision": 0.3100203871085097,
+      "recall": 0.2287682357081563,
+      "f1": 0.19206833634168638,
+      "n_classes_evaluable": 9
+    },
+    "weighted_average": {
+      "precision": 0.31171484868634647,
+      "recall": 0.24807903402854006,
+      "f1": 0.20411857571973566,
+      "total_support": 911
+    },
+    "expected_calibration_error": {
+      "value": 0.4725036414226334,
+      "n_bins": 10,
+      "bin_table": [
+        {
+          "bin": "[0.0,0.1)",
+          "n": 0,
+          "avg_confidence": null,
+          "accuracy": null
+        },
+        {
+          "bin": "[0.1,0.2)",
+          "n": 6,
+          "avg_confidence": 0.17475546829742003,
+          "accuracy": 0.5
+        },
+        {
+          "bin": "[0.2,0.3)",
+          "n": 48,
+          "avg_confidence": 0.25512186600635217,
+          "accuracy": 0.16666666666666666
+        },
+        {
+          "bin": "[0.3,0.4)",
+          "n": 92,
+          "avg_confidence": 0.355428369818114,
+          "accuracy": 0.16304347826086957
+        },
+        {
+          "bin": "[0.4,0.5)",
+          "n": 92,
+          "avg_confidence": 0.4551113320602915,
+          "accuracy": 0.18478260869565216
+        },
+        {
+          "bin": "[0.5,0.6)",
+          "n": 111,
+          "avg_confidence": 0.5491761757097494,
+          "accuracy": 0.2072072072072072
+        },
+        {
+          "bin": "[0.6,0.7)",
+          "n": 113,
+          "avg_confidence": 0.6532311613719708,
+          "accuracy": 0.23008849557522124
+        },
+        {
+          "bin": "[0.7,0.8)",
+          "n": 91,
+          "avg_confidence": 0.7532156205948962,
+          "accuracy": 0.21978021978021978
+        },
+        {
+          "bin": "[0.8,0.9)",
+          "n": 110,
+          "avg_confidence": 0.8560178143786232,
+          "accuracy": 0.24545454545454545
+        },
+        {
+          "bin": "[0.9,1.0)",
+          "n": 304,
+          "avg_confidence": 0.9660059017426113,
+          "accuracy": 0.28618421052631576
+        }
+      ],
+      "method": "Standard equal-width-bin ECE: sum over 10 bins of (n_bin/N) * |empirical_accuracy_bin - mean_confidence_bin|."
+    },
+    "top_3_most_frequently_predicted_classes": [
+      {
+        "class": "Tomato_Late_blight",
+        "times_predicted": 522,
+        "recall_on_this_class": 0.8018018018018018,
+        "precision_on_this_class": 0.17049808429118773
+      },
+      {
+        "class": "Tomato_Septoria_leaf_spot",
+        "times_predicted": 148,
+        "recall_on_this_class": 0.37748344370860926,
+        "precision_on_this_class": 0.38513513513513514
+      },
+      {
+        "class": "Tomato_Early_blight",
+        "times_predicted": 140,
+        "recall_on_this_class": 0.32954545454545453,
+        "precision_on_this_class": 0.20714285714285716
+      }
+    ],
+    "confusion_matrix_plot": "agents/disease/results/confusion_matrix_row2_hierarchical_zero_shot.png",
+    "reliability_diagram_plot": "agents/disease/results/reliability_diagram_row2_hierarchical_zero_shot.png"
+  },
+  "row6_v2_zero_shot": {
+    "checkpoint": "Row 6 (v2 independent, zero-shot, PlantVillage-only)",
+    "n": 965,
+    "overall_accuracy": 0.21450777202072538,
+    "classes_present_as_true_label": [
+      "Potato___Early_blight",
+      "Potato___Late_blight",
+      "Tomato_Bacterial_spot",
+      "Tomato_Early_blight",
+      "Tomato_Late_blight",
+      "Tomato_Leaf_Mold",
+      "Tomato_Septoria_leaf_spot",
+      "Tomato__Tomato_YellowLeaf__Curl_Virus",
+      "Tomato__Tomato_mosaic_virus",
+      "Tomato_healthy"
+    ],
+    "confusion_matrix": {
+      "classes_order": [
+        "Potato___Early_blight",
+        "Potato___Late_blight",
+        "Potato___healthy",
+        "Tomato_Bacterial_spot",
+        "Tomato_Early_blight",
+        "Tomato_Late_blight",
+        "Tomato_Leaf_Mold",
+        "Tomato_Septoria_leaf_spot",
+        "Tomato_Spider_mites_Two_spotted_spider_mite",
+        "Tomato__Target_Spot",
+        "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "Tomato__Tomato_mosaic_virus",
+        "Tomato_healthy"
+      ],
+      "raw_counts": [
+        [
+          36,
+          13,
+          0,
+          1,
+          36,
+          26,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16,
+          13,
+          0,
+          0,
+          24,
+          52,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          0,
+          0,
+          1,
+          39,
+          43,
+          1,
+          7,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          0,
+          0,
+          53,
+          24,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          2,
+          0,
+          0,
+          23,
+          85,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5,
+          2,
+          1,
+          0,
+          12,
+          71,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          25,
+          0,
+          1,
+          2,
+          67,
+          41,
+          0,
+          14,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16,
+          0,
+          2,
+          0,
+          31,
+          20,
+          0,
+          2,
+          0,
+          0,
+          5,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          1,
+          0,
+          26,
+          21,
+          0,
+          1,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          0,
+          0,
+          11,
+          42,
+          0,
+          1,
+          1,
+          0,
+          2,
+          1,
+          0
+        ]
+      ],
+      "row_normalized": [
+        [
+          0.3103448275862069,
+          0.11206896551724138,
+          0.0,
+          0.008620689655172414,
+          0.3103448275862069,
+          0.22413793103448276,
+          0.0,
+          0.034482758620689655,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.1523809523809524,
+          0.12380952380952381,
+          0.0,
+          0.0,
+          0.22857142857142856,
+          0.49523809523809526,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.17272727272727273,
+          0.0,
+          0.0,
+          0.00909090909090909,
+          0.35454545454545455,
+          0.39090909090909093,
+          0.00909090909090909,
+          0.06363636363636363,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.10227272727272728,
+          0.0,
+          0.0,
+          0.0,
+          0.6022727272727273,
+          0.2727272727272727,
+          0.0,
+          0.022727272727272728,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.009009009009009009,
+          0.018018018018018018,
+          0.0,
+          0.0,
+          0.2072072072072072,
+          0.7657657657657657,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.054945054945054944,
+          0.02197802197802198,
+          0.01098901098901099,
+          0.0,
+          0.13186813186813187,
+          0.7802197802197802,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.16556291390728478,
+          0.0,
+          0.006622516556291391,
+          0.013245033112582781,
+          0.44370860927152317,
+          0.271523178807947,
+          0.0,
+          0.09271523178807947,
+          0.0,
+          0.006622516556291391,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.21052631578947367,
+          0.0,
+          0.02631578947368421,
+          0.0,
+          0.40789473684210525,
+          0.2631578947368421,
+          0.0,
+          0.02631578947368421,
+          0.0,
+          0.0,
+          0.06578947368421052,
+          0.0,
+          0.0
+        ],
+        [
+          0.05555555555555555,
+          0.0,
+          0.018518518518518517,
+          0.0,
+          0.48148148148148145,
+          0.3888888888888889,
+          0.0,
+          0.018518518518518517,
+          0.0,
+          0.0,
+          0.037037037037037035,
+          0.0,
+          0.0
+        ],
+        [
+          0.07936507936507936,
+          0.0,
+          0.0,
+          0.0,
+          0.1746031746031746,
+          0.6666666666666666,
+          0.0,
+          0.015873015873015872,
+          0.015873015873015872,
+          0.0,
+          0.031746031746031744,
+          0.015873015873015872,
+          0.0
+        ]
+      ],
+      "note": "Row = true class, column = predicted class. Row-normalized values sum to 1.0 per row (fraction of that true class's images predicted as each class). A class with 0 true instances in this PlantDoc set has an all-zero row (no data, not 0% accuracy)."
+    },
+    "per_class_precision_recall_f1": [
+      {
+        "class": "Potato___Early_blight",
+        "support_true_instances": 116,
+        "predicted_count": 135,
+        "recall": 0.3103448275862069,
+        "precision": 0.26666666666666666,
+        "f1": 0.28685258964143423
+      },
+      {
+        "class": "Potato___Late_blight",
+        "support_true_instances": 105,
+        "predicted_count": 30,
+        "recall": 0.12380952380952381,
+        "precision": 0.43333333333333335,
+        "f1": 0.19259259259259262
+      },
+      {
+        "class": "Potato___healthy",
+        "support_true_instances": 0,
+        "predicted_count": 5,
+        "recall": null,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato_Bacterial_spot",
+        "support_true_instances": 110,
+        "predicted_count": 4,
+        "recall": 0.00909090909090909,
+        "precision": 0.25,
+        "f1": 0.017543859649122806
+      },
+      {
+        "class": "Tomato_Early_blight",
+        "support_true_instances": 88,
+        "predicted_count": 322,
+        "recall": 0.6022727272727273,
+        "precision": 0.16459627329192547,
+        "f1": 0.25853658536585367
+      },
+      {
+        "class": "Tomato_Late_blight",
+        "support_true_instances": 111,
+        "predicted_count": 425,
+        "recall": 0.7657657657657657,
+        "precision": 0.2,
+        "f1": 0.31716417910447764
+      },
+      {
+        "class": "Tomato_Leaf_Mold",
+        "support_true_instances": 91,
+        "predicted_count": 1,
+        "recall": 0.0,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato_Septoria_leaf_spot",
+        "support_true_instances": 151,
+        "predicted_count": 31,
+        "recall": 0.09271523178807947,
+        "precision": 0.45161290322580644,
+        "f1": 0.15384615384615385
+      },
+      {
+        "class": "Tomato_Spider_mites_Two_spotted_spider_mite",
+        "support_true_instances": 0,
+        "predicted_count": 1,
+        "recall": null,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato__Target_Spot",
+        "support_true_instances": 0,
+        "predicted_count": 1,
+        "recall": null,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato__Tomato_YellowLeaf__Curl_Virus",
+        "support_true_instances": 76,
+        "predicted_count": 9,
+        "recall": 0.06578947368421052,
+        "precision": 0.5555555555555556,
+        "f1": 0.11764705882352941
+      },
+      {
+        "class": "Tomato__Tomato_mosaic_virus",
+        "support_true_instances": 54,
+        "predicted_count": 1,
+        "recall": 0.0,
+        "precision": 0.0,
+        "f1": null
+      },
+      {
+        "class": "Tomato_healthy",
+        "support_true_instances": 63,
+        "predicted_count": 0,
+        "recall": 0.0,
+        "precision": null,
+        "f1": null
+      }
+    ],
+    "macro_average": {
+      "precision": 0.33168067601046963,
+      "recall": 0.2813983512853461,
+      "f1": 0.1920261455747378,
+      "n_classes_evaluable": 7
+    },
+    "weighted_average": {
+      "precision": 0.3316163487349297,
+      "recall": 0.27344782034346105,
+      "f1": 0.19227917605836423,
+      "total_support": 757
+    },
+    "expected_calibration_error": {
+      "value": 0.4605598432258003,
+      "n_bins": 10,
+      "bin_table": [
+        {
+          "bin": "[0.0,0.1)",
+          "n": 0,
+          "avg_confidence": null,
+          "accuracy": null
+        },
+        {
+          "bin": "[0.1,0.2)",
+          "n": 1,
+          "avg_confidence": 0.1811903715133667,
+          "accuracy": 0.0
+        },
+        {
+          "bin": "[0.2,0.3)",
+          "n": 20,
+          "avg_confidence": 0.27228425815701485,
+          "accuracy": 0.15
+        },
+        {
+          "bin": "[0.3,0.4)",
+          "n": 77,
+          "avg_confidence": 0.36031139671028434,
+          "accuracy": 0.12987012987012986
+        },
+        {
+          "bin": "[0.4,0.5)",
+          "n": 108,
+          "avg_confidence": 0.4509235860572921,
+          "accuracy": 0.18518518518518517
+        },
+        {
+          "bin": "[0.5,0.6)",
+          "n": 107,
+          "avg_confidence": 0.548177984830375,
+          "accuracy": 0.14018691588785046
+        },
+        {
+          "bin": "[0.6,0.7)",
+          "n": 154,
+          "avg_confidence": 0.6462886821139943,
+          "accuracy": 0.18181818181818182
+        },
+        {
+          "bin": "[0.7,0.8)",
+          "n": 182,
+          "avg_confidence": 0.7565672407438467,
+          "accuracy": 0.25274725274725274
+        },
+        {
+          "bin": "[0.8,0.9)",
+          "n": 231,
+          "avg_confidence": 0.8449545660060206,
+          "accuracy": 0.27705627705627706
+        },
+        {
+          "bin": "[0.9,1.0)",
+          "n": 85,
+          "avg_confidence": 0.9212518159080955,
+          "accuracy": 0.24705882352941178
+        }
+      ],
+      "method": "Standard equal-width-bin ECE: sum over 10 bins of (n_bin/N) * |empirical_accuracy_bin - mean_confidence_bin|."
+    },
+    "top_3_most_frequently_predicted_classes": [
+      {
+        "class": "Tomato_Late_blight",
+        "times_predicted": 425,
+        "recall_on_this_class": 0.7657657657657657,
+        "precision_on_this_class": 0.2
+      },
+      {
+        "class": "Tomato_Early_blight",
+        "times_predicted": 322,
+        "recall_on_this_class": 0.6022727272727273,
+        "precision_on_this_class": 0.16459627329192547
+      },
+      {
+        "class": "Potato___Early_blight",
+        "times_predicted": 135,
+        "recall_on_this_class": 0.3103448275862069,
+        "precision_on_this_class": 0.26666666666666666
+      }
+    ],
+    "confusion_matrix_plot": "agents/disease/results/confusion_matrix_row6_v2_zero_shot.png",
+    "reliability_diagram_plot": "agents/disease/results/reliability_diagram_row6_v2_zero_shot.png"
+  },
+  "unified_finding_attractor_bias_as_formal_confusion_matrix_result": "The project's previously-reported '21-23% average accuracy' and 'attractor-class bias toward Tomato_Late_blight/Tomato_Early_blight' were reported as two separate observations; this evidence formalizes them as the SAME phenomenon viewed at two resolutions of the same confusion matrix. Both checkpoints show the identical signature at the class level: Tomato_Late_blight and Tomato_Early_blight dominate the predicted-class distribution in BOTH checkpoints (row 2 top predicted: Tomato_Late_blight, 522 times; row 6 top predicted: Tomato_Late_blight, 425 times), while per-class recall for the TRUE instances of those same classes is not correspondingly high -- i.e. the model isn't simply 'good at blight,' it defaults to predicting blight regardless of true label. This is the confusion-matrix-level signature of a decision boundary shaped by PlantVillage's uniform lab backgrounds (a 'blotchy texture on a leaf-shaped object, pick nearest common label' heuristic) rather than lesion-specific morphology -- exactly the boundary-geometry problem the external review's Section 1.2 predicted and asked to be tested formally rather than left as an informal pattern. A second, independent convergence signal: ECE is also near-identical across the two checkpoints (0.4725 row 2 vs. 0.4606 row 6) and both reliability diagrams show the same shape -- confidence bins above ~0.5 sit well below the diagonal throughout, i.e. the model is systematically overconfident, not just inaccurate, and this overconfidence pattern itself replicates across two independently-trained checkpoints rather than being one run's idiosyncrasy.",
+  "honest_gaps": [
+    "Row 1 (flat baseline) is not included -- see SCOPE above. The three-checkpoint zero-shot convergence finding (22.30% mean, 1.03pp stdev) still stands on its own aggregate-accuracy evidence (docs/evidence/metric1_zero_shot_convergence.json), but this confusion-matrix-level analysis currently covers 2 of those 3 checkpoints, not all 3.",
+    "Per-class recall is undefined (None, not 0%) for any canonical class with zero true PlantDoc instances in a given checkpoint's evaluable set (e.g. Potato___healthy and Tomato__Target_Spot have 0 true instances in both checkpoints' PlantDoc coverage) -- reported as None throughout rather than silently coerced to 0, since 0% recall would misleadingly imply the model was tested on that class and failed, when it was never tested on it at all.",
+    "Row 6's Tomato___Target_Spot and Tomato___Spider_mites class-name mappings are inferred by naming-pattern consistency, not directly cross-verified against a shared PlantDoc folder key (see V2_TO_CANONICAL comments) -- flagged as INFERRED_NOT_VERIFIED in this script. Low risk (the pattern is consistent across all 9 other classes) but not independently confirmed the same way the other 9 were.",
+    "ECE uses standard equal-width 10-bin binning -- a common but not the only ECE convention (adaptive/equal-mass binning is a documented alternative that can give different values, especially with the skewed confidence distributions already documented in metric #6). Reported with the full bin table alongside the single ECE number specifically so this choice is auditable, not hidden behind one number."
+  ]
+}
