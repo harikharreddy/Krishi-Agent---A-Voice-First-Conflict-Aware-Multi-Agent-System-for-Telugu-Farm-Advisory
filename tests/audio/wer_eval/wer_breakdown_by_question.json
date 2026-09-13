@@ -1,0 +1,183 @@
+{
+  "metric": "ASR WER breakdown by question (which farming-vocabulary questions are hardest, across speakers)",
+  "reporting_status": "PRELIMINARY -- 1/4 speakers. With n=1, 'mean/min/max across speakers' trivially collapses to that one speaker's own WER per question -- this is a mechanism dry-run, not yet a real cross-speaker hardest-question finding. Re-run once all 4 speakers are recorded.",
+  "n_speakers": 1,
+  "by_question_hardest_first": [
+    {
+      "id": 7,
+      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.5,
+      "min_wer": 0.5,
+      "max_wer": 0.5,
+      "per_speaker": {
+        "speaker1": 0.5
+      }
+    },
+    {
+      "id": 3,
+      "reference": "ఈ రోజు టమాటా ధర ఎంత",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.4,
+      "min_wer": 0.4,
+      "max_wer": 0.4,
+      "per_speaker": {
+        "speaker1": 0.4
+      }
+    },
+    {
+      "id": 5,
+      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.16666666666666666,
+      "min_wer": 0.16666666666666666,
+      "max_wer": 0.16666666666666666,
+      "per_speaker": {
+        "speaker1": 0.16666666666666666
+      }
+    },
+    {
+      "id": 8,
+      "reference": "నేల pH ఎంత ఉండాలి టమాటా కోసం",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.16666666666666666,
+      "min_wer": 0.16666666666666666,
+      "max_wer": 0.16666666666666666,
+      "per_speaker": {
+        "speaker1": 0.16666666666666666
+      }
+    },
+    {
+      "id": 15,
+      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.16666666666666666,
+      "min_wer": 0.16666666666666666,
+      "max_wer": 0.16666666666666666,
+      "per_speaker": {
+        "speaker1": 0.16666666666666666
+      }
+    },
+    {
+      "id": 12,
+      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.14285714285714285,
+      "min_wer": 0.14285714285714285,
+      "max_wer": 0.14285714285714285,
+      "per_speaker": {
+        "speaker1": 0.14285714285714285
+      }
+    },
+    {
+      "id": 11,
+      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.1111111111111111,
+      "min_wer": 0.1111111111111111,
+      "max_wer": 0.1111111111111111,
+      "per_speaker": {
+        "speaker1": 0.1111111111111111
+      }
+    },
+    {
+      "id": 10,
+      "reference": "నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.1,
+      "min_wer": 0.1,
+      "max_wer": 0.1,
+      "per_speaker": {
+        "speaker1": 0.1
+      }
+    },
+    {
+      "id": 1,
+      "reference": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 2,
+      "reference": "రేపు వర్షం పడుతుందా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 4,
+      "reference": "నా పొలంలో మట్టి బాగుందా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 6,
+      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 9,
+      "reference": "వర్షం వస్తే మందు కొట్టాలా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 13,
+      "reference": "నమస్కారం",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 14,
+      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    },
+    {
+      "id": 16,
+      "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "n_speakers_recorded": 1,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0
+      }
+    }
+  ]
+}
