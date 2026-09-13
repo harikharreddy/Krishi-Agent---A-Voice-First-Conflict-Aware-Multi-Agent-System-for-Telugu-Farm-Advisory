@@ -1,0 +1,30 @@
+V2 EfficientNetB0 Checkpoint — PlantDoc Zero-Shot Evaluation (Metric #1) — Raw Log
+Run timestamp: 2026-09-13 11:10:38 UTC
+Git commit: 2fdd4fd796abd9fcb8b0c3c9bfd79c63c6e773e4
+Checkpoint: agents/disease/checkpoints/disease_agent_efficientnetb0.pt
+Command: python3 agents/disease/evaluate_v2_checkpoint.py
+======================================================================
+Loaded v2 checkpoint: 13 classes, device=mps
+class_names: ['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy', 'Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 'Tomato___Mosaic_virus', 'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites', 'Tomato___Target_Spot', 'Tomato___Yellow_Leaf_Curl_Virus', 'Tomato___healthy']
+NOTE: n=965, not the 967 images the Sep 3 zero-shot eval reported for the same 10 PlantDoc folders. Investigated: git status inside data/plantdoc_raw (itself a separate git repo) shows 1 locally-modified file (train/Potato leaf early blight/...A60HXN.jpg) and a git-ls-files-vs-disk count mismatch of exactly 1 file in that same folder (109 tracked, 108 present). That accounts for 1 of the 2 missing images; the second was not tracked down further -- the effect on results is negligible (max ~0.2 percentage points on accuracy) and not worth more investigation time, but reported here rather than silently letting the sample size differ from the documented baseline without explanation.
+
+This independently-trained checkpoint shows the SAME attractor-class bias pattern documented for the hierarchical zero-shot model (row 2): Tomato___Late_blight predicted 44.0% of the time vs. a true rate of 11.5% -- comparable in magnitude to row 2's documented 49% predicted vs. 12% true rate. This checkpoint ALSO shows a second, similarly strong bias toward Tomato___Early_blight (33.4% predicted vs. 9.1% true) -- together these two classes account for 77.4% of all predictions despite being the true answer only 20.6% of the time. Two independently trained models (different architecture, different training run, different environment) both defaulting to blight-type diagnoses on real-world photos is stronger evidence that this is a structural property of the PlantVillage-to-PlantDoc domain gap itself, not a quirk of one specific training run.
+
+n=965  overall accuracy=0.2145 (207/965)
+train-only (n=880): 0.2114
+test-only (n=85): 0.2471
+train-test gap: -0.0357  -- NO EVIDENCE OF CONTAMINATION
+
+Per-class accuracy:
+  Potato___Early_blight: 0.3103 (n=116)
+  Potato___Late_blight: 0.1238 (n=105)
+  Tomato___Bacterial_spot: 0.0091 (n=110)
+  Tomato___Early_blight: 0.6023 (n=88)
+  Tomato___Late_blight: 0.7658 (n=111)
+  Tomato___Leaf_Mold: 0.0000 (n=91)
+  Tomato___Mosaic_virus: 0.0000 (n=54)
+  Tomato___Septoria_leaf_spot: 0.0927 (n=151)
+  Tomato___Yellow_Leaf_Curl_Virus: 0.0658 (n=76)
+  Tomato___healthy: 0.0000 (n=63)
+
+Saved -> /Users/harikharreddy/krishi-agent/agents/disease/../../docs/evidence/metric1_v2_checkpoint_evidence.json

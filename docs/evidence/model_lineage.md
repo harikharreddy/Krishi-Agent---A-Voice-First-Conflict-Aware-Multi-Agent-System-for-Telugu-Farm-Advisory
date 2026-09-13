@@ -17,7 +17,7 @@ which model produced it.
 | 3 | `stage1/2_*_plantdoc_no_target_spot.pt` | PlantVillage + PlantDoc **train** split | Train split used for fine-tuning; **test** split held out | n/a (not re-measured) | 40.0% (n=85, test-only, held-out) | No (superseded) |
 | 4 | `stage1/2_*_pre_potato_healthy.pt` | Same as #3 + 20 external Target_Spot photos | Same as #3 | n/a | 38.8% (n=85, test-only, held-out) | No (superseded) |
 | 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** |
-| 6 | "v2 EfficientNetB0" (Colab, `/content/disease_agent_efficientnetb0.pt`) | PlantVillage only, full fine-tune + augmentation (per description) | **Not yet evaluated** | 99.87% | **Not yet measured** | No (not in this repo yet) |
+| 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) |
 
 Rows 3-5 all used PlantDoc's **train** split for fine-tuning and held out
 the **test** split completely throughout (verified: same 85 test-only
@@ -113,22 +113,35 @@ turns out to frame things differently once read directly, that's a reason
 to revisit this entry, not a reason to have waited on it — this decision
 is now the team's committed position either way.
 
-## Next
+## Row 6 results (Metric #1, closed 2026-09-13)
 
-The v2 checkpoint (row 6) has not arrived yet. Per the decision above,
-**it starts from a favorable position, not the fine-tuned model's
-caution**: it was trained on PlantVillage only and never touched
-PlantDoc, so once evaluated it will be a second, genuinely clean
-zero-shot data point — directly comparable to row 2, not row 5. When it
-lands:
-1. Confirm exactly what it was trained on (PlantVillage only, per its
-   description — verify against the actual checkpoint/training log if
-   available, not assumed from the filename alone).
-2. Run it through `plantdoc_confidence_eval.py` un-restricted (train+test
-   combined is fine for THIS checkpoint specifically, unlike row 5,
-   *because* it never trained on any PlantDoc images at all — the
-   contamination check that mattered for row 5 does not apply here, and
-   should not be applied reflexively without re-confirming that first).
-3. Report it as row 6 explicitly, alongside row 2, as a second zero-shot
-   result — not folded into or compared against the exploratory
-   fine-tuned numbers.
+Evaluated via `agents/disease/evaluate_v2_checkpoint.py` — full evidence
+in `docs/evidence/metric1_v2_checkpoint_evidence.json` /
+`metric1_v2_checkpoint_raw_log.txt`.
+
+- **21.45% accuracy (207/965)**, train+test combined — comparable to row
+  2's 23.45% (n=968), a similar (slightly lower) zero-shot result from an
+  independently trained, differently-architected model.
+- **Contamination sanity check confirmed clean**: train-only accuracy
+  21.14% vs. test-only 24.71% (test actually *higher* — the opposite of
+  what contamination would show; row 5's real contamination signature was
+  a positive ~8-point train-over-test gap). Supports the "genuinely
+  zero-shot" claim without relying on the stated training provenance
+  alone.
+- **Cross-architecture confirmation of the attractor-class bias**: this
+  checkpoint independently reproduces row 2's `Tomato_Late_blight`
+  over-prediction (44.0% predicted vs. 11.5% true here, vs. row 2's
+  documented 49% vs. 12%), plus a second, comparably strong bias toward
+  `Tomato_Early_blight` (33.4% predicted vs. 9.1% true) that row 2 did not
+  show as strongly. Two independently trained models both defaulting to
+  blight-type diagnoses on real photos is stronger evidence this is a
+  structural property of the PlantVillage-to-PlantDoc domain gap itself,
+  not one training run's quirk — a genuinely new, citable finding this
+  evaluation produced, not just a confirmation of what was already known.
+- **Known discrepancy, investigated and documented, not material**: this
+  run evaluated n=965 images against the same 10 PlantDoc folders that
+  produced n=967 in the Sep 3 baseline run. Traced 1 of the 2 missing
+  images to a local file-count change inside `data/plantdoc_raw` (itself
+  a separate git repo) between Sep 3 and now; the second was not
+  identified. Effect on the headline number is at most ~0.2 percentage
+  points — noted for completeness, not treated as invalidating the result.
