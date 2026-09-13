@@ -1,0 +1,99 @@
+{
+  "n": 85,
+  "accuracy": 0.3765,
+  "macro_precision": 0.3344,
+  "macro_recall": 0.2941,
+  "macro_f1": 0.2989,
+  "weighted_precision": 0.4315,
+  "weighted_recall": 0.3765,
+  "weighted_f1": 0.3847,
+  "per_class": {
+    "Potato___Early_blight": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "support": 8
+    },
+    "Potato___Late_blight": {
+      "precision": 0.25,
+      "recall": 0.375,
+      "f1": 0.3,
+      "support": 8
+    },
+    "Tomato_Bacterial_spot": {
+      "precision": 0.3333,
+      "recall": 0.2222,
+      "f1": 0.2667,
+      "support": 9
+    },
+    "Tomato_Early_blight": {
+      "precision": 0.3846,
+      "recall": 0.5556,
+      "f1": 0.4545,
+      "support": 9
+    },
+    "Tomato_Late_blight": {
+      "precision": 0.25,
+      "recall": 0.2,
+      "f1": 0.2222,
+      "support": 10
+    },
+    "Tomato_Leaf_Mold": {
+      "precision": 0.3333,
+      "recall": 0.3333,
+      "f1": 0.3333,
+      "support": 6
+    },
+    "Tomato_Septoria_leaf_spot": {
+      "precision": 0.5455,
+      "recall": 0.5455,
+      "f1": 0.5455,
+      "support": 11
+    },
+    "Tomato__Tomato_YellowLeaf__Curl_Virus": {
+      "precision": 0.5714,
+      "recall": 0.6667,
+      "f1": 0.6154,
+      "support": 6
+    },
+    "Tomato__Tomato_mosaic_virus": {
+      "precision": 0.4286,
+      "recall": 0.3,
+      "f1": 0.3529,
+      "support": 10
+    },
+    "Tomato_healthy": {
+      "precision": 1.0,
+      "recall": 0.375,
+      "f1": 0.5455,
+      "support": 8
+    }
+  },
+  "latency_ms": {
+    "mean": 240.22,
+    "min": 226.74,
+    "max": 370.82,
+    "std": 20.65
+  },
+  "throughput_images_per_sec": 4.16,
+  "model_footprint": {
+    "total_parameters": 12041859,
+    "parameters_by_stage": {
+      "stage1": 4010110,
+      "stage2_tomato": 4020358,
+      "stage2_potato": 4011391
+    },
+    "checkpoint_size_mb": {
+      "stage1": 15.58,
+      "stage2_tomato": 15.62,
+      "stage2_potato": 15.59
+    },
+    "total_checkpoint_size_mb": 46.79
+  },
+  "memory_rss_mb": {
+    "before_model_load": 393.0,
+    "after_model_load": 488.0,
+    "peak_during_inference": 517.5
+  },
+  "note_iou_dice": "Not applicable -- this is an image classification task (whole-image label), not segmentation or detection, so IoU/Dice coefficient don't apply. Precision/recall/F1 above serve the equivalent role of proving low false-positive/false-negative rates for a classifier."
+}

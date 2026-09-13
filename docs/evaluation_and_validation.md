@@ -228,6 +228,40 @@ A first Target_Spot attempt (5 photos only) was tried, scored 0/2, and was
 20-photo attempt that *was* promoted, as an explicit before/after
 comparison of "not enough data" vs. "somewhat more data, still not enough."
 
+### Precision / recall / F1, latency, throughput, and model footprint
+
+Accuracy alone doesn't show false-positive/false-negative balance, and
+nothing above reports inference cost or model size. Computed by
+`agents/disease/compute_full_metrics.py` against the current deployed
+checkpoints on the same 85-image PlantDoc test set (per-image predictions
+recorded this time, not just aggregate correct/incorrect):
+
+| Metric | Value |
+|---|---|
+| Macro precision / recall / F1 | 0.334 / 0.294 / 0.299 |
+| Weighted precision / recall / F1 | 0.432 / 0.377 / 0.385 |
+| Mean inference latency | 240.2ms (std 20.7ms, n=85) |
+| Throughput | 4.16 images/sec (single-sample, CPU/MPS, no batching) |
+| Total parameters (3 stage models) | 12,041,859 |
+| Total checkpoint size | 46.79MB |
+| Peak RSS during inference | 517.5MB |
+
+**A specific, useful finding from the per-class breakdown**:
+`Tomato_healthy` has **precision 1.0, recall 0.375** -- the model almost
+never mislabels a diseased leaf as healthy (no false "all clear"), but
+does mislabel some healthy leaves as diseased (false alarms). For a farm
+advisory tool this is the safer direction to be wrong in -- worth stating
+explicitly rather than leaving buried in a table, since "high precision,
+low recall on the healthy class" reads very differently once its
+real-world implication is spelled out.
+
+**IoU / Dice coefficient**: not applicable and not reported -- this is an
+image classification task (one whole-image label per photo), not
+segmentation or detection, so there's no predicted region to compare
+against a ground-truth mask or box. Precision/recall/F1 above serve the
+equivalent purpose for a classifier (proving low false-positive/
+false-negative rates), which is why they're reported instead.
+
 **Architecture ablation** (from the original training run,
 `agents/disease/results/hierarchical_results.json` /
 `flat_baseline_results.json`): a hierarchical model (crop classifier ->
@@ -353,18 +387,48 @@ similarly-scoped small-data fine-tune). A paper draft should cite specific
 comparable-scale baselines rather than the largest SOTA systems, to keep
 the comparison fair.
 
-**Telugu/regional-language agricultural voice assistants**: several
-directly comparable systems exist and should be discussed as related work
--- "Raithubot" (RLHF-fine-tuned Telugu farmer chatbot), "Farmer.Chat"
-(multilingual incl. Telugu, multimodal agricultural advisory at scale),
-and RAG-based regional-language agri-LLM systems. Krishi-Agent's specific
-differentiators worth foregrounding against these: (a) explicit
-multi-agent conflict resolution rather than a single LLM call, (b)
-deliberately hand-written/reviewed phrasing templates over free LLM
-generation (a locked decision after qwen2.5:7b-instruct produced garbled
-Telugu in testing), and (c) an explicit confidence-honesty design (visible
-uncertainty in both text and UI) rather than a single confident-sounding
-answer.
+### 3.1 Direct comparison against comparable published systems
+
+Three systems were read in enough depth to compare honestly (not just
+named) -- **Farmer.Chat** (arXiv:2409.08916, the most detailed and most
+comparable: a large-scale, publicly documented deployment), **Krishi
+Sathi** (arXiv:2508.03719, intent-aware RAG for multi-turn agricultural
+QA), and **Raithubot** (RLHF-fine-tuned Telugu chatbot, ICDSA
+best-paper -- less public technical detail was findable than for the
+other two, noted honestly rather than inferred).
+
+| Dimension | Krishi-Agent | Farmer.Chat | Krishi Sathi | Raithubot |
+|---|---|---|---|---|
+| Architecture | Multi-agent + explicit rule-based Conflict Resolver | RAG + multi-agent orchestration (Planning/Execution/Tooling agents) | Multi-turn RAG with intent-aware context retrieval | Single RLHF-fine-tuned LLM (Pythia-2.8B) |
+| Explicit conflict resolution across advice types (weather/price/disease) | **Yes** -- rule table, 12/12 on synthetic tests, 1 real gap found and precisely diagnosed (Sec. 2.7) | Not described in the paper | Not described | Not described |
+| Disease/pest diagnosis | Own trained, fine-tuned CV model, in-pipeline (Sec. 2.5, honestly measured at 37.65%) | Delegated to a third-party service (Plantix) | Not described | Not described |
+| Confidence/uncertainty shown to the user | **Yes** -- hedged phrasing templates + a UI confidence indicator, both keyed to the real underlying confidence level | Not described (feedback is retrospective thumbs-up/down, not prospective confidence) | Not described | Not described |
+| Languages | Telugu (bilingual UI) | 6 languages incl. Telugu, deployed across 4 countries | Not specified in available sources | Telugu, Hindi, English |
+| Evaluation scale | Component-level (n=12-263) + two fresh-clone reproducibility tests; **no live user study yet** | **15,000+ real users, 300,000+ queries**, formal focus groups + bi-weekly satisfaction surveys | Published methodology; user-scale not found in available sources | Conference-published; accuracy not publicly detailed |
+| Response latency (reported) | ~13.6s intent routing + ~24-26s TTS for a full voice answer (Sec. 2.4/2.6) | 9.05s average (text response; not confirmed whether this includes voice synthesis) | Not found | Not reported |
+
+**Honest reading of this table, not a one-sided one**: Farmer.Chat
+massively outscales this project on real-world deployment and user-study
+rigor -- that is a genuine, uncontested strength of theirs, not something
+to argue around. What this comparison actually supports is a narrower,
+verifiable claim: **conflict arbitration between competing advice signals
+and prospective confidence communication to the farmer are explicitly
+engineered, independently-tested components in Krishi-Agent, and are
+not described as present in any of the three comparable systems' own
+published accounts.** That is the project's specific, evidence-backed
+novelty contribution -- not a claim of being "better overall," which the
+evaluation scale gap above would not support.
+
+**Real-world plant disease classification**: PlantDoc is an established
+benchmark specifically because it exposes the PlantVillage-to-field
+accuracy gap this project also measured -- published results vary widely
+by model scale and training data (e.g., large hybrid transformer models
+report 95-99% on PlantDoc when trained substantially on in-domain data;
+smaller/lighter models trained mostly on PlantVillage report much lower
+numbers, consistent with the 28-40% range found here for a
+similarly-scoped small-data fine-tune). A paper draft should cite specific
+comparable-scale baselines rather than the largest SOTA systems, to keep
+the comparison fair.
 
 ## 4. Limitations (for a paper's Limitations section)
 

@@ -597,6 +597,28 @@
       <figcaption>Real PlantDoc (field-photo) fine-tuning curves — not PlantVillage. A PlantVillage curve converges to ~99%+ almost trivially and would visually overstate real-world performance; these honestly plateau at 41–77% validation accuracy per stage, matching every number above. Reproduced deterministically: a repeat run of this exact training produced identical final results (37.65% end-to-end, 1/5 Target_Spot, 14/15 Potato_healthy).</figcaption>
     </figure>
 
+    <h3>Precision, recall, F1, latency, throughput, model footprint</h3>
+    <p>Accuracy alone doesn't show false-positive/false-negative balance or inference cost. Computed against the current deployed checkpoints, same 85-image PlantDoc test set, per-image predictions recorded this time (<code>agents/disease/compute_full_metrics.py</code>):</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Metric</th><th class="num">Value</th></tr></thead>
+        <tbody>
+          <tr><td>Macro precision / recall / F1</td><td class="num">0.334 / 0.294 / 0.299</td></tr>
+          <tr><td>Weighted precision / recall / F1</td><td class="num">0.432 / 0.377 / 0.385</td></tr>
+          <tr><td>Mean inference latency</td><td class="num">240.2ms <span style="color:var(--ink-faint);">(std 20.7ms)</span></td></tr>
+          <tr><td>Throughput</td><td class="num">4.16 img/sec</td></tr>
+          <tr><td>Total parameters (3 stage models)</td><td class="num">12,041,859</td></tr>
+          <tr><td>Total checkpoint size</td><td class="num">46.79MB</td></tr>
+          <tr><td>Peak RSS during inference</td><td class="num">517.5MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="good-box">
+      <div class="finding-label">A specific, useful finding</div>
+      <p><code>Tomato_healthy</code> has <b>precision 1.0, recall 0.375</b> — the model almost never mislabels a diseased leaf as healthy (no false "all clear"), but does mislabel some healthy leaves as diseased (false alarms). For a farm advisory tool this is the safer direction to be wrong in.</p>
+    </div>
+    <p style="color:var(--ink-faint);font-size:13.5px;"><b>IoU / Dice coefficient: not applicable.</b> This is image classification (one whole-image label per photo), not segmentation or detection — there's no predicted region to compare against a ground-truth mask or box. Precision/recall/F1 above serve the equivalent purpose for a classifier.</p>
+
     <h3>Architecture ablation</h3>
     <p>Hierarchical (crop → per-crop disease) scored 99.70% PlantVillage validation accuracy vs. a flat 13-class classifier's 99.72% — statistically indistinguishable on the training distribution. The hierarchical architecture was kept for cleaner separation of crop-ID error from disease-ID error, visible in the per-class table above, not for a raw accuracy gain.</p>
   </section>
@@ -660,17 +682,29 @@
     <h2><span class="num">3</span>Related work</h2>
     <p class="section-intro">A starting bibliography, not a complete literature review — treat as a foundation to build on, not a finished section.</p>
 
+    <h3>3.1 Direct comparison against comparable published systems</h3>
+    <p>Three systems were read in enough depth to compare honestly, not just named — <b>Farmer.Chat</b> (arXiv:2409.08916, the most detailed and most comparable: a large-scale, publicly documented deployment), <b>Krishi Sathi</b> (arXiv:2508.03719, intent-aware RAG for multi-turn agricultural QA), and <b>Raithubot</b> (RLHF-fine-tuned Telugu chatbot, ICDSA best-paper — less public technical detail was findable than for the other two, noted honestly rather than inferred).</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th class="wrap-cell">Dimension</th><th class="wrap-cell">Krishi-Agent</th><th class="wrap-cell">Farmer.Chat</th><th class="wrap-cell">Krishi Sathi</th><th class="wrap-cell">Raithubot</th></tr></thead>
+        <tbody>
+          <tr><td class="wrap-cell">Architecture</td><td class="wrap-cell">Multi-agent + explicit rule-based Conflict Resolver</td><td class="wrap-cell">RAG + multi-agent orchestration</td><td class="wrap-cell">Multi-turn RAG, intent-aware retrieval</td><td class="wrap-cell">Single RLHF-fine-tuned LLM (Pythia-2.8B)</td></tr>
+          <tr><td class="wrap-cell">Explicit conflict resolution across advice types</td><td class="wrap-cell"><span class="pill good">Yes</span> — 12/12 synthetic tests, 1 real gap diagnosed</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
+          <tr><td class="wrap-cell">Disease/pest diagnosis</td><td class="wrap-cell"><span class="pill good">Own trained model</span>, in-pipeline (37.65%, honestly measured)</td><td class="wrap-cell">Delegated to third-party (Plantix)</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
+          <tr><td class="wrap-cell">Confidence/uncertainty shown to user</td><td class="wrap-cell"><span class="pill good">Yes</span> — hedged phrasing + UI indicator, both confidence-keyed</td><td class="wrap-cell">Not described (only retrospective thumbs-up/down)</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
+          <tr><td class="wrap-cell">Evaluation scale</td><td class="wrap-cell">Component-level (n=12–263) + 2 fresh-clone reproducibility tests; no live user study yet</td><td class="wrap-cell"><span class="pill warn">15,000+ real users</span>, 300K+ queries, formal field studies</td><td class="wrap-cell">Published methodology; scale not found</td><td class="wrap-cell">Accuracy not publicly detailed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">Honest reading — not a one-sided one</div>
+      <p>Farmer.Chat massively outscales this project on real-world deployment and user-study rigor — a genuine, uncontested strength of theirs. This comparison supports a narrower, verifiable claim instead: <b>conflict arbitration between competing advice signals, and prospective confidence communication to the farmer, are explicitly engineered and independently tested in Krishi-Agent — and are not described as present in any of these three systems' own published accounts.</b> That's the specific, evidence-backed novelty contribution here, not a claim of being "better overall," which the evaluation-scale gap above would not support.</p>
+    </div>
+
     <h3>Real-world plant disease classification</h3>
     <p>PlantDoc is an established benchmark specifically because it exposes the PlantVillage-to-field accuracy gap this project also measured. Published results vary widely by model scale and training data — large hybrid transformer models trained substantially on in-domain data report 95–99% on PlantDoc; smaller models trained mostly on PlantVillage report much lower numbers, consistent with the 28–40% range found here for a similarly-scoped small-data fine-tune.</p>
-
-    <h3>Telugu / regional-language agricultural voice assistants</h3>
-    <ul class="bib">
-      <li><b>Raithubot</b> — RLHF-fine-tuned Telugu farmer chatbot.</li>
-      <li><b>Farmer.Chat</b> — multilingual (incl. Telugu) multimodal agricultural advisory at scale.</li>
-      <li><b>AgriVoice-Telugu</b> — RAG-based regional-language agricultural LLM system.</li>
-      <li><b>Krishi Sathi</b> — speech-enabled, intent-aware agricultural chatbot.</li>
-    </ul>
-    <p>Krishi-Agent's differentiators worth foregrounding against these: explicit multi-agent conflict resolution rather than a single LLM call; hand-written, reviewed phrasing templates over free LLM generation (a locked decision after qwen2.5:7b-instruct produced garbled Telugu in testing); and an explicit confidence-honesty design — visible uncertainty in both text and UI, rather than one confident-sounding answer regardless of underlying certainty.</p>
   </section>
 
   <section id="limitations">
