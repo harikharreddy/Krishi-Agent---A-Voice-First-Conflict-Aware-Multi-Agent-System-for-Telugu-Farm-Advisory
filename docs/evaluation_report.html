@@ -363,7 +363,7 @@
     <p class="reading-note"><b>How to read the numbers below:</b> real-world plant-disease classification on field photos (not studio photos) is a known-hard benchmark — published work in this exact space shows the same steep drop from lab to field conditions. A 37.65% real-world accuracy after fine-tuning represents a <b>64% relative improvement</b> over the 23% zero-shot starting point, not a weak result in isolation. The differentiator this report is built to demonstrate isn't a single headline percentage — it's that every number here is reproducible, every failure is diagnosed rather than hidden, and the underlying pipeline logic is independently verified correct (§2.0).</p>
 
     <div class="scorecard">
-      <div class="score-tile"><div class="score-num">68/68</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
+      <div class="score-tile"><div class="score-num">70/70</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
       <div class="score-tile"><div class="score-num">87.5%</div><div class="score-label">Intent Router accuracy, live-reproduced today</div></div>
       <div class="score-tile"><div class="score-num">37.65%</div><div class="score-label">Disease Agent, real-world photos (up from 23% zero-shot)</div></div>
       <div class="score-tile"><div class="score-num">10.96%</div><div class="score-label">ASR word error rate — a strong result, 16 Telugu utterances</div></div>
@@ -427,10 +427,10 @@
       <table>
         <thead><tr><th>Test file</th><th class="num">Result</th><th class="wrap-cell">Covers</th></tr></thead>
         <tbody>
-          <tr><td><code>test_conflict_resolver.py</code></td><td class="num"><span class="pill good">12/12</span></td><td class="wrap-cell">Conflict Resolver rule logic, synthetic scenarios</td></tr>
+          <tr><td><code>test_conflict_resolver.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">Conflict Resolver rule logic, synthetic scenarios (13th = regression test for the §2.7 gap, now fixed)</td></tr>
           <tr><td><code>test_phrasing_templates.py</code></td><td class="num"><span class="pill good">12/12</span></td><td class="wrap-cell">Confidence-calibrated template selection</td></tr>
           <tr><td><code>test_state_mapping.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">New — boundary values for Weather/Price thresholds (exact 0.10 / −0.10 cutoffs)</td></tr>
-          <tr><td><code>test_pipeline.py</code></td><td class="num"><span class="pill good">12/12</span></td><td class="wrap-cell">End-to-end conflict scenarios, real pipeline</td></tr>
+          <tr><td><code>test_pipeline.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">End-to-end conflict scenarios, real pipeline</td></tr>
           <tr><td><code>test_pipeline_edge_cases.py</code></td><td class="num"><span class="pill good">5/5</span></td><td class="wrap-cell">No photo, missing profile fields, agent API failures</td></tr>
           <tr><td><code>test_weather_agent.py</code></td><td class="num"><span class="pill good">9/9</span></td><td class="wrap-cell">Schema validity, graceful failure, drought-signal logic</td></tr>
           <tr><td><code>test_price_agent.py</code></td><td class="num"><span class="pill good">5/5</span></td><td class="wrap-cell">Schema validity, graceful failure, market lookup</td></tr>
@@ -440,7 +440,7 @@
 
     <div class="good-box">
       <div class="finding-label">Result</div>
-      <p><b>68/68 (100%)</b> across all deterministic-logic tests — the correctness layer underneath the accuracy metrics that follow. A claim like "37.65% disease accuracy" only means something if the surrounding pipeline logic is itself verified correct.</p>
+      <p><b>70/70 (100%)</b> across all deterministic-logic tests — the correctness layer underneath the accuracy metrics that follow. A claim like "37.65% disease accuracy" only means something if the surrounding pipeline logic is itself verified correct.</p>
     </div>
   </section>
 
@@ -474,7 +474,7 @@
     <p><b>Dataset</b> — 12 synthetic scenarios covering single-, dual-, and triple-agent conflict/agreement at varying confidence levels.</p>
     <div class="good-box">
       <div class="finding-label">Result</div>
-      <p><b>12/12 correct — 100%</b>, re-run today.</p>
+      <p><b>13/13 correct — 100%</b>, re-run today (13th = regression test for the §2.7 rule-table gap, now fixed).</p>
     </div>
     <p style="color:var(--ink-faint);font-size:13.5px;">Validates the decision logic itself, not live-agent real-world coverage — see the Conflict Resolver rule-table gap found in §2.7.</p>
   </section>
@@ -661,7 +661,7 @@
 
     <div class="finding">
       <div class="finding-label">Precisely diagnosed bug</div>
-      <p>"Should I sell or hold, considering price and weather?" returns <code>weather=rain_risk</code>, <code>price=sell_now</code>, <code>disease=None</code>. The rule table has an entry for <code>(None, rain_risk, hold)</code> but <b>none for <code>(None, rain_risk, sell_now)</code></b> — an asymmetric gap, not a systemic flaw. Only 1 of 16 (6.25%) is an actual bug-adjacent finding; the rest is correct, expected behavior for this test's conditions.</p>
+      <p>"Should I sell or hold, considering price and weather?" returns <code>weather=rain_risk</code>, <code>price=sell_now</code>, <code>disease=None</code>. The rule table had an entry for <code>(None, rain_risk, hold)</code> but <b>none for <code>(None, rain_risk, sell_now)</code></b> — an asymmetric gap, not a systemic flaw. Only 1 of 16 (6.25%) was an actual bug-adjacent finding; the rest is correct, expected behavior for this test's conditions. <b>Fixed 2026-09-13</b> (weather and price agree here, so it resolves as a synergy case, not a conflict) and added as a permanent regression test — see §2.0's now-13/13 conflict-resolver result.</p>
     </div>
   </section>
 
@@ -690,7 +690,7 @@
         <thead><tr><th class="wrap-cell">Dimension</th><th class="wrap-cell">Krishi-Agent</th><th class="wrap-cell">Farmer.Chat</th><th class="wrap-cell">Krishi Sathi</th><th class="wrap-cell">Raithubot</th></tr></thead>
         <tbody>
           <tr><td class="wrap-cell">Architecture</td><td class="wrap-cell">Multi-agent + explicit rule-based Conflict Resolver</td><td class="wrap-cell">RAG + multi-agent orchestration</td><td class="wrap-cell">Multi-turn RAG, intent-aware retrieval</td><td class="wrap-cell">Single RLHF-fine-tuned LLM (Pythia-2.8B)</td></tr>
-          <tr><td class="wrap-cell">Explicit conflict resolution across advice types</td><td class="wrap-cell"><span class="pill good">Yes</span> — 12/12 synthetic tests, 1 real gap diagnosed</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
+          <tr><td class="wrap-cell">Explicit conflict resolution across advice types</td><td class="wrap-cell"><span class="pill good">Yes</span> — 13/13 synthetic tests; 1 real gap found via live-data testing and fixed</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
           <tr><td class="wrap-cell">Disease/pest diagnosis</td><td class="wrap-cell"><span class="pill good">Own trained model</span>, in-pipeline (37.65%, honestly measured)</td><td class="wrap-cell">Delegated to third-party (Plantix)</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
           <tr><td class="wrap-cell">Confidence/uncertainty shown to user</td><td class="wrap-cell"><span class="pill good">Yes</span> — hedged phrasing + UI indicator, both confidence-keyed</td><td class="wrap-cell">Not described (only retrospective thumbs-up/down)</td><td class="wrap-cell">Not described</td><td class="wrap-cell">Not described</td></tr>
           <tr><td class="wrap-cell">Evaluation scale</td><td class="wrap-cell">Component-level (n=12–263) + 2 fresh-clone reproducibility tests; no live user study yet</td><td class="wrap-cell"><span class="pill warn">15,000+ real users</span>, 300K+ queries, formal field studies</td><td class="wrap-cell">Published methodology; scale not found</td><td class="wrap-cell">Accuracy not publicly detailed</td></tr>

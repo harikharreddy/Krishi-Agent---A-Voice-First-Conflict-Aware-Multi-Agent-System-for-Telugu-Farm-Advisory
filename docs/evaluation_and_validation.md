@@ -37,15 +37,17 @@ them):
 
 | Test file | Result | What it covers |
 |---|---|---|
-| `test_conflict_resolver.py` | 12/12 (100%) | Conflict Resolver rule logic, synthetic scenarios |
+| `test_conflict_resolver.py` | 13/13 (100%) | Conflict Resolver rule logic, synthetic scenarios (13th added as a regression test for the Sec. 2.7 rule-table gap, now fixed) |
 | `test_phrasing_templates.py` | 12/12 (100%) | Confidence-calibrated template selection |
-| `test_state_mapping.py` | 13/13 (100%) | **New**: boundary-value tests for the Weather/Price state-mapping thresholds (exact 0.10/-0.10 cutoffs, missing-data fallbacks) -- previously only comfortably-inside values were tested |
-| `test_pipeline.py` | 12/12 (100%) | End-to-end conflict scenarios through the real pipeline |
+| `test_state_mapping.py` | 13/13 (100%) | Boundary-value tests for the Weather/Price state-mapping thresholds (exact 0.10/-0.10 cutoffs, missing-data fallbacks) -- previously only comfortably-inside values were tested |
+| `test_pipeline.py` | 13/13 (100%) | End-to-end conflict scenarios through the real pipeline |
 | `test_pipeline_edge_cases.py` | 5/5 (100%) | No photo, missing profile fields, agent API failures |
 | `test_weather_agent.py` | 9/9 (100%) | Schema validity, graceful failure, drought-signal unit tests |
 | `test_price_agent.py` | 5/5 (100%) | Schema validity, graceful failure, market lookup |
 
-**68/68 (100%)** across all deterministic-logic tests. This is the
+**70/70 (100%)** across all deterministic-logic tests (was 68/68 before
+the metric #5 fix added a 13th conflict scenario, exercised by 2 test
+files). This is the
 "nothing is silently broken" layer underneath the accuracy metrics below
 -- a paper/evaluator claim like "37.65% disease accuracy" only means
 something if the surrounding pipeline logic (conflict resolution,
@@ -79,7 +81,7 @@ establishes.
 - **Dataset**: 12 synthetic scenarios (`tests/test_conflict_resolver.py`)
   covering single-agent, dual-agent, and triple-agent conflict/agreement
   cases at varying confidence levels.
-- **Result (re-run today)**: **12/12 correct, 100%**.
+- **Result (re-run today)**: **13/13 correct, 100%** (13th scenario added as a regression test for the Sec. 2.7 rule-table gap, now fixed).
 - **Limitation**: rule-based logic over synthetic inputs, not live agent
   output -- validates the *decision logic*, not real-world scenario coverage.
 
@@ -322,19 +324,27 @@ answer the farmer actually gets*.
 | No Soil Agent exists at all (Q4, Q8, Q16) | 3 | Structural gap -- `wants_soil` is a real Intent Router category with zero implementation behind it |
 | Disease intent, no photo attached (Q1, Q5, Q12, Q14) | 4 | Expected/correct -- this test set is intentionally text-only; the real app requires a photo for disease questions |
 | No intent detected -- a greeting (Q13) | 1 | Expected/correct -- there is nothing to answer |
-| **Conflict Resolver rule-table gap (Q10)** | 1 | **Genuine bug-adjacent finding**, see below |
+| **Conflict Resolver rule-table gap (Q10)** | 1 | **Genuine bug-adjacent finding -- FIXED 2026-09-13**, see below |
 
-- **The Conflict Resolver gap, precisely diagnosed**: Q10 ("Should I sell
-  or hold, considering price and weather?") returns `weather_state=rain_risk`,
-  `price_state=sell_now`, `disease_state=None`. `orchestrator/conflict_resolver.py`'s
-  rule table has an entry for `(None, "rain_risk", "hold")` but **no entry
-  for `(None, "rain_risk", "sell_now")`** -- an asymmetric gap (one price
-  state covered, the other not) that falls through to the generic
-  low-confidence fallback instead of a real (possibly still-conflicting,
-  but at least *addressed*) answer. This is a small, precisely-located,
-  fixable gap in the rule table, not a systemic design flaw -- flagged
-  here rather than fixed silently, since a paper's evaluation section is
-  exactly where this kind of finding belongs.
+- **The Conflict Resolver gap, precisely diagnosed and now fixed**: Q10
+  ("Should I sell or hold, considering price and weather?") returns
+  `weather_state=rain_risk`, `price_state=sell_now`, `disease_state=None`.
+  `orchestrator/conflict_resolver.py`'s rule table had an entry for
+  `(None, "rain_risk", "hold")` but **no entry for
+  `(None, "rain_risk", "sell_now")`** -- an asymmetric gap (one price
+  state covered, the other not) that fell through to the generic
+  low-confidence fallback instead of a real answer. This was a small,
+  precisely-located, fixable gap in the rule table, not a systemic design
+  flaw -- flagged here rather than fixed silently when first found, since
+  a paper's evaluation section is exactly where this kind of finding
+  belongs. **Fixed as Phase 8.1 metric #5**: added to the rule table
+  (weather and price agree here -- both point to harvesting now -- so
+  it's resolved as a synergy case, `is_conflict=False`, `harvest_now`,
+  High confidence, not a conflict needing arbitration) and added as
+  scenario 13 in `tests/conflict_scenarios.json`, a permanent regression
+  test (now part of the 13/13 pass rate in Sec. 2.0/2.2). See
+  `docs/evidence/metric5_conflict_rule_table_evidence.json` for the
+  updated evidence.
 - **Important scope caveat**: the 43.8% figure is an artifact of this
   test's text-only, no-Soil-Agent setup, not a general "56% of farmer
   questions get no answer" claim -- 7 of the 9 fallbacks are correct,
@@ -404,7 +414,7 @@ other two, noted honestly rather than inferred).
 | Dimension | Krishi-Agent | Farmer.Chat | Krishi Sathi | Raithubot |
 |---|---|---|---|---|
 | Architecture | Multi-agent + explicit rule-based Conflict Resolver | RAG + multi-agent orchestration (Planning/Execution/Tooling agents) | Multi-turn RAG with intent-aware context retrieval | Single RLHF-fine-tuned LLM (Pythia-2.8B) |
-| Explicit conflict resolution across advice types (weather/price/disease) | **Yes** -- rule table, 12/12 on synthetic tests, 1 real gap found and precisely diagnosed (Sec. 2.7) | Not described in the paper | Not described | Not described |
+| Explicit conflict resolution across advice types (weather/price/disease) | **Yes** -- rule table, 13/13 on synthetic tests; 1 real gap found via live-data testing (Sec. 2.7) and fixed | Not described in the paper | Not described | Not described |
 | Disease/pest diagnosis | Own trained, fine-tuned CV model, in-pipeline (Sec. 2.5, honestly measured at 37.65%) | Delegated to a third-party service (Plantix) | Not described | Not described |
 | Confidence/uncertainty shown to the user | **Yes** -- hedged phrasing templates + a UI confidence indicator, both keyed to the real underlying confidence level | Not described (feedback is retrospective thumbs-up/down, not prospective confidence) | Not described | Not described |
 | Languages | Telugu (bilingual UI) | 6 languages incl. Telugu, deployed across 4 countries | Not specified in available sources | Telugu, Hindi, English |

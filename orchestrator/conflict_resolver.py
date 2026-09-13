@@ -29,6 +29,23 @@ RULES = {
         "action": "Harvest early to protect crop from storm; note price is trending up",
         "confidence": "High",
     },
+    # Fixed Sep 2026 (Phase 8.1, metric #5 evidence work): this combination
+    # was missing entirely -- a real farmer question ("Should I sell or
+    # hold, considering price and weather?" with no disease intent) fell
+    # through to FALLBACK's generic unresolved-conflict answer instead of
+    # a real one, found via live-data pipeline testing (see
+    # docs/evaluation_and_validation.md Sec. 2.7). Unlike the sibling
+    # (None, rain_risk, hold) entry above -- which IS a real conflict
+    # (weather urgency overriding a price signal to wait) -- weather and
+    # price AGREE here (both point to harvesting now), so this is a
+    # synergy case, not a conflict: is_conflict=False, matching the
+    # existing treat_now_synergy pattern's precedent.
+    (None, "rain_risk", "sell_now"): {
+        "is_conflict": False,
+        "resolution": "harvest_now",
+        "action": "Harvest now — storm risk and a good sell price both point the same way, no real conflict here",
+        "confidence": "High",
+    },
     ("treat_now", None, "sell_now"): {
         "is_conflict": True,
         "resolution": "treat_first",
