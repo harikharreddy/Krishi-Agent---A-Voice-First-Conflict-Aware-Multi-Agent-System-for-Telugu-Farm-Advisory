@@ -285,8 +285,43 @@ n=71 test set is **not a directly comparable number to the deployed
 model's 37.65% on n=85** -- different test-set composition (2 fewer
 classes represented), not just a different checkpoint. Do not cite these
 side by side as an apples-to-apples improvement/regression claim without
-this caveat. Recommend checking the content-hash dedup step (or whichever
-stage builds this run's class-to-folder mapping) for why `Tomato_healthy`
-and `Tomato_YellowLeaf_Curl_Virus` specifically dropped to zero before the
-next fine-tuning round -- flagged here as an actionable, well-evidenced
-lead, not a vague concern.
+this caveat.
+
+**Root cause, investigated and confirmed (2026-09-14) -- NOT genuine
+content-hash dedup, a mapping/loading bug.** Checked directly against
+`data/plantdoc_raw` rather than assumed either way, per the two
+hypotheses worth distinguishing (correct-but-unlucky dedup vs. a bug):
+
+- **Ruled out by arithmetic alone, before any file was even opened**:
+  the evidence file's own `duplicates_removed_from_train` is **6**,
+  dataset-wide, across all 13 classes. The raw PlantDoc folders for
+  these two classes hold **55** (`Tomato leaf`, i.e. `Tomato_healthy`)
+  and **70** (`Tomato leaf yellow virus`) train images respectively --
+  125 combined. A dedup budget of 6 cannot possibly explain 125 images
+  vanishing from two classes; every other class's post-dedup count in
+  the evidence file (101, 79, 101, 85, 140, 44, 109, 97) already matches
+  its raw folder's image count almost exactly, confirming dedup only
+  ever removed a small handful, consistent with the reported 6.
+- **Ruled out by content hash**: SHA-256'd every image in both raw train
+  folders. `Tomato_healthy`: 55/55 hashes unique (0 internal duplicates),
+  0 matches against its own test folder, 0 matches against any other
+  class's train images. `Tomato_YellowLeaf_Curl_Virus`: 70/70 unique, 1
+  single match against its own test folder (a legitimate, minor dedup
+  candidate -- consistent with the small reported total), 0 cross-class
+  matches. No wholesale duplication exists anywhere for either class.
+- **Ruled out file corruption as a silent-skip cause**: opened and
+  verified all 125 images (`PIL.Image.verify()`) -- 0 corrupt or
+  unopenable files, all valid JPEGs.
+
+With genuine deduplication, and corruption, both directly ruled out by
+evidence rather than assumed, the remaining explanation is a **class-
+inclusion or folder-to-class mapping bug specific to this run's data-
+loading script** (not present in this repo -- it ran in a separate
+session) that excluded these two folders from being loaded at all,
+upstream of wherever content-hash dedup runs. This is not a "some data
+was noisy and got cleaned up correctly" story -- it is a concrete,
+fixable bug: these two folders' 125 real, unique, valid training images
+should have been available to this fine-tune and were not. Recommend
+checking that script's class list / folder-name mapping for these two
+specific entries before the next fine-tuning round -- this is now a
+confirmed defect to fix, not an open question.

@@ -418,15 +418,31 @@ directly: this run's test set totals n=71, and 85 (the established
 test-only set used everywhere else in this document) minus 6
 (`YellowLeaf_Curl_Virus`) minus 8 (`healthy`) equals exactly 71, with
 every other overlapping class count identical between the two sets. This
-is conclusive, not coincidental -- this run's data pipeline (most likely
-its content-hash deduplication step, though the evidence file doesn't
-specify which stage) dropped these two classes entirely from both train
-and test, on top of the two genuinely-structural gaps. **Practical
-consequence**: 32.39%/26.76% here is not directly comparable to the
-deployed model's 37.65% -- the test sets differ in composition (2 fewer
-classes represented, n=71 vs. n=85), not just the checkpoint. Flagged as
-an actionable lead for the next fine-tuning round (check the dedup
-step's handling of these two specific classes), not silently reconciled.
+is conclusive, not coincidental -- this run's data pipeline dropped these
+two classes entirely from both train and test, on top of the two
+genuinely-structural gaps.
+
+**Root cause investigated and confirmed (2026-09-14), not assumed either
+way**: checked directly against `data/plantdoc_raw` whether this was
+correct-but-unlucky content-hash dedup or a bug. Content-hash deduplication
+is ruled out on arithmetic alone -- the evidence file's own
+`duplicates_removed_from_train` is 6, dataset-wide, while the raw
+`Tomato leaf` and `Tomato leaf yellow virus` folders hold 55 and 70 train
+images respectively (125 combined); a budget of 6 cannot explain 125
+images vanishing. Confirmed directly by SHA-256 hashing every image in
+both folders: 0 internal duplicates, 0 cross-class duplicates, only 1
+single match against `Tomato_YellowLeaf_Curl_Virus`'s own test split (a
+minor, legitimate dedup candidate, consistent with the small reported
+total) -- no wholesale duplication anywhere. File corruption was also
+ruled out (`PIL.Image.verify()` on all 125 images: 0 corrupt). The actual
+cause is a **class-inclusion or folder-to-class mapping bug** in this
+run's data-loading script (not present in this repo) that excluded these
+two folders from loading at all -- a concrete, fixable defect, not an
+open question. Full investigation: `docs/evidence/model_lineage.md`'s
+"Row 7" section. **Practical consequence**: 32.39%/26.76% here is not
+directly comparable to the deployed model's 37.65% -- the test sets
+differ in composition (2 fewer classes represented, n=71 vs. n=85), not
+just the checkpoint.
 
 ### Precision / recall / F1, latency, throughput, and model footprint
 
