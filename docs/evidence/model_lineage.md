@@ -18,6 +18,7 @@ which model produced it.
 | 4 | `stage1/2_*_pre_potato_healthy.pt` | Same as #3 + 20 external Target_Spot photos | Same as #3 | n/a | 38.8% (n=85, test-only, held-out) | No (superseded) |
 | 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** |
 | 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) |
+| 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | **32.39% best (epoch 11) / 26.76% final (epoch 19, early-stopped)** — n=71, NOT the established n=85 test-only set; see discrepancy note below | No (flat-architecture fine-tune, evaluated separately from the deployed hierarchical row 5; not a drop-in comparison to 37.65%) |
 
 Rows 3-5 all used PlantDoc's **train** split for fine-tuning and held out
 the **test** split completely throughout (verified: same 85 test-only
@@ -220,3 +221,72 @@ the one genuine finding was an ASR transliteration of "pH" flipping the
 intent router's classification; a second apparent mismatch was
 investigated and settled as a live Price API fluctuation, not a
 pipeline effect.
+
+## Row 7 — extended clean PlantDoc fine-tune, best-checkpoint tracked (2026-09-14)
+
+Full evidence: `docs/evidence/plantdoc_finetune_evidence.json`. Checkpoint:
+`agents/disease/checkpoints/disease_agent_plantdoc_finetuned_best.pt`.
+Base: row 6 (the independently-trained flat "v2" checkpoint), fine-tuned
+on PlantDoc's native train split (content-hash deduped, 6 duplicates
+removed) with best-checkpoint tracking and early stopping added this
+round — a methodology improvement over rows 3-5's final-epoch-only
+selection.
+
+**Overfitting pattern, and why best-checkpoint tracking exists**: test
+accuracy peaked at epoch 11 (32.39%) and *declined* over the remaining 8
+epochs to 26.76% at epoch 19 (early-stopped), while train accuracy kept
+climbing the whole time (25.5% -> 28.7% across those same epochs) — a
+textbook overfitting-after-peak signature, visible directly in
+`training_history_full`. This is exactly the failure mode best-checkpoint
+tracking is meant to catch: a final-epoch-only evaluation on this run
+would have reported 26.76%, 5.6 points below what the model actually
+achieved at its best point. Both numbers are reported together
+deliberately, per the evidence file's own `honest_note`: with only 71 test
+images (~1.4 points per image), best-epoch selection out of 19 epochs
+carries real risk of picking a lucky noise peak rather than a true
+improvement — reporting best alone would overstate confidence in 32.39%
+specifically.
+
+**Class coverage differs from the deployed model's — NOT "the same 4
+classes," investigated and characterized precisely.** This run's
+`classes_with_zero_train_images` lists 4 classes (`Tomato__Target_Spot`,
+`Tomato__Tomato_YellowLeaf__Curl_Virus`, `Tomato_healthy`,
+`Potato___healthy`). That is a **different, larger set** than the
+previously-established "2 classes with zero real-world data anywhere"
+(`Potato___healthy` and `Tomato__Target_Spot` — see
+`docs/evaluation_and_validation.md`'s Disease Agent section) for the
+*deployed* model. Two of these four are genuinely structural and
+consistent with prior findings: `Potato___healthy` and `Target_Spot` have
+no PlantDoc images anywhere (train or test) in *any* run this project has
+evaluated, deployed model included — this part of the "4" is real and
+consistent.
+
+The other two are not a continuation of anything previously documented,
+and were verified, not assumed: `Tomato_healthy` and
+`Tomato__Tomato_YellowLeaf__Curl_Virus` **do** have real PlantDoc images
+-- the deployed model's own per-class table
+(`docs/evaluation_and_validation.md` Sec. 2.5) reports real accuracy
+numbers for both (`Tomato_healthy`: 37.5%, n=8; `Tomato_YellowLeaf_Curl_Virus`:
+66.7%, n=6), and this checkpoint's own base model (row 6) was evaluated
+zero-shot against these same PlantDoc folders earlier this project. Cross-
+checked the arithmetic directly: this run's test set totals n=71, and
+`established n=85 test-only set minus (YellowLeafCurl_Virus n=6 + healthy
+n=8) = 71` exactly, with every other overlapping class count identical
+between the two sets (Bacterial_spot 9=9, Early_blight 9=9, Late_blight
+10=10, Leaf_Mold 6=6, Septoria 11=11, mosaic_virus 10=10,
+Potato_Early_blight 8=8, Potato_Late_blight 8=8). This is conclusive, not
+coincidental: this run's data pipeline (most likely the "content-hash
+dedup" step, though the evidence file doesn't say which stage) dropped
+`Tomato_healthy` and `Tomato_YellowLeaf_Curl_Virus` entirely from both
+train and test, on top of the 2 genuinely-structural gaps.
+
+**Practical consequence, stated plainly**: 32.39%/26.76% on this run's
+n=71 test set is **not a directly comparable number to the deployed
+model's 37.65% on n=85** -- different test-set composition (2 fewer
+classes represented), not just a different checkpoint. Do not cite these
+side by side as an apples-to-apples improvement/regression claim without
+this caveat. Recommend checking the content-hash dedup step (or whichever
+stage builds this run's class-to-folder mapping) for why `Tomato_healthy`
+and `Tomato_YellowLeaf_Curl_Virus` specifically dropped to zero before the
+next fine-tuning round -- flagged here as an actionable, well-evidenced
+lead, not a vague concern.

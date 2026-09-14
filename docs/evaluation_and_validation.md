@@ -360,6 +360,74 @@ A first Target_Spot attempt (5 photos only) was tried, scored 0/2, and was
 20-photo attempt that *was* promoted, as an explicit before/after
 comparison of "not enough data" vs. "somewhat more data, still not enough."
 
+### Row 7 fine-tune (extended, best-checkpoint tracked) -- exploratory, not the deployed model
+
+A separate fine-tune, built on model lineage row 6 (the independently-
+trained flat "v2" checkpoint), not on the deployed hierarchical row 5 --
+full provenance and the class-coverage discrepancy below in
+`docs/evidence/model_lineage.md`'s "Row 7" section. Evidence:
+`docs/evidence/plantdoc_finetune_evidence.json`. Checkpoint:
+`agents/disease/checkpoints/disease_agent_plantdoc_finetuned_best.pt`
+(not currently loaded by `orchestrator/pipeline.py`).
+
+**Best vs. final epoch, and why both are reported**: test accuracy peaked
+at **epoch 11 (32.39%)**, then declined over 8 more epochs to **epoch 19
+(26.76%, early-stopped)** while train accuracy kept climbing the entire
+time -- a clean overfitting-after-peak signature, the specific reason
+best-checkpoint tracking and early stopping were added this round (rows
+3-5 selected on final epoch only). Reporting final alone would have
+understated the model's best achieved result by 5.6 points; reporting
+best alone would overstate confidence in a single epoch out of 19 on a
+small test set. Both are reported together, per the evidence file's own
+caveat.
+
+**Per-class recall at the best checkpoint (epoch 11)**:
+
+| Class | Recall | n (test) |
+|---|---|---|
+| `Tomato_Leaf_Mold` | 50.0% | 6 |
+| `Tomato_Septoria_leaf_spot` | 54.5% | 11 |
+| `Tomato_Early_blight` | 44.4% | 9 |
+| `Tomato_Late_blight` | 40.0% | 10 |
+| `Potato___Early_blight` | 37.5% | 8 |
+| `Potato___Late_blight` | 25.0% | 8 |
+| `Tomato_Mosaic_virus` | 10.0% | 10 |
+| `Tomato_Bacterial_spot` | 0.0% | 9 |
+
+**Same small-sample-size caveat as every other per-class table in this
+document**: n=6-11 per class -- each individual test image is worth
+roughly 9-17 percentage points of that class's own recall. `0.0%` on
+`Tomato_Bacterial_spot` (0/9) and `10.0%` on `Tomato_Mosaic_virus` (1/10)
+are not statistically distinguishable from several-times-better results
+at this n; read the ranking as directional, not precise.
+
+**Class coverage: NOT "the same classes as the deployed model," verified
+via direct arithmetic, not assumed.** Four classes have zero training
+images in this run (`Potato___healthy`, `Tomato__Target_Spot`,
+`Tomato_healthy`, `Tomato__Tomato_YellowLeaf__Curl_Virus`) and are
+therefore structurally untestable here -- the model had no opportunity to
+learn them. Only **two** of these four match the previously-established
+"classes with zero real-world data anywhere" finding above
+(`Potato___healthy`, `Target_Spot`) -- consistent with prior work. The
+other two, `Tomato_healthy` and `Tomato_YellowLeaf_Curl_Virus`, are **not**
+a continuation of anything previously documented: this document's own
+per-class table above (current deployed model) reports real accuracy for
+both (`Tomato_healthy` 37.5% n=8, `Tomato_YellowLeaf_Curl_Virus` 66.7%
+n=6), meaning PlantDoc genuinely has images for these classes. Checked
+directly: this run's test set totals n=71, and 85 (the established
+test-only set used everywhere else in this document) minus 6
+(`YellowLeaf_Curl_Virus`) minus 8 (`healthy`) equals exactly 71, with
+every other overlapping class count identical between the two sets. This
+is conclusive, not coincidental -- this run's data pipeline (most likely
+its content-hash deduplication step, though the evidence file doesn't
+specify which stage) dropped these two classes entirely from both train
+and test, on top of the two genuinely-structural gaps. **Practical
+consequence**: 32.39%/26.76% here is not directly comparable to the
+deployed model's 37.65% -- the test sets differ in composition (2 fewer
+classes represented, n=71 vs. n=85), not just the checkpoint. Flagged as
+an actionable lead for the next fine-tuning round (check the dedup
+step's handling of these two specific classes), not silently reconciled.
+
 ### Precision / recall / F1, latency, throughput, and model footprint
 
 Accuracy alone doesn't show false-positive/false-negative balance, and

@@ -1,0 +1,276 @@
+{
+  "method": "Clean PlantDoc fine-tune, native split, content-hash deduped, fixed 13-class output, BEST-CHECKPOINT TRACKED (not just final epoch)",
+  "base_checkpoint": "disease_agent_efficientnetb0.pt (v2, 99.87% PlantVillage, zero-shot)",
+  "duplicates_removed_from_train": 6,
+  "fine_tune_train_counts_after_dedup": {
+    "Tomato___Bacterial_spot": 101,
+    "Tomato___Early_blight": 79,
+    "Tomato___Late_blight": 101,
+    "Tomato___Leaf_Mold": 85,
+    "Tomato___Septoria_leaf_spot": 140,
+    "Tomato___Spider_mites": 2,
+    "Tomato___Target_Spot": 0,
+    "Tomato___Yellow_Leaf_Curl_Virus": 0,
+    "Tomato___Mosaic_virus": 44,
+    "Tomato___healthy": 0,
+    "Potato___Early_blight": 109,
+    "Potato___Late_blight": 97,
+    "Potato___healthy": 0
+  },
+  "fine_tune_test_counts": {
+    "Tomato___Bacterial_spot": 9,
+    "Tomato___Early_blight": 9,
+    "Tomato___Late_blight": 10,
+    "Tomato___Leaf_Mold": 6,
+    "Tomato___Septoria_leaf_spot": 11,
+    "Tomato___Spider_mites": 0,
+    "Tomato___Target_Spot": 0,
+    "Tomato___Yellow_Leaf_Curl_Virus": 0,
+    "Tomato___Mosaic_virus": 10,
+    "Tomato___healthy": 0,
+    "Potato___Early_blight": 8,
+    "Potato___Late_blight": 8,
+    "Potato___healthy": 0
+  },
+  "classes_with_zero_train_images": [
+    "Tomato___Target_Spot",
+    "Tomato___Yellow_Leaf_Curl_Virus",
+    "Tomato___healthy",
+    "Potato___healthy"
+  ],
+  "classes_with_zero_test_images": [
+    "Tomato___Spider_mites",
+    "Tomato___Target_Spot",
+    "Tomato___Yellow_Leaf_Curl_Virus",
+    "Tomato___healthy",
+    "Potato___healthy"
+  ],
+  "best_epoch": 11,
+  "best_test_accuracy": 0.323943661971831,
+  "final_epoch_number": 19,
+  "final_epoch_test_accuracy": 0.2676056338028169,
+  "early_stopped": true,
+  "per_class_results_at_best_epoch": {
+    "Potato___Early_blight": {
+      "n_test": 8,
+      "correct": 3,
+      "recall": 0.375,
+      "had_finetune_data": true
+    },
+    "Potato___Late_blight": {
+      "n_test": 8,
+      "correct": 2,
+      "recall": 0.25,
+      "had_finetune_data": true
+    },
+    "Potato___healthy": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null,
+      "had_finetune_data": false
+    },
+    "Tomato___Bacterial_spot": {
+      "n_test": 9,
+      "correct": 0,
+      "recall": 0.0,
+      "had_finetune_data": true
+    },
+    "Tomato___Early_blight": {
+      "n_test": 9,
+      "correct": 4,
+      "recall": 0.4444444444444444,
+      "had_finetune_data": true
+    },
+    "Tomato___Late_blight": {
+      "n_test": 10,
+      "correct": 4,
+      "recall": 0.4,
+      "had_finetune_data": true
+    },
+    "Tomato___Leaf_Mold": {
+      "n_test": 6,
+      "correct": 3,
+      "recall": 0.5,
+      "had_finetune_data": true
+    },
+    "Tomato___Mosaic_virus": {
+      "n_test": 10,
+      "correct": 1,
+      "recall": 0.1,
+      "had_finetune_data": true
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "n_test": 11,
+      "correct": 6,
+      "recall": 0.5454545454545454,
+      "had_finetune_data": true
+    },
+    "Tomato___Spider_mites": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null,
+      "had_finetune_data": true
+    },
+    "Tomato___Target_Spot": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null,
+      "had_finetune_data": false
+    },
+    "Tomato___Yellow_Leaf_Curl_Virus": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null,
+      "had_finetune_data": false
+    },
+    "Tomato___healthy": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null,
+      "had_finetune_data": false
+    }
+  },
+  "training_history_full": [
+    {
+      "epoch": 1,
+      "train_loss": 4.015925869028619,
+      "train_acc": 0.16622340425531915,
+      "test_loss": 3.8111369710573006,
+      "test_acc": 0.23943661971830985
+    },
+    {
+      "epoch": 2,
+      "train_loss": 3.8416372715158666,
+      "train_acc": 0.17952127659574468,
+      "test_loss": 3.693494568408375,
+      "test_acc": 0.22535211267605634
+    },
+    {
+      "epoch": 3,
+      "train_loss": 3.6887068291927907,
+      "train_acc": 0.19547872340425532,
+      "test_loss": 3.597405876911862,
+      "test_acc": 0.22535211267605634
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.614727623919223,
+      "train_acc": 0.1875,
+      "test_loss": 3.515929685512059,
+      "test_acc": 0.23943661971830985
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.491103030265646,
+      "train_acc": 0.2154255319148936,
+      "test_loss": 3.4244269384464747,
+      "test_acc": 0.23943661971830985
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.3772229894678643,
+      "train_acc": 0.2220744680851064,
+      "test_loss": 3.3360012081307424,
+      "test_acc": 0.23943661971830985
+    },
+    {
+      "epoch": 7,
+      "train_loss": 3.290500326359526,
+      "train_acc": 0.21941489361702127,
+      "test_loss": 3.2768567918052134,
+      "test_acc": 0.23943661971830985
+    },
+    {
+      "epoch": 8,
+      "train_loss": 3.2622092531082476,
+      "train_acc": 0.23138297872340424,
+      "test_loss": 3.210160691973189,
+      "test_acc": 0.2535211267605634
+    },
+    {
+      "epoch": 9,
+      "train_loss": 3.2040145904459854,
+      "train_acc": 0.23537234042553193,
+      "test_loss": 3.1707288513720875,
+      "test_acc": 0.2535211267605634
+    },
+    {
+      "epoch": 10,
+      "train_loss": 3.1212961699100252,
+      "train_acc": 0.24202127659574468,
+      "test_loss": 3.128141765863123,
+      "test_acc": 0.2535211267605634
+    },
+    {
+      "epoch": 11,
+      "train_loss": 3.0960111947769815,
+      "train_acc": 0.2553191489361702,
+      "test_loss": 3.1111619506083743,
+      "test_acc": 0.323943661971831
+    },
+    {
+      "epoch": 12,
+      "train_loss": 3.068889191810121,
+      "train_acc": 0.25930851063829785,
+      "test_loss": 3.069250184045711,
+      "test_acc": 0.2676056338028169
+    },
+    {
+      "epoch": 13,
+      "train_loss": 3.0336147394586117,
+      "train_acc": 0.23803191489361702,
+      "test_loss": 3.0311525170232207,
+      "test_acc": 0.2676056338028169
+    },
+    {
+      "epoch": 14,
+      "train_loss": 3.000408038179925,
+      "train_acc": 0.2526595744680851,
+      "test_loss": 3.0089298033378493,
+      "test_acc": 0.29577464788732394
+    },
+    {
+      "epoch": 15,
+      "train_loss": 2.98391658955432,
+      "train_acc": 0.24601063829787234,
+      "test_loss": 2.9953363646923656,
+      "test_acc": 0.29577464788732394
+    },
+    {
+      "epoch": 16,
+      "train_loss": 2.9193963218242565,
+      "train_acc": 0.2699468085106383,
+      "test_loss": 2.982659766371821,
+      "test_acc": 0.29577464788732394
+    },
+    {
+      "epoch": 17,
+      "train_loss": 2.9442174865844404,
+      "train_acc": 0.2553191489361702,
+      "test_loss": 2.963682403027172,
+      "test_acc": 0.2676056338028169
+    },
+    {
+      "epoch": 18,
+      "train_loss": 2.9015607098315623,
+      "train_acc": 0.28191489361702127,
+      "test_loss": 2.964824018344073,
+      "test_acc": 0.2535211267605634
+    },
+    {
+      "epoch": 19,
+      "train_loss": 2.8411957963984062,
+      "train_acc": 0.2872340425531915,
+      "test_loss": 2.951994130309199,
+      "test_acc": 0.2676056338028169
+    }
+  ],
+  "hyperparameters": {
+    "base_lr": 1e-05,
+    "max_epochs": 25,
+    "early_stop_patience": 8,
+    "label_smoothing": 0.1,
+    "class_weighted_loss": true
+  },
+  "honest_note": "Test set is only 71 images \u2014 each image is worth roughly 1.4 percentage points. Epoch-to-epoch swings of several points are expected noise at this sample size. Best-epoch selection out of many epochs carries some risk of picking a lucky noise peak rather than a true improvement \u2014 report both best and final numbers together, not best alone."
+}
