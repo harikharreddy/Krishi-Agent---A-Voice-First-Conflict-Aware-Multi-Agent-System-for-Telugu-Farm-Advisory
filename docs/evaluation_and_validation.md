@@ -360,7 +360,19 @@ A first Target_Spot attempt (5 photos only) was tried, scored 0/2, and was
 20-photo attempt that *was* promoted, as an explicit before/after
 comparison of "not enough data" vs. "somewhat more data, still not enough."
 
-### Row 7 fine-tune (extended, best-checkpoint tracked) -- exploratory, not the deployed model
+### Row 7 fine-tune (extended, best-checkpoint tracked) -- INVALID FOR HEADLINE REPORTING, bug-confirmed
+
+**Do not cite the numbers in this subsection as a comparison against the
+deployed model's 37.65% or any zero-shot baseline.** Kept here for
+transparency and reproducibility only, same treatment as the earlier
+train/test-contamination finding
+(`docs/evidence/metric6_confidence_calibration_evidence.json`'s
+`CRITICAL_METHODOLOGY_FLAG`). A confirmed data-loading bug (not
+correct-but-unlucky deduplication -- investigated and ruled out below)
+silently dropped 2 of 13 classes from this run's test set entirely, so
+its accuracy numbers measure something structurally different from
+every other figure in this document, not a harder or easier version of
+the same benchmark.
 
 A separate fine-tune, built on model lineage row 6 (the independently-
 trained flat "v2" checkpoint), not on the deployed hierarchical row 5 --

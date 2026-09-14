@@ -1,4 +1,5 @@
 {
+  "reporting_status": "INVALID FOR HEADLINE REPORTING -- BUG-CONFIRMED, kept for transparency only. Do NOT cite 32.39% (best, epoch 11) or 26.76% (final, epoch 19) as a comparison point against the deployed model (37.65%, n=85) or any zero-shot baseline. Root cause confirmed 2026-09-14 (see docs/evidence/model_lineage.md's Row 7 section): this run's data-loading script silently dropped Tomato_healthy (55 train / 8 test images) and Tomato_YellowLeaf_Curl_Virus (70 train / 6 test images) entirely -- a confirmed class-inclusion/folder-mapping bug, verified NOT to be genuine content-hash deduplication (arithmetic: 6 total dataset-wide dedups cannot explain 125 images vanishing from 2 classes; content hash: 0 internal/cross-class duplicates in either folder; file integrity: 0 corrupt images). The test set this run scored against (n=71) is missing 2 of 13 classes entirely -- not because those classes are harder, but because the model was never shown or tested on them. Any accuracy number from this run is measured against an incomplete, non-standard test set and cannot be compared to the established n=85 13-class test set used everywhere else in this project's evaluation.",
   "method": "Clean PlantDoc fine-tune, native split, content-hash deduped, fixed 13-class output, BEST-CHECKPOINT TRACKED (not just final epoch)",
   "base_checkpoint": "disease_agent_efficientnetb0.pt (v2, 99.87% PlantVillage, zero-shot)",
   "duplicates_removed_from_train": 6,
@@ -272,5 +273,5 @@
     "label_smoothing": 0.1,
     "class_weighted_loss": true
   },
-  "honest_note": "Test set is only 71 images \u2014 each image is worth roughly 1.4 percentage points. Epoch-to-epoch swings of several points are expected noise at this sample size. Best-epoch selection out of many epochs carries some risk of picking a lucky noise peak rather than a true improvement \u2014 report both best and final numbers together, not best alone."
+  "honest_note": "Test set is only 71 images — each image is worth roughly 1.4 percentage points. Epoch-to-epoch swings of several points are expected noise at this sample size. Best-epoch selection out of many epochs carries some risk of picking a lucky noise peak rather than a true improvement — report both best and final numbers together, not best alone."
 }

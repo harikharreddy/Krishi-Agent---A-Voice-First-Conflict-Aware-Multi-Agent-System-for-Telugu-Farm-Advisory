@@ -18,7 +18,7 @@ which model produced it.
 | 4 | `stage1/2_*_pre_potato_healthy.pt` | Same as #3 + 20 external Target_Spot photos | Same as #3 | n/a | 38.8% (n=85, test-only, held-out) | No (superseded) |
 | 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** |
 | 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) |
-| 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | **32.39% best (epoch 11) / 26.76% final (epoch 19, early-stopped)** — n=71, NOT the established n=85 test-only set; see discrepancy note below | No (flat-architecture fine-tune, evaluated separately from the deployed hierarchical row 5; not a drop-in comparison to 37.65%) |
+| 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | ~~32.39% best / 26.76% final~~ **INVALID FOR HEADLINE REPORTING — bug-confirmed, n=71 on a test set silently missing 2 of 13 classes; kept for transparency only, see below** | No — not deployed, and not citable as a comparison point |
 
 Rows 3-5 all used PlantDoc's **train** split for fine-tuning and held out
 the **test** split completely throughout (verified: same 85 test-only
@@ -224,6 +224,18 @@ pipeline effect.
 
 ## Row 7 — extended clean PlantDoc fine-tune, best-checkpoint tracked (2026-09-14)
 
+**INVALID FOR HEADLINE REPORTING — bug-confirmed, kept for transparency
+only.** Same treatment as the earlier train/test-contamination finding
+(`docs/evidence/metric6_confidence_calibration_evidence.json`'s
+`CRITICAL_METHODOLOGY_FLAG`): this run's 32.39%/26.76% numbers are
+documented below in full, but must **not** be cited as a comparison
+point against the deployed model's 37.65% or against any zero-shot
+baseline. The root-cause investigation later in this section confirms a
+data-loading bug silently dropped 2 of 13 classes from this run's test
+set entirely — the numbers below measure something structurally
+different from every other accuracy figure in this project's evaluation,
+not a harder or easier version of the same test.
+
 Full evidence: `docs/evidence/plantdoc_finetune_evidence.json`. Checkpoint:
 `agents/disease/checkpoints/disease_agent_plantdoc_finetuned_best.pt`.
 Base: row 6 (the independently-trained flat "v2" checkpoint), fine-tuned
@@ -281,11 +293,13 @@ dedup" step, though the evidence file doesn't say which stage) dropped
 train and test, on top of the 2 genuinely-structural gaps.
 
 **Practical consequence, stated plainly**: 32.39%/26.76% on this run's
-n=71 test set is **not a directly comparable number to the deployed
-model's 37.65% on n=85** -- different test-set composition (2 fewer
-classes represented), not just a different checkpoint. Do not cite these
-side by side as an apples-to-apples improvement/regression claim without
-this caveat.
+n=71 test set is **not a valid comparison number against the deployed
+model's 37.65% on n=85, or against any zero-shot baseline** -- the test
+set is missing 2 of 13 classes entirely, not measuring a harder or
+easier version of the same benchmark. Per the root-cause investigation
+below (bug confirmed, not correct-but-unlucky dedup), this row is
+**INVALID FOR HEADLINE REPORTING** and exists in this document for
+transparency and reproducibility only.
 
 **Root cause, investigated and confirmed (2026-09-14) -- NOT genuine
 content-hash dedup, a mapping/loading bug.** Checked directly against
