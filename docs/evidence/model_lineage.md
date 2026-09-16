@@ -194,6 +194,39 @@ checkpoints independently defaulting to blight-type diagnoses) is now
 also supported by the aggregate accuracy number landing in a tight range
 across genuinely independent runs, not just one model's idiosyncrasy.
 
+**Formally tested, not just eyeballed (2026-09-16)**: the descriptive
+convergence above was pulled forward from the Post-Defense Journal
+Extension Roadmap and actually run —
+`agents/disease/mcnemar_test_zero_shot_checkpoints.py` /
+`docs/evidence/mcnemar_zero_shot_checkpoint_comparison_evidence.json`.
+McNemar's test (the correct tool for paired binary outcomes — same
+images, correct/incorrect per checkpoint — not independent-sample
+comparison) on each pairwise combination:
+
+| Pair | n (shared images) | Discordant pairs | Test | Statistic | p-value | Significant? |
+|---|---|---|---|---|---|---|
+| Row 1 vs Row 2 | 967 | 168 | chi-square, continuity-corrected | 1.006 | 0.316 | No |
+| Row 1 vs Row 6 | 965 | 163 | chi-square, continuity-corrected | 0.098 | 0.754 | No |
+| Row 2 vs Row 6 | 965 | 179 | chi-square, continuity-corrected | 1.810 | 0.179 | No |
+
+**All three pairwise comparisons are non-significant (p ≥ 0.05).** This
+is genuine statistical support, not a stronger-worded restatement of the
+descriptive finding — the null hypothesis (these two checkpoints have
+the same underlying accuracy) cannot be rejected for any pair on this
+paired sample. Image-set identity was verified before testing, not
+assumed: row 1 and row 2 use the exact same 967-image set (checked via
+set equality on the image path, not just matching counts); row 6 is a
+strict subset missing exactly the same 2 images already flagged in
+`metric1_v2_checkpoint_evidence.json`'s discrepancy note — each pair
+involving row 6 is tested on the actual 965-image intersection, not
+assumed to align with rows 1/2's 967. Test variant (exact binomial vs.
+chi-square) was checked per pair via the discordant-pair count (all
+three comfortably exceeded the 25-pair threshold for a reliable
+chi-square approximation, so chi-square with continuity correction was
+used throughout, not defaulted to without checking). Not corrected for
+multiple comparisons (3 tests at α=0.05) — noted as a caveat in the
+evidence file, not hidden.
+
 ## Metric #6 — CLOSED, final decision recorded (2026-09-13)
 
 Full evidence in `docs/evidence/metric6_confidence_calibration_evidence.json`
