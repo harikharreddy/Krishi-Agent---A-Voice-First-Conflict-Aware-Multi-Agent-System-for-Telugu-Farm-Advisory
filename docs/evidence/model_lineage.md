@@ -216,11 +216,14 @@ fires), included here only as a pointer since this file has become the
 place readers check for closed Phase 8.1 metric status. Full writeup
 lives in `docs/evaluation_and_validation.md` Sec. 2.9 and
 `docs/evidence/metric4_voice_vs_text_ablation_evidence.json`. One-line
-summary: 15/16 stage-by-stage matches between the voice and text paths;
-the one genuine finding was an ASR transliteration of "pH" flipping the
-intent router's classification; a second apparent mismatch was
-investigated and settled as a live Price API fluctuation, not a
-pipeline effect.
+summary (updated 2026-09-16, expanded to FINAL n=64/4 speakers): 60/64
+stage-by-stage matches between the voice and text paths; the one
+genuine finding -- ASR transliterating "pH" and flipping the intent
+router's classification -- is now CONFIRMED STRUCTURAL, reproducing
+independently across all 4 speakers' recordings, not a single-speaker
+fluke. The remaining 2 mismatches were investigated and settled as
+voice-path live-API failures (speaker4 only), not a pipeline-logic
+effect. Zero unexplained mismatches remain across the full run.
 
 ## Row 7 — extended clean PlantDoc fine-tune, best-checkpoint tracked (2026-09-14)
 

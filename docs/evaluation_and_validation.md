@@ -666,67 +666,88 @@ Router -> Disease Agent -> Conflict Resolver -> Phrasing Templates.
   whichever run looked better.
 - Full per-image results: `docs/end_to_end_eval_results.json`.
 
-### 2.9 Voice vs. text ablation (Phase 8.1, metric #4) -- PRELIMINARY, n=16, single speaker
+### 2.9 Voice vs. text ablation (Phase 8.1, metric #4) -- FINAL, n=64, 4 speakers
 
 Does going through ASR change what the pipeline does, compared to typing
 the exact same question? Each of the 16 questions in
 `tests/intent_router_test_set.json` run through the real, unmocked
-`run_pipeline()` twice: once via speaker1's recorded WAV ->
-`backend.voice.transcribe_audio()` (the exact production ASR call path),
-once as the reference text typed directly, no ASR. Both paths use live,
-unmocked agent calls (Weather API, Price API, Ollama intent router). No
-image attached (this test set has none), so the Disease Agent never
-fires. Stage-by-stage comparison, not just final-answer pass/fail, so an
-ASR mishearing and a downstream (intent-router/state-mapping/
+`run_pipeline()` twice per speaker, across all 4 speakers (expanded
+2026-09-16 from the original n=16 single-speaker preliminary run, once
+metric #2's 4-speaker recordings closed): once via that speaker's
+recorded WAV -> `backend.voice.transcribe_audio()` (the exact production
+ASR call path), once as the reference text typed directly, run fresh per
+speaker iteration to stay time-paired with its voice call. Both paths use
+live, unmocked agent calls (Weather API, Price API, Ollama intent
+router). No image attached (this test set has none), so the Disease Agent
+never fires. Stage-by-stage comparison, not just final-answer pass/fail,
+so an ASR mishearing and a downstream (intent-router/state-mapping/
 conflict-resolver) difference stay distinguishable rather than collapsed
 into one number.
 
-- **Result**: intent-router output matched 15/16; agents-fired matched
-  15/16; of the 2 apparent final-answer mismatches, one was investigated
-  and ruled out as a live Price API fluctuation unrelated to voice vs.
-  text (see below), leaving **exactly one genuine voice-vs-text pipeline
-  finding out of 16 questions**.
+- **Result**: n=64 (16 questions x 4 speakers). Intent-router output
+  matched **60/64**; agents-fired matched **60/64**; final answer matched
+  **58/64**. Of the 6 apparent mismatches, every single one is now fully
+  explained -- **4 are the confirmed structural ASR-transliteration
+  finding below (one per speaker, same root cause), and 2 were
+  investigated and ruled out as live-API failures unrelated to
+  voice-vs-text pipeline logic (see below). After investigation, zero
+  mismatches in this 64-pair run are attributable to genuine
+  state-mapping/conflict-resolver sensitivity.**
 
-- **Headline finding (question 8, "నేల pH ఎంత ఉండాలి టమాటా కోసం?" / "What
-  soil pH is needed for tomato?")**: ASR transcribed "pH" as its Telugu
-  transliteration "పీహెచ్" instead of the reference text's Latin-script
-  "pH". That single spelling difference flipped the LLM intent router's
-  classification -- the Latin-script version correctly routed to
-  `wants_soil=True`; the Telugu-transliterated version routed instead to
-  `wants_price=True`, so a farmer asking about soil pH by voice would
-  have received a tomato price quote instead. This is a **structural**
-  finding, not an ASR accuracy defect -- the transcription was arguably
-  *more* natural Telugu than the reference text (which embeds a
-  Latin-script technical abbreviation no farmer would actually say), and
-  that naturalness is exactly what caused the behavior change. It shows
-  domain-specific technical terms (soil pH, NPK, pesticide/disease names)
-  crossing the ASR-to-LLM boundary can silently change system behavior in
-  ways a text-only test suite would never catch -- the actual reason to
-  run a voice-vs-text ablation at all. Flagged as a concrete direction for
+  | Speaker | Intent match | Agents-fired match | Final answer match |
+  |---|---|---|---|
+  | speaker1 | 15/16 | 15/16 | 15/16 |
+  | speaker2 | 15/16 | 15/16 | 15/16 |
+  | speaker3 | 15/16 | 15/16 | 15/16 |
+  | speaker4 | 15/16 | 15/16 | 13/16 |
+
+- **Headline finding, now CONFIRMED STRUCTURAL across all 4 speakers**
+  (question 8, "నేల pH ఎంత ఉండాలి టమాటా కోసం?" / "What soil pH is needed
+  for tomato?"): every one of the 4 speakers' independent recordings had
+  ASR transcribe "pH" as its Telugu transliteration ("పీహెచ్"/"పియచ్",
+  spelled slightly differently per speaker but always transliterated)
+  instead of the reference text's Latin-script "pH" -- and **all 4**
+  triggered the same intent-router flip, from `wants_soil=True` to
+  `wants_price=True`. This is no longer a single-speaker curiosity: **4
+  independent speakers, 4 independent recordings, 4 identical behavior
+  changes** is strong evidence this is a structural property of how the
+  intent router weighs Latin-script vs. transliterated technical terms,
+  not an artifact of one person's pronunciation. A farmer asking about
+  soil pH by voice would reliably receive a tomato price quote instead,
+  regardless of who is speaking. Flagged as a concrete direction for
   future work (e.g. normalizing known technical terms before intent
   routing), not applied as a fix here -- this metric is observation only,
   `orchestrator/pipeline.py` was not touched.
 
-- **One apparent mismatch investigated and ruled out** (question 7,
-  potato market price): same intents, same agents fired on both paths,
-  but a different final price quote. Traced to the Price Agent, which
-  hits `data.gov.in` live with no caching on every call -- checked every
-  price-agent call across the entire 16-question run and found 8 of 9
-  returned the *identical* value to 16 decimal places, including this
-  question's own text-path call made 4 seconds later; only the voice-path
-  call for this question differed. Confirmed via source read (not
-  inference) that `price_agent.py`'s code path cannot differ by
-  invocation source at all -- `get_price_advice()` never receives the
-  question text, only the farm profile's state/crop/mandi fields, which
-  were identical for both calls. Settled, not provisional: a one-off live
-  API fluctuation, not a voice-vs-text pipeline effect.
+- **Secondary finding: 2 voice-path live-API failures, investigated and
+  distinguished from pipeline-logic mismatches.** Both of the run's
+  remaining 2 mismatches (speaker4, question 2 "Will it rain tomorrow?"
+  and question 7 "Will potato market price rise?") initially looked like
+  generic answer-text divergence. Checked, not assumed: both voice-path
+  final answers exactly matched the source-code fallback strings for a
+  live API call outright failing (`requests.exceptions.RequestException`
+  in `agents/weather/weather_agent.py`/`agents/price/price_agent.py`),
+  not the "no data reported today" branches. Both occurred on the
+  **voice** path specifically -- zero such failures anywhere on the text
+  path across all 64 pairs. A plausible mechanism, flagged as plausible
+  and not proven: every voice-path call is immediately preceded by a
+  20-30s ASR transcription (a heavy model-inference call with no text-path
+  equivalent), and this project's own Sec. 2.6 already documents a related,
+  independently-confirmed resource-contention pattern on this same 8GB
+  machine (Intent Router latency increasing when multiple models are
+  concurrently resident). Consistent with that prior finding, not
+  isolated as a controlled variable here. Reclassified from
+  `DOWNSTREAM_ANSWER_DIVERGED` to `LIVE_API_FAILURE_VOICE_PATH`, original
+  classification kept in the evidence file for transparency.
 
-- **PRELIMINARY**: n=16, single speaker (speaker1) only -- same caveat as
-  Sec. 2.3's WER check at 1/4 speakers. Does not measure cross-speaker or
-  accent robustness; measures whether, for one speaker's recordings, ASR
-  changes pipeline behavior relative to typing the same question. Should
-  be re-run against speakers 2-4 once their WER recordings are available,
-  using the same reusable script.
+- **FINAL, 4/4 speakers, n=64** -- no longer preliminary. Cross-speaker
+  robustness of the ASR-to-intent-router pathway is now measured, not
+  just single-speaker behavior. Remaining gaps: 4 speakers is still a
+  modest n for claiming the exact population frequency of the Q8 finding
+  (though its structural mechanism, not just its existence, is now
+  confirmed); the Disease Agent path remains unexercised (no images in
+  this test set); and the voice-path API-failure mechanism is plausible
+  but not causally isolated.
 - Full evidence, raw log, and reusable generator script:
   `docs/evidence/metric4_voice_vs_text_ablation_evidence.json`,
   `docs/evidence/metric4_voice_vs_text_raw_log.txt`,

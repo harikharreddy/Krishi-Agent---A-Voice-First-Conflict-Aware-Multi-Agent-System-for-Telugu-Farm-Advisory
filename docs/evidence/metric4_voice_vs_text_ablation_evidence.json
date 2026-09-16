@@ -1,25 +1,127 @@
 {
   "metric": "Voice vs. text ablation -- does going through ASR change pipeline behavior vs. typing the same question?",
-  "run_git_commit": "b33e69179cc85cde4669a225c8aaec7798397c3a",
-  "reporting_status": "PRELIMINARY -- n=16 questions, SINGLE SPEAKER (speaker1) only. Same caveat as metric #2's WER check at 1/4 speakers: this does not measure cross-speaker or accent robustness of the voice path. It measures whether, for one speaker's recordings, going through ASR changes pipeline behavior relative to typing the identical question. Do not cite this as a general voice-vs-text robustness claim until the same check is run against the other 3 speakers' recordings once available (tests/audio/wer_eval/speaker{2,3,4}/).",
-  "method": "Each of the 16 questions in tests/intent_router_test_set.json run through the REAL, unmocked orchestrator.pipeline.run_pipeline() twice: once as the VOICE path (tests/audio/wer_eval/speaker1/q<id>.wav -> backend.voice.transcribe_audio() -- the exact production ASR call backend/main.py's /api/ask uses -- -> run_pipeline()), once as the TEXT path (the same question's reference string fed to run_pipeline() directly, no ASR). Both paths use live, unmocked agent calls (Weather API, Price API, Ollama intent router qwen2.5:7b-instruct) -- same standard as metric #3's latency trials, not synthetic/mocked states like metric #5's rule-table test. No image attached in either path (this test set has none), so the Disease Agent never fires for wants_disease=true questions here -- expected, matches how this same 16-question set is used in Phase 2.1-2.2 and Phase 4.2c's pipeline sanity test.",
-  "stage_by_stage_comparison_design": "Per the explicit design requirement: comparing only final answers would conflate two different failure modes -- an ASR mishearing changing the input text vs. the SAME input text producing different downstream behavior for unrelated reasons (nondeterminism in the LLM-based intent router, live API values changing between the two calls a few seconds apart, etc). Each row records four independently-checkable stages -- (1) ASR transcript vs. reference text exact-match, (2) intent-router output dict, (3) which agents actually fired, (4) final phrased answer -- and mismatch_classification attributes any divergence to the EARLIEST stage it first appears at, so a downstream difference is never misattributed to ASR, and vice versa.",
-  "result_summary": {
-    "n": 16,
-    "asr_transcript_exact_match": "1/16",
-    "intent_router_match": "15/16",
-    "agents_fired_match": "15/16",
-    "final_answer_match": "14/16",
+  "run_git_commit": "12c1d12854f672860b9fcfff44eaa8c2265fafa2",
+  "reporting_status": "FINAL -- 4/4 speakers, n=64 (16 questions x 4 speakers). Expanded 2026-09-16 from the original n=16 single-speaker preliminary run once all 4 speakers' WER recordings arrived and metric #2 closed. Reuses the same 64 WAV files tests/check_all_wer.py scored for WER, run fresh through the production ASR call path (backend.voice.transcribe_audio()), not WER's transcripts.",
+  "method": "Each of the 16 questions in tests/intent_router_test_set.json run through the REAL, unmocked orchestrator.pipeline.run_pipeline() twice per speaker: once as the VOICE path (tests/audio/wer_eval/speaker<N>/q<id>.wav -> backend.voice.transcribe_audio() -- the exact production ASR call backend/main.py's /api/ask uses -- -> run_pipeline()), once as the TEXT path (the same question's reference string fed to run_pipeline() directly, no ASR, run fresh per speaker iteration to stay time-paired with its voice call). Both paths use live, unmocked agent calls (Weather API, Price API, Ollama intent router qwen2.5:7b-instruct). No image attached in either path (this test set has none), so the Disease Agent never fires.",
+  "stage_by_stage_comparison_design": "Per the explicit design requirement: comparing only final answers would conflate two different failure modes -- an ASR mishearing changing the input text vs. the SAME input text producing different downstream behavior for unrelated reasons (LLM intent-router nondeterminism, live API values changing between calls). Each row records four independently-checkable stages -- (1) ASR transcript exact-match, (2) intent-router output, (3) agents fired, (4) final phrased answer -- and mismatch_classification attributes any divergence to the EARLIEST stage it first appears at.",
+  "result_summary_overall": {
+    "n": 64,
+    "n_speakers": 4,
+    "asr_transcript_exact_match": "7/64",
+    "intent_router_match": "60/64",
+    "agents_fired_match": "60/64",
+    "final_answer_match": "58/64",
     "mismatch_classification_counts": {
-      "MATCH": 14,
-      "LIVE_PRICE_API_DATA_DRIFT": 1,
-      "INTENT_ROUTER_DIVERGED": 1
+      "MATCH": 58,
+      "INTENT_ROUTER_DIVERGED": 4,
+      "LIVE_API_FAILURE_VOICE_PATH": 2
     },
-    "price_agent_cross_call_consistency_check": "8/9 of ALL price-agent calls in this run (both modalities, all questions) returned the identical pct_diff value -- used to distinguish a genuine pipeline-logic mismatch from a one-off live API fluctuation. Reclassified question(s) [7] from DOWNSTREAM_ANSWER_DIVERGED to LIVE_PRICE_API_DATA_DRIFT as a result.",
-    "price_agent_code_path_identity_check": "CONFIRMED, not merely inferred: read agents/price/price_agent.py and orchestrator/pipeline.py directly. get_price_advice(state, commodity, market=None) never receives the question text or ASR transcript as an argument -- only farm_profile's state/crop/mandi fields, which were the identical TEST_PROFILE object for both the voice and text calls of every question in this run. _fetch_today_price() makes one plain requests.get() per call with no caching, no retry logic, and no session reuse; the only cache in the module (_history_cache, for the static historical CSV) is unrelated to the live 'today' price and is populated identically regardless of call order or source. It is therefore architecturally IMPOSSIBLE for voice-vs-text invocation to select a different code path in this function -- a given question's voice and text calls are byte-for-byte identical function calls. This rules out a pipeline-caused explanation for question 7's mismatch outright (not just makes it unlikely); the remaining explanation -- data.gov.in returning a different value on that one HTTP request -- is the only one the code structure permits, independently of the 8/9 cross-call consistency evidence above. LIVE_PRICE_API_DATA_DRIFT is SETTLED, not provisional."
+    "price_agent_cross_call_consistency_check": "35/35 of ALL price-agent calls in this run (all speakers, both modalities, all questions) returned the identical pct_diff value.",
+    "price_agent_code_path_identity_check": "CONFIRMED, not merely inferred: read agents/price/price_agent.py and orchestrator/pipeline.py directly. get_price_advice(state, commodity, market=None) never receives the question text or ASR transcript as an argument -- only farm_profile's state/crop/mandi fields, which were the identical TEST_PROFILE object for every voice and text call across all 4 speakers in this run. _fetch_today_price() makes one plain requests.get() per call with no caching, no retry logic, and no session reuse; the only cache in the module (_history_cache, for the static historical CSV) is unrelated to the live 'today' price and is populated identically regardless of call order or source. It is therefore architecturally IMPOSSIBLE for voice-vs-text invocation to select a different code path in this function, for any speaker. LIVE_PRICE_API_DATA_DRIFT verdicts in this evidence are SETTLED, not provisional."
+  },
+  "result_summary_per_speaker": {
+    "speaker1": {
+      "n": 16,
+      "asr_transcript_exact_match": "1/16",
+      "intent_router_match": "15/16",
+      "agents_fired_match": "15/16",
+      "final_answer_match": "15/16"
+    },
+    "speaker2": {
+      "n": 16,
+      "asr_transcript_exact_match": "2/16",
+      "intent_router_match": "15/16",
+      "agents_fired_match": "15/16",
+      "final_answer_match": "15/16"
+    },
+    "speaker3": {
+      "n": 16,
+      "asr_transcript_exact_match": "2/16",
+      "intent_router_match": "15/16",
+      "agents_fired_match": "15/16",
+      "final_answer_match": "15/16"
+    },
+    "speaker4": {
+      "n": 16,
+      "asr_transcript_exact_match": "2/16",
+      "intent_router_match": "15/16",
+      "agents_fired_match": "15/16",
+      "final_answer_match": "13/16"
+    }
+  },
+  "SECONDARY_FINDING_voice_path_live_api_failures": {
+    "summary": "2 of this run's DOWNSTREAM_ANSWER_DIVERGED cases were reclassified as genuine live-API failures (requests.exceptions.RequestException), verified via exact match against the source-code fallback strings, not inferred. 2 occurred on the voice path, 0 on the text path, out of n=64 question-pairs in this run.",
+    "detail": [
+      {
+        "speaker": "speaker4",
+        "id": 2,
+        "gloss": "Will it rain tomorrow?",
+        "failing_side": "voice"
+      },
+      {
+        "speaker": "speaker4",
+        "id": 7,
+        "gloss": "Will potato market price rise?",
+        "failing_side": "voice"
+      }
+    ],
+    "plausible_mechanism_not_proven": "Every voice-path pipeline call is immediately preceded by a 20-30s ASR transcription (backend.voice.transcribe_audio(), a heavy model inference call) -- the text path has no equivalent preceding load. This project's own evaluation (evaluation_and_validation.md Sec 2.6) already documents a related, previously-confirmed pattern on this same 8GB machine: Intent Router latency measurably increases when multiple models are concurrently resident in memory, attributed to resource contention. A live HTTP call immediately following heavy ASR inference timing out under similar contention is a plausible, consistent mechanism for why these 2 failures landed on the voice path specifically and not the text path -- but this run did not isolate ASR load as a controlled variable (e.g. by rerunning the same voice calls without immediately-prior ASR activity), so this is flagged as a plausible explanation consistent with prior evidence, not a proven causal claim, matching the same epistemic standard already applied to the Sec 2.6 finding it parallels.",
+    "not_a_voice_vs_text_pipeline_logic_finding": "Distinguished from the metric's actual subject (does ASR change what the pipeline DECIDES to do): here, both paths would have decided the same thing (intents and agents-fired matched in both cases) -- the live API simply failed to return data on one side. Reported as an honest, separate observation about the voice path's operating conditions, not folded into the intent/agent-fired match statistics above."
+  },
+  "HEADLINE_FINDING_asr_transliteration_of_technical_term_changed_intent_classification": {
+    "original_single_speaker_finding": "Question 8, 'నేల pH ఎంత ఉండాలి టమాటా కోసం?' (What soil pH is needed for tomato?): speaker1's ASR transcript rendered 'pH' as its Telugu transliteration 'పీహెచ్' instead of the reference text's Latin-script 'pH', flipping the intent router's classification from wants_soil=True to wants_price=True.",
+    "does_it_generalize_across_all_4_speakers": "4/4 speakers' question-8 recordings triggered an intent mismatch. CONFIRMED STRUCTURAL, not one speaker's idiosyncrasy -- every speaker's independent recording of the same technical term reproduced the same behavior change.",
+    "q8_per_speaker_detail": [
+      {
+        "speaker": "speaker1",
+        "asr_transcript": "నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం",
+        "voice_intents": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "intents_match": false
+      },
+      {
+        "speaker": "speaker2",
+        "asr_transcript": "నేల పీహెచ్ ఎంత ఉండాలి టమోటా కోసం",
+        "voice_intents": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "intents_match": false
+      },
+      {
+        "speaker": "speaker3",
+        "asr_transcript": "నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం",
+        "voice_intents": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "intents_match": false
+      },
+      {
+        "speaker": "speaker4",
+        "asr_transcript": "నేల పియచ్ ఎంత ఉండాలి టమాటా కోసం",
+        "voice_intents": {
+          "wants_disease": false,
+          "wants_weather": false,
+          "wants_price": true,
+          "wants_soil": false
+        },
+        "intents_match": false
+      }
+    ],
+    "interpretation": "This is a STRUCTURAL finding about the voice pipeline, not an ASR accuracy defect -- the underlying issue is that domain-specific technical terms (soil pH, NPK, pesticide/disease names) crossing the ASR-to-LLM boundary can silently change system behavior in ways a text-only test suite would never catch. Flagged as a concrete direction for future work (e.g. normalizing known technical terms before intent routing), not applied as a fix here."
   },
   "raw_comparison_table": [
     {
+      "speaker": "speaker1",
       "id": 1,
       "gloss": "Spots on my tomato leaves, what disease is this?",
       "reference_text": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?",
@@ -49,6 +151,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 2,
       "gloss": "Will it rain tomorrow?",
       "reference_text": "రేపు వర్షం పడుతుందా?",
@@ -74,14 +177,15 @@
         "weather"
       ],
       "agents_fired_match": true,
-      "voice_final_answer": "రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
-      "text_final_answer": "రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
       "final_answer_match": true,
       "mismatch_classification": "MATCH",
       "voice_price_pct_diff": null,
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 3,
       "gloss": "What's today's tomato price?",
       "reference_text": "ఈ రోజు టమాటా ధర ఎంత?",
@@ -115,6 +219,7 @@
       "text_price_pct_diff": -0.12260732011483189
     },
     {
+      "speaker": "speaker1",
       "id": 4,
       "gloss": "Is my field's soil good?",
       "reference_text": "నా పొలంలో మట్టి బాగుందా?",
@@ -144,6 +249,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 5,
       "gloss": "Potato leaves turning yellow, why?",
       "reference_text": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?",
@@ -173,6 +279,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 6,
       "gloss": "How's the weather this week?",
       "reference_text": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?",
@@ -198,14 +305,15 @@
         "weather"
       ],
       "agents_fired_match": true,
-      "voice_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
-      "text_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
       "final_answer_match": true,
       "mismatch_classification": "MATCH",
       "voice_price_pct_diff": null,
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 7,
       "gloss": "Will potato market price rise?",
       "reference_text": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?",
@@ -231,15 +339,15 @@
         "price"
       ],
       "agents_fired_match": true,
-      "voice_final_answer": "ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది.",
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
       "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
-      "final_answer_match": false,
-      "mismatch_classification": "LIVE_PRICE_API_DATA_DRIFT, not a pipeline-logic finding -- verified via cross-call consistency check: 8/9 price-agent calls in this run (across ALL 16 questions, both modalities) returned the identical pct_diff=-0.12260732011483189, including this question's own text-path call. Only the voice-path call for this question returned a different value (0.1964445634797747) -- a one-off live data.gov.in API response fluctuation on that single call, not a state-mapping or conflict-resolver sensitivity to voice vs. text input. Original (superseded) auto-classification, kept for transparency in mismatch_classification_ORIGINAL_before_consistency_check: DOWNSTREAM_ANSWER_DIVERGED.",
-      "voice_price_pct_diff": 0.1964445634797747,
-      "text_price_pct_diff": -0.12260732011483189,
-      "mismatch_classification_ORIGINAL_before_consistency_check": "DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)"
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
     },
     {
+      "speaker": "speaker1",
       "id": 8,
       "gloss": "What soil pH is needed for tomato?",
       "reference_text": "నేల pH ఎంత ఉండాలి టమాటా కోసం?",
@@ -271,6 +379,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 9,
       "gloss": "Should I spray if rain is coming?",
       "reference_text": "వర్షం వస్తే మందు కొట్టాలా?",
@@ -296,14 +405,15 @@
         "weather"
       ],
       "agents_fired_match": true,
-      "voice_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
-      "text_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
       "final_answer_match": true,
       "mismatch_classification": "MATCH",
       "voice_price_pct_diff": null,
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 10,
       "gloss": "Should I sell or hold, considering price and weather?",
       "reference_text": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
@@ -339,6 +449,7 @@
       "text_price_pct_diff": -0.12260732011483189
     },
     {
+      "speaker": "speaker1",
       "id": 11,
       "gloss": "Leaves have disease, price is also low, what do I do?",
       "reference_text": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?",
@@ -372,6 +483,7 @@
       "text_price_pct_diff": -0.12260732011483189
     },
     {
+      "speaker": "speaker1",
       "id": 12,
       "gloss": "I want full advice on my tomato crop",
       "reference_text": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
@@ -401,6 +513,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 13,
       "gloss": "Hello",
       "reference_text": "నమస్కారం",
@@ -430,6 +543,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 14,
       "gloss": "Where can I get this pesticide?",
       "reference_text": "ఈ మందు ఎక్కడ దొరుకుతుంది?",
@@ -459,6 +573,7 @@
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 15,
       "gloss": "Crop leaves drying up, is it due to lack of rain?",
       "reference_text": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?",
@@ -484,14 +599,15 @@
         "weather"
       ],
       "agents_fired_match": true,
-      "voice_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
-      "text_final_answer": "రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
       "final_answer_match": true,
       "mismatch_classification": "MATCH",
       "voice_price_pct_diff": null,
       "text_price_pct_diff": null
     },
     {
+      "speaker": "speaker1",
       "id": 16,
       "gloss": "Is nitrogen low in my soil, should I fertilize?",
       "reference_text": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?",
@@ -519,13 +635,1562 @@
       "mismatch_classification": "MATCH",
       "voice_price_pct_diff": null,
       "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 1,
+      "gloss": "Spots on my tomato leaves, what disease is this?",
+      "reference_text": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?",
+      "asr_transcript": "నా టమోటా ఆకులపై మచ్చలున్నాయి ఇది ఏ వ్యాధి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 2,
+      "gloss": "Will it rain tomorrow?",
+      "reference_text": "రేపు వర్షం పడుతుందా?",
+      "asr_transcript": "రేపు వర్షం పడుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 3,
+      "gloss": "What's today's tomato price?",
+      "reference_text": "ఈ రోజు టమాటా ధర ఎంత?",
+      "asr_transcript": "ఈరోజు టమోటా ధర ఎంత",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker2",
+      "id": 4,
+      "gloss": "Is my field's soil good?",
+      "reference_text": "నా పొలంలో మట్టి బాగుందా?",
+      "asr_transcript": "నా పొలంలో మట్టి బాగుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 5,
+      "gloss": "Potato leaves turning yellow, why?",
+      "reference_text": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?",
+      "asr_transcript": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 6,
+      "gloss": "How's the weather this week?",
+      "reference_text": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?",
+      "asr_transcript": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 7,
+      "gloss": "Will potato market price rise?",
+      "reference_text": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?",
+      "asr_transcript": "మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker2",
+      "id": 8,
+      "gloss": "What soil pH is needed for tomato?",
+      "reference_text": "నేల pH ఎంత ఉండాలి టమాటా కోసం?",
+      "asr_transcript": "నేల పీహెచ్ ఎంత ఉండాలి టమోటా కోసం",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": false,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [],
+      "agents_fired_match": false,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": false,
+      "mismatch_classification": "INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 9,
+      "gloss": "Should I spray if rain is coming?",
+      "reference_text": "వర్షం వస్తే మందు కొట్టాలా?",
+      "asr_transcript": "వర్షం వస్తే మందు కొట్టాలా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 10,
+      "gloss": "Should I sell or hold, considering price and weather?",
+      "reference_text": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_transcript": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "text_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "text_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker2",
+      "id": 11,
+      "gloss": "Leaves have disease, price is also low, what do I do?",
+      "reference_text": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?",
+      "asr_transcript": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏమి చేయాలి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker2",
+      "id": 12,
+      "gloss": "I want full advice on my tomato crop",
+      "reference_text": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_transcript": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 13,
+      "gloss": "Hello",
+      "reference_text": "నమస్కారం",
+      "asr_transcript": "నమస్కారం",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 14,
+      "gloss": "Where can I get this pesticide?",
+      "reference_text": "ఈ మందు ఎక్కడ దొరుకుతుంది?",
+      "asr_transcript": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 15,
+      "gloss": "Crop leaves drying up, is it due to lack of rain?",
+      "reference_text": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?",
+      "asr_transcript": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker2",
+      "id": 16,
+      "gloss": "Is nitrogen low in my soil, should I fertilize?",
+      "reference_text": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?",
+      "asr_transcript": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరుగు వేయాలా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 1,
+      "gloss": "Spots on my tomato leaves, what disease is this?",
+      "reference_text": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?",
+      "asr_transcript": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 2,
+      "gloss": "Will it rain tomorrow?",
+      "reference_text": "రేపు వర్షం పడుతుందా?",
+      "asr_transcript": "రేపు వర్షం పడుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 3,
+      "gloss": "What's today's tomato price?",
+      "reference_text": "ఈ రోజు టమాటా ధర ఎంత?",
+      "asr_transcript": "ఈరోజు టమాటా ధర ఎంత",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker3",
+      "id": 4,
+      "gloss": "Is my field's soil good?",
+      "reference_text": "నా పొలంలో మట్టి బాగుందా?",
+      "asr_transcript": "నా పొలంలో మట్టి బాగుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 5,
+      "gloss": "Potato leaves turning yellow, why?",
+      "reference_text": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?",
+      "asr_transcript": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 6,
+      "gloss": "How's the weather this week?",
+      "reference_text": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?",
+      "asr_transcript": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 7,
+      "gloss": "Will potato market price rise?",
+      "reference_text": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?",
+      "asr_transcript": "మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker3",
+      "id": 8,
+      "gloss": "What soil pH is needed for tomato?",
+      "reference_text": "నేల pH ఎంత ఉండాలి టమాటా కోసం?",
+      "asr_transcript": "నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": false,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [],
+      "agents_fired_match": false,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": false,
+      "mismatch_classification": "INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 9,
+      "gloss": "Should I spray if rain is coming?",
+      "reference_text": "వర్షం వస్తే మందు కొట్టాలా?",
+      "asr_transcript": "వర్షం వస్తే మందు కొట్టాలా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 10,
+      "gloss": "Should I sell or hold, considering price and weather?",
+      "reference_text": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_transcript": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "text_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "text_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker3",
+      "id": 11,
+      "gloss": "Leaves have disease, price is also low, what do I do?",
+      "reference_text": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?",
+      "asr_transcript": "ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker3",
+      "id": 12,
+      "gloss": "I want full advice on my tomato crop",
+      "reference_text": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_transcript": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 13,
+      "gloss": "Hello",
+      "reference_text": "నమస్కారం",
+      "asr_transcript": "నమస్కారం",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 14,
+      "gloss": "Where can I get this pesticide?",
+      "reference_text": "ఈ మందు ఎక్కడ దొరుకుతుంది?",
+      "asr_transcript": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 15,
+      "gloss": "Crop leaves drying up, is it due to lack of rain?",
+      "reference_text": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?",
+      "asr_transcript": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker3",
+      "id": 16,
+      "gloss": "Is nitrogen low in my soil, should I fertilize?",
+      "reference_text": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?",
+      "asr_transcript": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 1,
+      "gloss": "Spots on my tomato leaves, what disease is this?",
+      "reference_text": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?",
+      "asr_transcript": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 2,
+      "gloss": "Will it rain tomorrow?",
+      "reference_text": "రేపు వర్షం పడుతుందా?",
+      "asr_transcript": "రేపు వర్షం పడుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "వాతావరణ సమాచారం ప్రస్తుతం అందుబాటులో లేదు.",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": false,
+      "mismatch_classification": "LIVE_API_FAILURE_VOICE_PATH, not a pipeline-logic finding -- verified via exact match against the source-code fallback string for requests.exceptions.RequestException (agents/weather/weather_agent.py:100 or agents/price/price_agent.py:115, not the separate 'no data reported today' branches). The voice path's live API call failed outright on this call while the other path's identical-intent call to the same agent succeeded -- a transient network-level failure, not a state-mapping or conflict-resolver sensitivity to wording. Original (superseded) auto-classification, kept for transparency in mismatch_classification_ORIGINAL_before_consistency_check: DOWNSTREAM_ANSWER_DIVERGED.",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null,
+      "mismatch_classification_ORIGINAL_before_consistency_check": "DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)"
+    },
+    {
+      "speaker": "speaker4",
+      "id": 3,
+      "gloss": "What's today's tomato price?",
+      "reference_text": "ఈ రోజు టమాటా ధర ఎంత?",
+      "asr_transcript": "ఈరోజు టమాటా ధర ఎంత",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker4",
+      "id": 4,
+      "gloss": "Is my field's soil good?",
+      "reference_text": "నా పొలంలో మట్టి బాగుందా?",
+      "asr_transcript": "నా పొలంలో మట్టి బాగుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 5,
+      "gloss": "Potato leaves turning yellow, why?",
+      "reference_text": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?",
+      "asr_transcript": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 6,
+      "gloss": "How's the weather this week?",
+      "reference_text": "ఈ వారం వాతావరణం ఎలా ఉంటుంది?",
+      "asr_transcript": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 7,
+      "gloss": "Will potato market price rise?",
+      "reference_text": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?",
+      "asr_transcript": "మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ధరల సమాచారం ప్రస్తుతం అందుబాటులో లేదు.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": false,
+      "mismatch_classification": "LIVE_API_FAILURE_VOICE_PATH, not a pipeline-logic finding -- verified via exact match against the source-code fallback string for requests.exceptions.RequestException (agents/weather/weather_agent.py:100 or agents/price/price_agent.py:115, not the separate 'no data reported today' branches). The voice path's live API call failed outright on this call while the other path's identical-intent call to the same agent succeeded -- a transient network-level failure, not a state-mapping or conflict-resolver sensitivity to wording. Original (superseded) auto-classification, kept for transparency in mismatch_classification_ORIGINAL_before_consistency_check: DOWNSTREAM_ANSWER_DIVERGED.",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": -0.12260732011483189,
+      "mismatch_classification_ORIGINAL_before_consistency_check": "DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)"
+    },
+    {
+      "speaker": "speaker4",
+      "id": 8,
+      "gloss": "What soil pH is needed for tomato?",
+      "reference_text": "నేల pH ఎంత ఉండాలి టమాటా కోసం?",
+      "asr_transcript": "నేల పియచ్ ఎంత ఉండాలి టమాటా కోసం",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": false,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [],
+      "agents_fired_match": false,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": false,
+      "mismatch_classification": "INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 9,
+      "gloss": "Should I spray if rain is coming?",
+      "reference_text": "వర్షం వస్తే మందు కొట్టాలా?",
+      "asr_transcript": "వర్షం వస్తే మందు కొట్టాల",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 10,
+      "gloss": "Should I sell or hold, considering price and weather?",
+      "reference_text": "నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_transcript": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": true,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "text_agents_fired": [
+        "weather",
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "text_final_answer": "మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker4",
+      "id": 11,
+      "gloss": "Leaves have disease, price is also low, what do I do?",
+      "reference_text": "ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?",
+      "asr_transcript": "ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": true,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "price"
+      ],
+      "text_agents_fired": [
+        "price"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "text_final_answer": "ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": -0.12260732011483189,
+      "text_price_pct_diff": -0.12260732011483189
+    },
+    {
+      "speaker": "speaker4",
+      "id": 12,
+      "gloss": "I want full advice on my tomato crop",
+      "reference_text": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_transcript": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 13,
+      "gloss": "Hello",
+      "reference_text": "నమస్కారం",
+      "asr_transcript": "నమస్కారం",
+      "asr_exact_match": true,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 14,
+      "gloss": "Where can I get this pesticide?",
+      "reference_text": "ఈ మందు ఎక్కడ దొరుకుతుంది?",
+      "asr_transcript": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 15,
+      "gloss": "Crop leaves drying up, is it due to lack of rain?",
+      "reference_text": "పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?",
+      "asr_transcript": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "text_intents": {
+        "wants_disease": true,
+        "wants_weather": true,
+        "wants_price": false,
+        "wants_soil": false
+      },
+      "intents_match": true,
+      "voice_agents_fired": [
+        "weather"
+      ],
+      "text_agents_fired": [
+        "weather"
+      ],
+      "agents_fired_match": true,
+      "voice_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "text_final_answer": "రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
+    },
+    {
+      "speaker": "speaker4",
+      "id": 16,
+      "gloss": "Is nitrogen low in my soil, should I fertilize?",
+      "reference_text": "నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?",
+      "asr_transcript": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాల",
+      "asr_exact_match": false,
+      "voice_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "text_intents": {
+        "wants_disease": false,
+        "wants_weather": false,
+        "wants_price": false,
+        "wants_soil": true
+      },
+      "intents_match": true,
+      "voice_agents_fired": [],
+      "text_agents_fired": [],
+      "agents_fired_match": true,
+      "voice_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "text_final_answer": "ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.",
+      "final_answer_match": true,
+      "mismatch_classification": "MATCH",
+      "voice_price_pct_diff": null,
+      "text_price_pct_diff": null
     }
   ],
   "honest_gaps": [
-    "n=16, single speaker (speaker1) only -- see reporting_status. Not yet run against speakers 2-4; conclusions here should not be generalized to accents or recording conditions this speaker's samples don't represent.",
-    "Live API calls (Weather, Price) were made twice per question, seconds apart, for the voice and text paths -- a live value changing between the two calls (e.g. a price API returning a marginally different pct_diff) could in principle cause a downstream mismatch unrelated to voice vs. text at all. OBSERVED as the actual cause of one of this run's two mismatches (question 7 -- see its mismatch_classification and result_summary.price_agent_cross_call_consistency_check): 8/9 price-agent calls across the entire run returned the identical pct_diff, and exactly one call (question 7's voice path) did not. That mismatch has been reclassified as LIVE_PRICE_API_DATA_DRIFT, not counted as a voice-vs-text pipeline-logic finding.",
-    "The Ollama-hosted intent router (qwen2.5:7b-instruct) is an LLM call, not a deterministic lookup -- it can in principle produce a different intents dict for the exact same input text on two separate calls, independent of any ASR effect. This run did not call the intent router twice on identical text to separately measure that baseline noise floor; any intents_match=False row should be read as 'voice and text diverged here,' not as proof the divergence is deterministic or attributable to the ASR transcript wording alone, unless the transcript itself is visibly different from the reference.",
-    "No image was attached for any question in this set, so this ablation does not exercise the Disease Agent path at all -- it only characterizes the intent-routing / weather / price / conflict-resolution portion of the pipeline's sensitivity to ASR transcription differences."
-  ],
-  "HEADLINE_FINDING_asr_transliteration_of_technical_term_changed_intent_classification": "The single most interesting result of this ablation, not just a row in the mismatch table: question 8, 'నేల pH ఎంత ఉండాలి టమాటా కోసం?' (What soil pH is needed for tomato?), was transcribed by ASR as 'నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం' -- a faithful phonetic rendering of the SAME word, but spelled out in Telugu script (పీహెచ్) instead of the reference text's Latin-script 'pH'. That single spelling difference was enough to flip the LLM intent router's classification: the reference text (with Latin 'pH') was correctly routed to wants_soil=True, while the ASR transcript (with Telugu-transliterated 'పీహెచ్') was instead routed to wants_price=True -- a different agent fired, and the farmer would have received a live tomato price quote instead of an answer about soil pH. This is a STRUCTURAL finding about the voice pipeline, not an ASR accuracy defect: the ASR transcription was arguably MORE natural Telugu than the reference text (which mixes in a Latin-script technical abbreviation a real farmer's spoken question never would), yet that naturalness is exactly what caused the downstream behavior change -- the intent router's training/prompting apparently treats the Latin-script 'pH' token as a stronger soil-domain signal than its Telugu transliteration. It demonstrates that domain-specific technical terms crossing the ASR-to-LLM boundary can silently change system behavior in ways a text-only test suite (which always sees the Latin-script spelling) would never catch -- this is the actual reason to run a voice-vs-text ablation at all, not a side effect of running one. Directly relevant to Krishi-Agent's technical-vocabulary domain (soil pH, NPK, specific disease/pesticide names) where this same Latin-script-vs-transliteration gap likely recurs beyond this one example -- flagged as a concrete, evidence-backed direction for future work (e.g. normalizing known technical terms before intent routing), not applied as a fix here per the observation-only scope of this metric."
+    "Live API calls (Weather, Price) were made twice per question per speaker -- a live value changing between calls could in principle cause a downstream mismatch unrelated to voice vs. text. See price_agent_cross_call_consistency_check and price_agent_code_path_identity_check in result_summary_overall for how this is distinguished from a genuine pipeline finding.",
+    "The Ollama-hosted intent router (qwen2.5:7b-instruct) is an LLM call, not a deterministic lookup -- it can in principle produce a different intents dict for the exact same input text on two separate calls, independent of any ASR effect. This run did not call the intent router twice on identical text to separately measure that baseline noise floor.",
+    "No image was attached for any question in this set, so this ablation does not exercise the Disease Agent path at all -- it only characterizes the intent-routing / weather / price / conflict-resolution portion of the pipeline's sensitivity to ASR transcription differences.",
+    "4 speakers is a modest n for claiming the ASR-transliteration finding's exact frequency in the general population, though the finding's structural mechanism (technical term -> transliteration -> intent-router sensitivity) is now confirmed to not be a single-speaker fluke, whether or not it reproduces on all 4 (see does_it_generalize_across_all_4_speakers above)."
+  ]
 }

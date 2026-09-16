@@ -1,430 +1,1490 @@
-20:26:07 [WARNING] Flash attention 2 is not installed
-20:26:07 [INFO] Loading ASR model...
---- Question 1: Spots on my tomato leaves, what disease is this? ---
+15:42:14 [WARNING] Flash attention 2 is not installed
+15:42:14 [INFO] Loading ASR model...
+Speakers found: ['speaker1', 'speaker2', 'speaker3', 'speaker4'] (4/4 planned)
+--- [speaker1] Question 1: Spots on my tomato leaves, what disease is this? ---
 Please check FRAME_DURATION_MS. The timestamps can be inaccurate
 Please check FRAME_DURATION_MS. The timestamps can be inaccurate
-Fetching 404 files:   0%|          | 0/404 [00:00<?, ?it/s]Fetching 404 files: 100%|██████████| 404/404 [00:00<00:00, 8505.79it/s]
-20:26:16 [INFO] ASR model loaded in 8.6s
-20:26:16 [INFO] ASR model ready (from cache or fresh load) at 8.6s
-20:26:18 [INFO] ASR transcription done, total 11.3s
-20:26:18 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
-20:26:43 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:26:43 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:26:43 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:26:43 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:26:43 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
-20:26:45 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:26:45 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:26:45 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:26:45 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:26:45 [INFO] ASR model ready (from cache or fresh load) at 0.1s
-20:27:06 [INFO] ASR transcription done, total 20.9s
-20:27:06 [INFO] Question: రేపు వర్షం పడుతుందా
-20:27:10 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:27:10 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:27:10 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:27:10 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:27:10 [INFO] Final answer: రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:27:10 [INFO] Question: రేపు వర్షం పడుతుందా?
-20:27:13 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:27:13 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:27:13 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:27:13 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:27:13 [INFO] Final answer: రాబోయే 0 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:27:13 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:27:46 [INFO] ASR transcription done, total 32.9s
-20:27:46 [INFO] Question: ఈరోజు టమాటా ధర ఎంత
-20:27:54 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:27:57 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:27:57 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:27:57 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:27:57 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:27:57 [INFO] Question: ఈ రోజు టమాటా ధర ఎంత?
-20:28:02 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:28:03 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:28:03 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:28:03 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:28:03 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:28:03 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:28:38 [INFO] ASR transcription done, total 35.2s
-20:28:38 [INFO] Question: నా పొలంలో మట్టి బాగుందా
-20:28:42 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-20:28:42 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:28:42 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:28:42 [INFO] Question: నా పొలంలో మట్టి బాగుందా?
-20:28:45 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-20:28:45 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:28:45 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:28:45 [INFO] ASR model ready (from cache or fresh load) at 0.2s
-20:29:18 [INFO] ASR transcription done, total 33.1s
-20:29:18 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగుల్లోకి మారుతున్నాయి ఎందుకు
-20:29:22 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:29:22 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:29:22 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:29:22 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:29:22 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
-20:29:24 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:29:24 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:29:24 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:29:24 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:29:24 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:29:56 [INFO] ASR transcription done, total 31.6s
-20:29:56 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది
-20:30:00 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:30:01 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:30:01 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:30:01 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:30:01 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:30:01 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది?
-20:30:03 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:30:03 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:30:03 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:30:03 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:30:03 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:30:03 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:30:32 [INFO] ASR transcription done, total 28.5s
-20:30:32 [INFO] Question: మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
-20:30:36 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:30:37 [INFO] Price Agent: pct_diff=0.1964445634797747 -> state=sell_now
-20:30:37 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:30:37 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది.', 'confidence': 'Medium'}
-20:30:37 [INFO] Final answer: ఈరోజు Tomato ధర 1500 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 20% ఎక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. ఇప్పుడు అమ్మడం మంచిది.
-20:30:37 [INFO] Question: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
-20:30:40 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:30:41 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:30:41 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:30:41 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:30:41 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:30:41 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:31:09 [INFO] ASR transcription done, total 28.2s
-20:31:09 [INFO] Question: నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
-20:31:14 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:31:15 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:31:15 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:31:15 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:31:15 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:31:15 [INFO] Question: నేల pH ఎంత ఉండాలి టమాటా కోసం?
-20:31:17 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-20:31:17 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:31:17 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:31:17 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:31:44 [INFO] ASR transcription done, total 27.6s
-20:31:44 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా
-20:31:48 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:31:48 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:31:48 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:31:48 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:31:48 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:31:48 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:31:48 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా?
-20:31:50 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:31:50 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:31:51 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:31:51 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:31:51 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:31:51 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:31:51 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:32:16 [INFO] ASR transcription done, total 25.7s
-20:32:16 [INFO] Question: నా పంట అమ్మాలా ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
-20:32:21 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
-20:32:21 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:32:22 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:32:22 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
-20:32:22 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
-20:32:22 [INFO] Question: నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
-20:32:24 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
-20:32:24 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:32:25 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:32:25 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
-20:32:25 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
-20:32:25 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:32:48 [INFO] ASR transcription done, total 22.8s
-20:32:48 [INFO] Question: ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
-20:32:51 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:32:51 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:32:52 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:32:52 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:32:52 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:32:52 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:32:52 [INFO] Question: ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
-20:32:54 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-20:32:54 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:32:55 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
-20:32:55 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:32:55 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
-20:32:55 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
-20:32:55 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:33:17 [INFO] ASR transcription done, total 21.8s
-20:33:17 [INFO] Question: నా టమాటా పట్టా గురించి పూర్తి సలహా కావాలి
-20:33:20 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:33:20 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:33:20 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:33:20 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:33:20 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
-20:33:23 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:33:23 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:33:23 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:33:23 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:33:23 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:33:45 [INFO] ASR transcription done, total 22.3s
-20:33:45 [INFO] Question: నమస్కారం
-20:33:49 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:33:49 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:33:49 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:33:49 [INFO] Question: నమస్కారం
-20:33:51 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:33:51 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:33:51 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+Fetching 404 files:   0%|          | 0/404 [00:00<?, ?it/s]Fetching 404 files: 100%|██████████| 404/404 [00:00<00:00, 8499.91it/s]
+15:42:23 [INFO] ASR model loaded in 9.2s
+15:42:23 [INFO] ASR model ready (from cache or fresh load) at 9.2s
+15:42:27 [INFO] ASR transcription done, total 12.7s
+15:42:27 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+15:42:55 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:42:55 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:42:55 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:42:55 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:42:55 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+15:42:58 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:42:58 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:42:58 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:42:58 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:42:58 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:43:22 [INFO] ASR transcription done, total 23.9s
+15:43:22 [INFO] Question: రేపు వర్షం పడుతుందా
+15:43:25 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:43:27 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:43:27 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:43:27 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:43:27 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:43:27 [INFO] Question: రేపు వర్షం పడుతుందా?
+15:43:29 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:43:30 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:43:30 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:43:30 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:43:30 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:43:30 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:44:01 [INFO] ASR transcription done, total 31.0s
+15:44:01 [INFO] Question: ఈరోజు టమాటా ధర ఎంత
+15:44:04 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:44:10 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:44:10 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:44:10 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:44:10 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:44:10 [INFO] Question: ఈ రోజు టమాటా ధర ఎంత?
+15:44:12 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:44:15 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:44:15 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:44:15 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:44:15 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:44:15 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:44:42 [INFO] ASR transcription done, total 26.6s
+15:44:42 [INFO] Question: నా పొలంలో మట్టి బాగుందా
+15:44:45 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:44:45 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:44:45 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:44:45 [INFO] Question: నా పొలంలో మట్టి బాగుందా?
+15:44:48 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:44:48 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:44:48 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:44:48 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:45:15 [INFO] ASR transcription done, total 27.5s
+15:45:15 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగుల్లోకి మారుతున్నాయి ఎందుకు
+15:45:19 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:45:19 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:45:19 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:45:19 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:45:19 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+15:45:21 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:45:21 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:45:21 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:45:21 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:45:22 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:45:51 [INFO] ASR transcription done, total 29.8s
+15:45:51 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+15:45:55 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:45:56 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:45:56 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:45:56 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:45:56 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:45:56 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+15:45:58 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:45:58 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:45:58 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:45:58 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:45:58 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:45:58 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:46:27 [INFO] ASR transcription done, total 29.1s
+15:46:27 [INFO] Question: మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
+15:46:31 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:46:33 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:46:33 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:46:33 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:46:33 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:46:33 [INFO] Question: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+15:46:36 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:46:37 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:46:37 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:46:37 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:46:37 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:46:37 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:47:03 [INFO] ASR transcription done, total 25.7s
+15:47:03 [INFO] Question: నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
+15:47:06 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:47:07 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:47:07 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:47:07 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:47:07 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:47:07 [INFO] Question: నేల pH ఎంత ఉండాలి టమాటా కోసం?
+15:47:09 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:47:09 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:47:09 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:47:09 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:47:34 [INFO] ASR transcription done, total 25.0s
+15:47:34 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా
+15:47:38 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:47:38 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:47:38 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:47:38 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:47:38 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:47:38 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:47:38 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా?
+15:47:40 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:47:40 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:47:40 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:47:40 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:47:40 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:47:40 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:47:40 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:48:04 [INFO] ASR transcription done, total 24.1s
+15:48:04 [INFO] Question: నా పంట అమ్మాలా ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+15:48:08 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+15:48:10 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:48:10 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:48:10 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+15:48:10 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+15:48:10 [INFO] Question: నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+15:48:13 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+15:48:13 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:48:14 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:48:14 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+15:48:14 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+15:48:14 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:48:38 [INFO] ASR transcription done, total 24.7s
+15:48:38 [INFO] Question: ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+15:48:42 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:48:42 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:48:43 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:48:43 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:48:43 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:48:43 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:48:43 [INFO] Question: ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+15:48:45 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:48:45 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:48:46 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:48:46 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:48:46 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:48:46 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:48:46 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:49:07 [INFO] ASR transcription done, total 21.5s
+15:49:07 [INFO] Question: నా టమాటా పట్టా గురించి పూర్తి సలహా కావాలి
+15:49:11 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:49:11 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:49:11 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:49:11 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:49:11 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+15:49:13 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:49:13 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:49:13 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:49:13 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:49:13 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:49:35 [INFO] ASR transcription done, total 22.4s
+15:49:35 [INFO] Question: నమస్కారం
+15:49:38 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:49:38 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:49:38 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:49:38 [INFO] Question: నమస్కారం
+15:49:40 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:49:40 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:49:40 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:49:40 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:50:13 [INFO] ASR transcription done, total 33.2s
+15:50:13 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది
+15:50:17 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:50:17 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:50:17 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:50:17 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:50:17 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది?
+15:50:19 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:50:19 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:50:19 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:50:19 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
 Please check FRAME_DURATION_MS. The timestamps can be inaccurate
   ASR transcript : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
   Reference text : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 2: Will it rain tomorrow? ---
+--- [speaker1] Question 2: Will it rain tomorrow? ---
   ASR transcript : రేపు వర్షం పడుతుందా
   Reference text : రేపు వర్షం పడుతుందా?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: ['weather']   Text agents fired: ['weather']
   Answers match  : True
   Classification : MATCH
 
---- Question 3: What's today's tomato price? ---
+--- [speaker1] Question 3: What's today's tomato price? ---
   ASR transcript : ఈరోజు టమాటా ధర ఎంత
   Reference text : ఈ రోజు టమాటా ధర ఎంత?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-  Voice agents fired: ['price']   Text agents fired: ['price']
   Answers match  : True
   Classification : MATCH
 
---- Question 4: Is my field's soil good? ---
+--- [speaker1] Question 4: Is my field's soil good? ---
   ASR transcript : నా పొలంలో మట్టి బాగుందా
   Reference text : నా పొలంలో మట్టి బాగుందా?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 5: Potato leaves turning yellow, why? ---
+--- [speaker1] Question 5: Potato leaves turning yellow, why? ---
   ASR transcript : బంగాళదుంప ఆకులు పసుపు రంగుల్లోకి మారుతున్నాయి ఎందుకు
   Reference text : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 6: How's the weather this week? ---
+--- [speaker1] Question 6: How's the weather this week? ---
   ASR transcript : ఈ వారం వాతావరణం ఎలా ఉంటుంది
   Reference text : ఈ వారం వాతావరణం ఎలా ఉంటుంది?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: ['weather']   Text agents fired: ['weather']
   Answers match  : True
   Classification : MATCH
 
---- Question 7: Will potato market price rise? ---
+--- [speaker1] Question 7: Will potato market price rise? ---
   ASR transcript : మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
   Reference text : మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-  Voice agents fired: ['price']   Text agents fired: ['price']
-  Answers match  : False
-  Classification : DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)
+  Answers match  : True
+  Classification : MATCH
 
---- Question 8: What soil pH is needed for tomato? ---
+--- [speaker1] Question 8: What soil pH is needed for tomato? ---
   ASR transcript : నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
   Reference text : నేల pH ఎంత ఉండాలి టమాటా కోసం?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-  Voice agents fired: ['price']   Text agents fired: []
   Answers match  : False
   Classification : INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)
 
---- Question 9: Should I spray if rain is coming? ---
+--- [speaker1] Question 9: Should I spray if rain is coming? ---
   ASR transcript : వర్షం వస్తే మందు కొట్టాలా
   Reference text : వర్షం వస్తే మందు కొట్టాలా?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: ['weather']   Text agents fired: ['weather']
   Answers match  : True
   Classification : MATCH
 
---- Question 10: Should I sell or hold, considering price and weather? ---
+--- [speaker1] Question 10: Should I sell or hold, considering price and weather? ---
   ASR transcript : నా పంట అమ్మాలా ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
   Reference text : నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
-  Voice agents fired: ['weather', 'price']   Text agents fired: ['weather', 'price']
   Answers match  : True
   Classification : MATCH
 
---- Question 11: Leaves have disease, price is also low, what do I do? ---
+--- [speaker1] Question 11: Leaves have disease, price is also low, what do I do? ---
   ASR transcript : ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
   Reference text : ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
-  Voice agents fired: ['price']   Text agents fired: ['price']
   Answers match  : True
   Classification : MATCH
 
---- Question 12: I want full advice on my tomato crop ---
+--- [speaker1] Question 12: I want full advice on my tomato crop ---
   ASR transcript : నా టమాటా పట్టా గురించి పూర్తి సలహా కావాలి
   Reference text : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 13: Hello ---
+--- [speaker1] Question 13: Hello ---
   ASR transcript : నమస్కారం
   Reference text : నమస్కారం
   ASR exact match: True
-20:33:51 [INFO] ASR model ready (from cache or fresh load) at 0.1s
-20:34:19 [INFO] ASR transcription done, total 28.2s
-20:34:19 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది
-20:34:23 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:34:23 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:34:23 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:34:23 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:34:23 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది?
-20:34:25 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-20:34:25 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:34:25 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:34:25 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:34:25 [INFO] ASR model ready (from cache or fresh load) at 0.1s
-20:34:53 [INFO] ASR transcription done, total 27.9s
-20:34:53 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
-20:34:57 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:34:57 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:34:57 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:34:57 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:34:57 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:34:57 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:34:57 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
-20:34:59 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-20:34:59 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
-20:35:00 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
-20:35:00 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
-20:35:00 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
-20:35:00 [INFO] Final answer: రాబోయే 3 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
-20:35:00 [INFO] ASR model ready (from cache or fresh load) at 0.0s
-20:35:26 [INFO] ASR transcription done, total 26.7s
-20:35:26 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
-20:35:30 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-20:35:30 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:35:30 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
-20:35:30 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
-20:35:32 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-20:35:32 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
-20:35:32 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 14: Where can I get this pesticide? ---
+--- [speaker1] Question 14: Where can I get this pesticide? ---
   ASR transcript : ఈ మందు ఎక్కడ దొరుకుతుంది
   Reference text : ఈ మందు ఎక్కడ దొరుకుతుంది?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: []   Text agents fired: []
   Answers match  : True
   Classification : MATCH
 
---- Question 15: Crop leaves drying up, is it due to lack of rain? ---
+15:50:19 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:50:51 [INFO] ASR transcription done, total 31.2s
+15:50:51 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+15:50:55 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:50:55 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:50:55 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:50:55 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:50:55 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:50:55 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:50:55 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+15:50:57 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:50:57 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:50:57 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:50:57 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:50:57 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:50:57 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:50:57 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:51:26 [INFO] ASR transcription done, total 28.3s
+15:51:26 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
+15:51:29 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:51:29 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:51:29 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:51:29 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+15:51:31 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:51:31 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:51:31 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:51:31 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:51:59 [INFO] ASR transcription done, total 27.5s
+15:51:59 [INFO] Question: నా టమోటా ఆకులపై మచ్చలున్నాయి ఇది ఏ వ్యాధి
+15:52:03 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:52:03 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:52:03 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:52:03 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:52:03 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+15:52:05 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:52:05 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:52:05 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:52:05 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:52:05 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:52:30 [INFO] ASR transcription done, total 25.5s
+15:52:30 [INFO] Question: రేపు వర్షం పడుతుందా
+15:52:34 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:52:34 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:52:34 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:52:34 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:52:34 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:52:34 [INFO] Question: రేపు వర్షం పడుతుందా?
+15:52:36 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:52:36 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:52:36 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:52:36 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:52:36 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:52:36 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:53:01 [INFO] ASR transcription done, total 24.6s
+15:53:01 [INFO] Question: ఈరోజు టమోటా ధర ఎంత
+15:53:04 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:53:05 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:53:05 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:53:05 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:53:05 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:53:05 [INFO] Question: ఈ రోజు టమాటా ధర ఎంత?
+15:53:07 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:53:08 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:53:08 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:53:08 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:53:08 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:53:08 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:53:32 [INFO] ASR transcription done, total 23.5s
+15:53:32 [INFO] Question: నా పొలంలో మట్టి బాగుందా
+15:53:36 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:53:36 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:53:36 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:53:36 [INFO] Question: నా పొలంలో మట్టి బాగుందా?
+15:53:38 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:53:38 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:53:38 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:53:38 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:54:04 [INFO] ASR transcription done, total 26.7s
+15:54:04 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+15:54:09 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:54:09 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:54:09 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:54:09 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:54:09 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+15:54:12 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:54:12 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:54:12 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:54:12 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:54:12 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:54:38 [INFO] ASR transcription done, total 26.1s
+15:54:38 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+15:54:41 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:54:42 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:54:42 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:54:42 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:54:42 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:54:42 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+15:54:44 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:54:45 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:54:45 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:54:45 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:54:45 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:54:45 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:55:11 [INFO] ASR transcription done, total 26.6s
+15:55:11 [INFO] Question: మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా
+15:55:15 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:55:16 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:55:16 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:55:16 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:55:16 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:55:16 [INFO] Question: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+15:55:18 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:55:19 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:55:19 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:55:19 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:55:19 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:55:19 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:55:46 [INFO] ASR transcription done, total 27.6s
+15:55:46 [INFO] Question: నేల పీహెచ్ ఎంత ఉండాలి టమోటా కోసం
+15:55:50 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:55:51 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:55:51 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:55:51 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:55:51 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:55:51 [INFO] Question: నేల pH ఎంత ఉండాలి టమాటా కోసం?
+15:55:53 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+15:55:53 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:55:53 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:55:53 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:56:19 [INFO] ASR transcription done, total 26.0s
+15:56:19 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా
+15:56:23 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:56:23 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:56:23 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:56:23 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:56:23 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:56:23 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:56:23 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా?
+15:56:25 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:56:25 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:56:25 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:56:25 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:56:25 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:56:25 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:56:25 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:56:50 [INFO] ASR transcription done, total 24.8s
+15:56:50 [INFO] Question: నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+15:56:54 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+15:56:54 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:56:55 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:56:55 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+15:56:55 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+15:56:55 [INFO] Question: నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+15:56:58 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+15:56:58 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:56:59 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:56:59 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+15:56:59 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+15:56:59 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:57:21 [INFO] ASR transcription done, total 22.8s
+15:57:21 [INFO] Question: ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏమి చేయాలి
+15:57:25 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:57:25 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:57:26 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:57:26 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:57:26 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:57:26 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:57:26 [INFO] Question: ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+15:57:28 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+15:57:28 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:57:29 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+15:57:29 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:57:29 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+15:57:29 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+15:57:29 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:57:54 [INFO] ASR transcription done, total 24.7s
+15:57:54 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+15:57:58 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:57:58 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:57:58 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:57:58 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:57:58 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+15:58:00 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:58:00 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:58:00 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:58:00 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+--- [speaker1] Question 15: Crop leaves drying up, is it due to lack of rain? ---
   ASR transcript : పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
   Reference text : పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
   ASR exact match: False
   Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
   Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
-  Voice agents fired: ['weather']   Text agents fired: ['weather']
   Answers match  : True
   Classification : MATCH
 
---- Question 16: Is nitrogen low in my soil, should I fertilize? ---
+--- [speaker1] Question 16: Is nitrogen low in my soil, should I fertilize? ---
   ASR transcript : నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
   Reference text : నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
   ASR exact match: False
   Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
   Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
-  Voice agents fired: []   Text agents fired: []
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 1: Spots on my tomato leaves, what disease is this? ---
+  ASR transcript : నా టమోటా ఆకులపై మచ్చలున్నాయి ఇది ఏ వ్యాధి
+  Reference text : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 2: Will it rain tomorrow? ---
+  ASR transcript : రేపు వర్షం పడుతుందా
+  Reference text : రేపు వర్షం పడుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 3: What's today's tomato price? ---
+  ASR transcript : ఈరోజు టమోటా ధర ఎంత
+  Reference text : ఈ రోజు టమాటా ధర ఎంత?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 4: Is my field's soil good? ---
+  ASR transcript : నా పొలంలో మట్టి బాగుందా
+  Reference text : నా పొలంలో మట్టి బాగుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 5: Potato leaves turning yellow, why? ---
+  ASR transcript : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+  Reference text : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 6: How's the weather this week? ---
+  ASR transcript : ఈ వారం వాతావరణం ఎలా ఉంటుంది
+  Reference text : ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 7: Will potato market price rise? ---
+  ASR transcript : మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా
+  Reference text : మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 8: What soil pH is needed for tomato? ---
+  ASR transcript : నేల పీహెచ్ ఎంత ఉండాలి టమోటా కోసం
+  Reference text : నేల pH ఎంత ఉండాలి టమాటా కోసం?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : False
+  Classification : INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)
+
+--- [speaker2] Question 9: Should I spray if rain is coming? ---
+  ASR transcript : వర్షం వస్తే మందు కొట్టాలా
+  Reference text : వర్షం వస్తే మందు కొట్టాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 10: Should I sell or hold, considering price and weather? ---
+  ASR transcript : నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+  Reference text : నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 11: Leaves have disease, price is also low, what do I do? ---
+  ASR transcript : ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏమి చేయాలి
+  Reference text : ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 12: I want full advice on my tomato crop ---
+  ASR transcript : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+15:58:00 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+15:58:26 [INFO] ASR transcription done, total 26.0s
+15:58:26 [INFO] Question: నమస్కారం
+15:58:29 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:58:29 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:58:29 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:58:29 [INFO] Question: నమస్కారం
+15:58:31 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:58:31 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:58:31 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:58:31 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:58:58 [INFO] ASR transcription done, total 26.4s
+15:58:58 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది
+15:59:01 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:59:01 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:59:01 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:59:01 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:59:01 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది?
+15:59:03 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+15:59:03 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:59:03 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+15:59:03 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+15:59:03 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+15:59:31 [INFO] ASR transcription done, total 27.6s
+15:59:31 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+15:59:35 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:59:35 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:59:35 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:59:35 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:59:35 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:59:35 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:59:35 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+15:59:37 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+15:59:37 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+15:59:37 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+15:59:37 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+15:59:37 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+15:59:37 [INFO] Final answer: రాబోయే 29 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+15:59:37 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:00:05 [INFO] ASR transcription done, total 27.5s
+16:00:05 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరుగు వేయాలా
+16:00:09 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:00:09 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:00:09 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:00:09 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+16:00:10 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:00:10 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:00:10 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:00:11 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:00:35 [INFO] ASR transcription done, total 24.2s
+16:00:35 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+16:00:38 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:00:38 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:00:38 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:00:38 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:00:38 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+16:00:40 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:00:40 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:00:40 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:00:40 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:00:40 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:01:03 [INFO] ASR transcription done, total 23.1s
+16:01:03 [INFO] Question: రేపు వర్షం పడుతుందా
+16:01:06 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:01:07 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:01:07 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:01:07 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:01:07 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:01:07 [INFO] Question: రేపు వర్షం పడుతుందా?
+16:01:09 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:01:09 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:01:09 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:01:09 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:01:09 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:01:09 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:01:33 [INFO] ASR transcription done, total 23.8s
+16:01:33 [INFO] Question: ఈరోజు టమాటా ధర ఎంత
+16:01:36 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:01:37 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:01:37 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:01:37 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:01:37 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:01:37 [INFO] Question: ఈ రోజు టమాటా ధర ఎంత?
+16:01:40 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:01:40 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:01:40 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:01:40 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:01:40 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:01:40 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:02:02 [INFO] ASR transcription done, total 22.0s
+16:02:02 [INFO] Question: నా పొలంలో మట్టి బాగుందా
+16:02:06 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:02:06 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:02:06 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:02:06 [INFO] Question: నా పొలంలో మట్టి బాగుందా?
+16:02:08 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:02:08 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:02:08 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:02:08 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+16:02:29 [INFO] ASR transcription done, total 20.5s
+16:02:29 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+16:02:32 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:02:32 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:02:32 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:02:32 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:02:32 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+16:02:34 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:02:34 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:02:34 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:02:34 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:02:34 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:02:58 [INFO] ASR transcription done, total 23.1s
+16:02:58 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+16:03:01 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:03:02 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:03:02 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:03:02 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:03:02 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:03:02 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+16:03:03 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:03:04 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:03:04 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:03:04 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:03:04 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:03:04 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:03:29 [INFO] ASR transcription done, total 25.3s
+16:03:29 [INFO] Question: మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా
+16:03:33 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:03:35 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:03:35 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:03:35 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:03:35 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:03:35 [INFO] Question: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+16:03:37 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:03:38 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:03:38 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:03:38 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:03:38 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:03:38 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:04:05 [INFO] ASR transcription done, total 27.0s
+16:04:05 [INFO] Question: నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
+16:04:09 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:04:11 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:04:11 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:04:11 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:04:11 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:04:11 [INFO] Question: నేల pH ఎంత ఉండాలి టమాటా కోసం?
+16:04:13 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:04:13 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:04:13 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:04:13 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+16:04:37 [INFO] ASR transcription done, total 23.9s
+16:04:37 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా
+16:04:40 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:04:40 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:04:41 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:04:41 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:04:41 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:04:41 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:04:41 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా?
+16:04:43 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:04:43 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:04:43 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:04:43 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:04:43 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:04:43 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:04:43 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:05:09 [INFO] ASR transcription done, total 25.8s
+16:05:09 [INFO] Question: నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+16:05:13 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+16:05:13 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:05:14 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:05:14 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+16:05:14 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+16:05:14 [INFO] Question: నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+16:05:16 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+16:05:18 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:05:18 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:05:18 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+16:05:18 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+  Reference text : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+  ASR exact match: True
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 13: Hello ---
+  ASR transcript : నమస్కారం
+  Reference text : నమస్కారం
+  ASR exact match: True
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 14: Where can I get this pesticide? ---
+  ASR transcript : ఈ మందు ఎక్కడ దొరుకుతుంది
+  Reference text : ఈ మందు ఎక్కడ దొరుకుతుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 15: Crop leaves drying up, is it due to lack of rain? ---
+  ASR transcript : పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+  Reference text : పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker2] Question 16: Is nitrogen low in my soil, should I fertilize? ---
+  ASR transcript : నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరుగు వేయాలా
+  Reference text : నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 1: Spots on my tomato leaves, what disease is this? ---
+  ASR transcript : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+  Reference text : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 2: Will it rain tomorrow? ---
+  ASR transcript : రేపు వర్షం పడుతుందా
+  Reference text : రేపు వర్షం పడుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 3: What's today's tomato price? ---
+  ASR transcript : ఈరోజు టమాటా ధర ఎంత
+  Reference text : ఈ రోజు టమాటా ధర ఎంత?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 4: Is my field's soil good? ---
+  ASR transcript : నా పొలంలో మట్టి బాగుందా
+  Reference text : నా పొలంలో మట్టి బాగుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 5: Potato leaves turning yellow, why? ---
+  ASR transcript : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+  Reference text : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 6: How's the weather this week? ---
+  ASR transcript : ఈ వారం వాతావరణం ఎలా ఉంటుంది
+  Reference text : ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 7: Will potato market price rise? ---
+  ASR transcript : మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా
+  Reference text : మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 8: What soil pH is needed for tomato? ---
+  ASR transcript : నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం
+  Reference text : నేల pH ఎంత ఉండాలి టమాటా కోసం?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : False
+  Classification : INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)
+
+--- [speaker3] Question 9: Should I spray if rain is coming? ---
+  ASR transcript : వర్షం వస్తే మందు కొట్టాలా
+  Reference text : వర్షం వస్తే మందు కొట్టాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 10: Should I sell or hold, considering price and weather? ---
+  ASR transcript : నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+16:05:18 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:05:42 [INFO] ASR transcription done, total 24.3s
+16:05:42 [INFO] Question: ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+16:05:46 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:05:46 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:05:47 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:05:47 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:05:47 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:05:47 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:05:47 [INFO] Question: ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+16:05:49 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:05:49 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:05:50 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:05:50 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:05:50 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:05:50 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:05:50 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:06:13 [INFO] ASR transcription done, total 22.9s
+16:06:13 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+16:06:17 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:06:17 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:06:17 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:06:17 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:06:17 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+16:06:19 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:06:19 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:06:19 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:06:19 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:06:19 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:06:47 [INFO] ASR transcription done, total 28.0s
+16:06:47 [INFO] Question: నమస్కారం
+16:06:51 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:06:51 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:06:51 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:06:51 [INFO] Question: నమస్కారం
+16:06:53 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:06:53 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:06:53 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:06:53 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:07:18 [INFO] ASR transcription done, total 25.4s
+16:07:18 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది
+16:07:21 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:07:21 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:07:21 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:07:21 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:07:21 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది?
+16:07:23 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:07:23 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:07:23 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:07:23 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:07:23 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:07:48 [INFO] ASR transcription done, total 24.5s
+16:07:48 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+16:07:51 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:07:51 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:07:51 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:07:51 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:07:51 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:07:51 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:07:51 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+16:07:54 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:07:54 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:07:54 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:07:54 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:07:54 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:07:54 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:07:54 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:08:19 [INFO] ASR transcription done, total 25.5s
+16:08:19 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
+16:08:23 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:08:23 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:08:23 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:08:23 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+16:08:25 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:08:25 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:08:25 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:08:25 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:08:51 [INFO] ASR transcription done, total 26.5s
+16:08:52 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+16:08:55 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:08:55 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:08:55 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:08:55 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:08:55 [INFO] Question: నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+16:08:57 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:08:57 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:08:57 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:08:57 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:08:57 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:09:22 [INFO] ASR transcription done, total 25.0s
+16:09:22 [INFO] Question: రేపు వర్షం పడుతుందా
+16:09:25 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:09:45 [INFO] Weather Agent (Warangal,IN): rain_expected=None -> state=uncertain
+16:09:45 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:09:45 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'వాతావరణ సమాచారం ప్రస్తుతం అందుబాటులో లేదు.', 'confidence': 'Low'}
+16:09:45 [INFO] Final answer: వాతావరణ సమాచారం ప్రస్తుతం అందుబాటులో లేదు.
+16:09:45 [INFO] Question: రేపు వర్షం పడుతుందా?
+16:09:47 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:09:48 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:09:48 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:09:48 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:09:48 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:09:48 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+16:10:11 [INFO] ASR transcription done, total 23.1s
+16:10:11 [INFO] Question: ఈరోజు టమాటా ధర ఎంత
+16:10:15 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:10:16 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:10:16 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:10:16 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:10:16 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:10:16 [INFO] Question: ఈ రోజు టమాటా ధర ఎంత?
+16:10:19 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:10:20 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:10:20 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:10:20 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:10:20 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:10:21 [INFO] ASR model ready (from cache or fresh load) at 0.2s
+16:10:55 [INFO] ASR transcription done, total 34.4s
+16:10:55 [INFO] Question: నా పొలంలో మట్టి బాగుందా
+16:10:59 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:10:59 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:10:59 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:10:59 [INFO] Question: నా పొలంలో మట్టి బాగుందా?
+16:11:01 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:11:01 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:11:01 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:11:01 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:11:34 [INFO] ASR transcription done, total 32.4s
+16:11:34 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+16:11:38 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:11:38 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:11:38 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:11:38 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:11:38 [INFO] Question: బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+16:11:40 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:11:40 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:11:40 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:11:40 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:11:40 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:12:13 [INFO] ASR transcription done, total 33.1s
+16:12:13 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది
+16:12:18 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:12:19 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:12:19 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:12:19 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:12:19 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:12:19 [INFO] Question: ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+16:12:21 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:12:21 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:12:21 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:12:21 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:12:21 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:12:21 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:12:51 [INFO] ASR transcription done, total 29.4s
+16:12:51 [INFO] Question: మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
+16:12:54 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:13:09 [INFO] Price Agent: pct_diff=None -> state=neutral
+16:13:09 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:13:09 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ధరల సమాచారం ప్రస్తుతం అందుబాటులో లేదు.', 'confidence': 'Low'}
+16:13:09 [INFO] Final answer: ధరల సమాచారం ప్రస్తుతం అందుబాటులో లేదు.
+16:13:09 [INFO] Question: మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+16:13:12 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:13:13 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:13:13 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:13:13 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:13:13 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+  Reference text : నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 11: Leaves have disease, price is also low, what do I do? ---
+  ASR transcript : ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+  Reference text : ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 12: I want full advice on my tomato crop ---
+  ASR transcript : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+  Reference text : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+  ASR exact match: True
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 13: Hello ---
+  ASR transcript : నమస్కారం
+  Reference text : నమస్కారం
+  ASR exact match: True
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 14: Where can I get this pesticide? ---
+  ASR transcript : ఈ మందు ఎక్కడ దొరుకుతుంది
+  Reference text : ఈ మందు ఎక్కడ దొరుకుతుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 15: Crop leaves drying up, is it due to lack of rain? ---
+  ASR transcript : పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+  Reference text : పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker3] Question 16: Is nitrogen low in my soil, should I fertilize? ---
+  ASR transcript : నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా
+  Reference text : నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 1: Spots on my tomato leaves, what disease is this? ---
+  ASR transcript : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి
+  Reference text : నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి, ఇది ఏ వ్యాధి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 2: Will it rain tomorrow? ---
+  ASR transcript : రేపు వర్షం పడుతుందా
+  Reference text : రేపు వర్షం పడుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : False
+  Classification : DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)
+
+--- [speaker4] Question 3: What's today's tomato price? ---
+  ASR transcript : ఈరోజు టమాటా ధర ఎంత
+  Reference text : ఈ రోజు టమాటా ధర ఎంత?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 4: Is my field's soil good? ---
+  ASR transcript : నా పొలంలో మట్టి బాగుందా
+  Reference text : నా పొలంలో మట్టి బాగుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 5: Potato leaves turning yellow, why? ---
+  ASR transcript : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు
+  Reference text : బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఎందుకు?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 6: How's the weather this week? ---
+  ASR transcript : ఈ వారం వాతావరణం ఎలా ఉంటుంది
+  Reference text : ఈ వారం వాతావరణం ఎలా ఉంటుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 7: Will potato market price rise? ---
+  ASR transcript : మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా
+  Reference text : మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:13:13 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:13:38 [INFO] ASR transcription done, total 25.4s
+16:13:38 [INFO] Question: నేల పియచ్ ఎంత ఉండాలి టమాటా కోసం
+16:13:42 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:13:43 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:13:43 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:13:43 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:13:43 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:13:43 [INFO] Question: నేల pH ఎంత ఉండాలి టమాటా కోసం?
+16:13:46 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:13:46 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:13:46 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:13:46 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:14:15 [INFO] ASR transcription done, total 28.5s
+16:14:15 [INFO] Question: వర్షం వస్తే మందు కొట్టాల
+16:14:19 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:14:19 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:14:19 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:14:19 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:14:19 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:14:19 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:14:19 [INFO] Question: వర్షం వస్తే మందు కొట్టాలా?
+16:14:21 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:14:21 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:14:22 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:14:22 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:14:22 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:14:22 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:14:22 [INFO] ASR model ready (from cache or fresh load) at 0.1s
+16:14:51 [INFO] ASR transcription done, total 29.6s
+16:14:51 [INFO] Question: నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+16:14:56 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+16:14:57 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:14:57 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:14:57 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+16:14:57 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+16:14:57 [INFO] Question: నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+16:15:00 [INFO] Intents: {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+16:15:01 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:15:01 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:15:01 [INFO] Conflict Resolver: {'is_conflict': True, 'resolution': 'harvest_now', 'action': 'Harvest early to protect crop from storm; note price is trending up', 'confidence': 'High'}
+16:15:01 [INFO] Final answer: మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం.
+16:15:01 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:15:31 [INFO] ASR transcription done, total 29.9s
+16:15:31 [INFO] Question: ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+16:15:35 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:15:35 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:15:36 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:15:36 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:15:36 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:15:36 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:15:36 [INFO] Question: ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+16:15:38 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+16:15:38 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:15:39 [INFO] Price Agent: pct_diff=-0.12260732011483189 -> state=hold
+16:15:39 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:15:39 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.', 'confidence': 'Medium'}
+16:15:39 [INFO] Final answer: ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది.
+16:15:39 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:16:05 [INFO] ASR transcription done, total 26.0s
+16:16:05 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+16:16:09 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:16:09 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:16:09 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:16:09 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:16:09 [INFO] Question: నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+16:16:11 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:16:11 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:16:11 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:16:11 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:16:11 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:16:37 [INFO] ASR transcription done, total 26.5s
+16:16:37 [INFO] Question: నమస్కారం
+16:16:41 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:16:41 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:16:41 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:16:41 [INFO] Question: నమస్కారం
+16:16:43 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:16:43 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:16:43 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:16:43 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:17:13 [INFO] ASR transcription done, total 29.8s
+16:17:13 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది
+16:17:16 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:17:16 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:17:16 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:17:16 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:17:16 [INFO] Question: ఈ మందు ఎక్కడ దొరుకుతుంది?
+16:17:18 [INFO] Intents: {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+16:17:18 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:17:18 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:17:18 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:17:18 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:17:50 [INFO] ASR transcription done, total 32.1s
+16:17:50 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+16:17:54 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:17:54 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:17:54 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:17:54 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:17:54 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:17:54 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:17:54 [INFO] Question: పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+16:17:56 [INFO] Intents: {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+16:17:57 [INFO] Disease intent detected but no photo attached -- skipping Disease Agent.
+16:17:58 [INFO] Weather Agent (Warangal,IN): rain_expected=True -> state=rain_risk
+16:17:58 [INFO] Only one agent fired -- relaying its answer directly (no arbitration needed).
+16:17:58 [INFO] Conflict Resolver: {'is_conflict': False, 'resolution': 'single_agent_passthrough', 'action': 'రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).', 'confidence': 'High'}
+16:17:58 [INFO] Final answer: రాబోయే 28 గంటల్లో వర్షం పడే అవకాశం ఉంది (వర్షం సంభావ్యత 100%).
+16:17:58 [INFO] ASR model ready (from cache or fresh load) at 0.0s
+16:18:24 [INFO] ASR transcription done, total 25.9s
+16:18:24 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాల
+16:18:27 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:18:27 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:18:27 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+16:18:27 [INFO] Question: నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+16:18:29 [INFO] Intents: {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+16:18:29 [INFO] Conflict Resolver: {'is_conflict': None, 'resolution': 'unresolved_conflict', 'action': 'Advise the farmer that guidance is uncertain here; suggest confirming with a local agriculture officer', 'confidence': 'Low'}
+16:18:29 [INFO] Final answer: ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి.
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : False
+  Classification : DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)
+
+--- [speaker4] Question 8: What soil pH is needed for tomato? ---
+  ASR transcript : నేల పియచ్ ఎంత ఉండాలి టమాటా కోసం
+  Reference text : నేల pH ఎంత ఉండాలి టమాటా కోసం?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Answers match  : False
+  Classification : INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)
+
+--- [speaker4] Question 9: Should I spray if rain is coming? ---
+  ASR transcript : వర్షం వస్తే మందు కొట్టాల
+  Reference text : వర్షం వస్తే మందు కొట్టాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 10: Should I sell or hold, considering price and weather? ---
+  ASR transcript : నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+  Reference text : నా పంట అమ్మాలా ఆపాలా, ధర గురించి చెప్పు వాతావరణం కూడా చూసి
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': True, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 11: Leaves have disease, price is also low, what do I do? ---
+  ASR transcript : ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి
+  Reference text : ఆకులపై తెగులు ఉంది, ధర కూడా తక్కువగా ఉంది, ఏం చేయాలి?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': True, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 12: I want full advice on my tomato crop ---
+  ASR transcript : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+  Reference text : నా టమాటా పంట గురించి పూర్తి సలహా కావాలి
+  ASR exact match: True
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 13: Hello ---
+  ASR transcript : నమస్కారం
+  Reference text : నమస్కారం
+  ASR exact match: True
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 14: Where can I get this pesticide? ---
+  ASR transcript : ఈ మందు ఎక్కడ దొరుకుతుంది
+  Reference text : ఈ మందు ఎక్కడ దొరుకుతుంది?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': False, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 15: Crop leaves drying up, is it due to lack of rain? ---
+  ASR transcript : పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన
+  Reference text : పంట ఆకులు ఎండిపోతున్నాయి, వర్షం లేకపోవడం వల్లనా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Text  intents  : {'wants_disease': True, 'wants_weather': True, 'wants_price': False, 'wants_soil': False}
+  Answers match  : True
+  Classification : MATCH
+
+--- [speaker4] Question 16: Is nitrogen low in my soil, should I fertilize? ---
+  ASR transcript : నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాల
+  Reference text : నా మట్టిలో నత్రజని తక్కువగా ఉందా, ఎరువు వేయాలా?
+  ASR exact match: False
+  Voice intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
+  Text  intents  : {'wants_disease': False, 'wants_weather': False, 'wants_price': False, 'wants_soil': True}
   Answers match  : True
   Classification : MATCH
 
 ======================================================================
-n=16 questions, speaker1 only (PRELIMINARY)
-ASR exact match:     1/16
-Intent match:        15/16
-Agents-fired match:  15/16
-Final answer match:  14/16
+n=64 (4 speakers x 16 questions), reporting_status=FINAL
+ASR exact match:     7/64
+Intent match:        60/64
+Agents-fired match:  60/64
+Final answer match:  58/64
 Mismatch classification breakdown: {
-  "MATCH": 14,
-  "DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents fired, but final phrased answer text differs -- likely a state-mapping or conflict-resolver sensitivity to small wording differences in agent inputs, not an ASR error)": 1,
-  "INTENT_ROUTER_DIVERGED (ASR transcript changed which agents the router decided to call)": 1
+  "MATCH": 58,
+  "INTENT_ROUTER_DIVERGED": 4,
+  "DOWNSTREAM_ANSWER_DIVERGED": 2
 }
+
+Per-speaker summary: {
+  "speaker1": {
+    "n": 16,
+    "asr_transcript_exact_match": "1/16",
+    "intent_router_match": "15/16",
+    "agents_fired_match": "15/16",
+    "final_answer_match": "15/16"
+  },
+  "speaker2": {
+    "n": 16,
+    "asr_transcript_exact_match": "2/16",
+    "intent_router_match": "15/16",
+    "agents_fired_match": "15/16",
+    "final_answer_match": "15/16"
+  },
+  "speaker3": {
+    "n": 16,
+    "asr_transcript_exact_match": "2/16",
+    "intent_router_match": "15/16",
+    "agents_fired_match": "15/16",
+    "final_answer_match": "15/16"
+  },
+  "speaker4": {
+    "n": 16,
+    "asr_transcript_exact_match": "2/16",
+    "intent_router_match": "15/16",
+    "agents_fired_match": "15/16",
+    "final_answer_match": "13/16"
+  }
+}
+
+--- Q8 pH-transliteration finding: does it generalize? ---
+"4/4 speakers' question-8 recordings triggered an intent mismatch. CONFIRMED STRUCTURAL, not one speaker's idiosyncrasy -- every speaker's independent recording of the same technical term reproduced the same behavior change."
 
 Saved -> /Users/harikharreddy/krishi-agent/docs/evidence/metric4_voice_vs_text_ablation_evidence.json
 
 ======================================================================
 POST-HOC CORRECTION (applied after the run above, same session, before
-any evidence was cited): the auto-classifier initially labeled question
-7's mismatch as DOWNSTREAM_ANSWER_DIVERGED (same intents, same agents
-fired, different final answer -- implying state-mapping/conflict-resolver
-sensitivity). Cross-checking against every other price-agent call in this
-run showed 8/9 total price-agent calls (all 16 questions, both
-modalities) returned the IDENTICAL pct_diff=-0.12260732011483189 --
-including question 7's own text-path call. Only question 7's voice-path
-call returned a different value (pct_diff=0.1964445634797747). This is a
-one-off live data.gov.in API response fluctuation on that single call,
-not a pipeline-logic finding -- reclassified to LIVE_PRICE_API_DATA_DRIFT
-in docs/evidence/metric4_voice_vs_text_ablation_evidence.json (original
-classification kept alongside it for transparency, not deleted). The
-generator script (tests/generate_voice_vs_text_ablation_evidence.py) was
-updated to run this same cross-call consistency check automatically for
-future runs (e.g. once speakers 2-4 are available), so this correction
-does not depend on being re-applied by hand next time.
-
-======================================================================
-FOLLOW-UP CHECK 1: is LIVE_PRICE_API_DATA_DRIFT settled or provisional?
-Read agents/price/price_agent.py and orchestrator/pipeline.py directly.
-get_price_advice(state, commodity, market=None) never receives the
-question text or ASR transcript -- only farm_profile's state/crop/mandi
-fields (the identical TEST_PROFILE object for both voice and text calls).
-_fetch_today_price() makes one plain requests.get() per call: no caching,
-no retry logic, no session reuse. The module's only cache (_history_cache)
-holds the static historical CSV, is unrelated to the live "today" price,
-and is populated identically regardless of call order. CONCLUSION: it is
-architecturally IMPOSSIBLE for voice-vs-text invocation to select a
-different code path in this function -- a given question's voice and text
-calls are byte-for-byte identical. LIVE_PRICE_API_DATA_DRIFT is SETTLED,
-not provisional.
-
-FOLLOW-UP 2: expanded question 8 into its own headline finding (ASR
-transliterating "pH" into Telugu script vs. the reference text's Latin
-"pH" flipped the LLM intent router's classification from wants_soil to
-wants_price) -- see
-HEADLINE_FINDING_asr_transliteration_of_technical_term_changed_intent_classification
-in metric4_voice_vs_text_ablation_evidence.json. This is the metric's
-actual headline result, not a table row.
+any evidence was cited): 2 of this run's DOWNSTREAM_ANSWER_DIVERGED
+cases (speaker4, question 2 "Will it rain tomorrow?" and question 7
+"Will potato market price rise?") were initially auto-classified as
+generic answer-text divergence. Investigated rather than accepted at
+face value: both voice-path final answers exactly matched the source-
+code fallback strings for requests.exceptions.RequestException
+(agents/weather/weather_agent.py:100, agents/price/price_agent.py:115)
+-- both are genuine live-API call failures, not pipeline-logic
+sensitivity to wording. Both occurred on the voice path specifically
+(0 on text path, across all 64 question-pairs); the plausible mechanism
+(ASR transcription's heavy model load immediately preceding the live
+HTTP call, consistent with the resource-contention pattern already
+documented in evaluation_and_validation.md Sec 2.6) is flagged as
+plausible, not proven -- no controlled isolation was run. Reclassified
+to LIVE_API_FAILURE_VOICE_PATH in
+docs/evidence/metric4_voice_vs_text_ablation_evidence.json, original
+classification kept for transparency. After this correction, the
+DOWNSTREAM_ANSWER_DIVERGED bucket for this run is empty -- every
+mismatch across all 64 question-pairs is now attributed to either the
+confirmed structural Q8 ASR-transliteration finding (4/4 speakers) or
+a live-API failure (2, both voice-path, both explained), with zero
+unexplained cases remaining. The generator script
+(tests/generate_voice_vs_text_ablation_evidence.py) was updated to run
+this same detection automatically for future runs.
