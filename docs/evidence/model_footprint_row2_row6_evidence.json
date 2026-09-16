@@ -1,0 +1,41 @@
+{
+  "metric": "Compute footprint (parameter count, FLOPs) for model lineage rows 2 and 6, per external review request",
+  "method": "ptflops (get_model_complexity_info), the only one of torchinfo/ptflops available in this environment -- torchinfo was not installed; ptflops was installed for this script. Computed on the untrained architecture (weights=None, matching each checkpoint's actual class-count/head configuration) -- params and FLOPs depend on architecture and input shape, not trained weight values, so this is identical to measuring the actual loaded checkpoint. Input shape (3, 224, 224), matching IMG_SIZE used throughout agents/disease/disease_agent.py.",
+  "row6_v2_flat_13class": {
+    "params": 4024201,
+    "macs": 408932549,
+    "flops": 817865098
+  },
+  "row1_flat_baseline_NOTE": "Not separately measured -- row 1 (flat_baseline_best.pt) uses the identical architecture (single EfficientNetB0, 13-class flat head) as row 6, so its params/FLOPs are IDENTICAL to row6_v2_flat_13class above by construction, not independently computed.",
+  "row2_hierarchical_per_stage": {
+    "stage1_crop_id_2class": {
+      "params": 4010110,
+      "macs": 408918458,
+      "flops": 817836916
+    },
+    "stage2_tomato_10class": {
+      "params": 4020358,
+      "macs": 408928706,
+      "flops": 817857412
+    },
+    "stage2_potato_3class": {
+      "params": 4011391,
+      "macs": 408919739,
+      "flops": 817839478
+    }
+  },
+  "row2_hierarchical_combined": {
+    "params": 12041859,
+    "flops": 2453533806
+  },
+  "row2_hierarchical_per_real_inference": {
+    "params_loaded_in_memory": 12041859,
+    "flops_tomato_path": 1635694328,
+    "flops_potato_path": 1635676394
+  },
+  "row5_deployed_NOTE": "Not separately measured -- row 5 (the deployed stage1/2_*_best.pt checkpoints) uses the identical architecture as row 2 (same 3-model hierarchical split, same per-stage class counts), so its params/FLOPs are IDENTICAL to the row2_hierarchical_* figures above by construction. Row 5's REAL measured latency/throughput (already computed, not re-measured here) is pulled in directly: mean inference latency 240.2ms (std 20.7ms, n=85), throughput 4.16 img/sec -- see agents/disease/compute_full_metrics.py and evaluation_and_validation.md's Precision/recall/F1 subsection. This latency figure is architecturally representative of row 2 as well (same compute graph), restated rather than re-measured, since row 2 was never deployed/latency-profiled independently.",
+  "honest_gaps": [
+    "FLOPs computed on the architecture in isolation, not inside a live inference call -- does not include preprocessing (resize/normalize) or postprocessing (softmax) overhead, which the measured 240.2ms latency figure for row 5 DOES include end-to-end. FLOPs and latency are therefore complementary, not directly convertible into each other from this data alone.",
+    "Row 6's real measured latency/throughput was never separately profiled (only row 5's was, via compute_full_metrics.py) -- reporting row 6's FLOPs/params without a matching real-world latency number for the same single-model architecture; a single-model call would be expected to be faster than row 5's 2-model-per-inference call by rough proportion of FLOPs, but this is an inference from the FLOPs ratio, not an independent measurement."
+  ]
+}

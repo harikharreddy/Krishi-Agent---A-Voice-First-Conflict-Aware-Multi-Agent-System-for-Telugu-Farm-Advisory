@@ -26,6 +26,24 @@ Each pipeline stage was evaluated independently (below), plus the two
 component-level rewrites that motivated the current architecture (TTS
 latency, Disease Agent domain shift).
 
+**This evaluation substantiates three system-level contributions, not a
+single component-level accuracy claim** (full evidence and exact wording
+in Sec. 3.1): (1) explicit, independently-tested conflict arbitration
+across competing advice signals, not present in any of the three
+comparable published systems surveyed; (2) confidence calibration
+validated empirically, not asserted -- a three-signal convergence
+(accuracy band, formal confusion matrix, Expected Calibration Error) now
+confirmed across three independently-trained checkpoints (Sec. 2.5), plus
+statistically-grounded work on the deployed confidence cutoff (Wilson CIs
+and bootstrap stability checks, Sec. 2.5); (3) a confirmed, cross-speaker
+structural failure mode at the ASR-to-intent-router boundary -- a
+domain-specific technical term (soil pH) transliterated by ASR flips the
+intent router's classification, reproduced independently across all 4
+recorded speakers (Sec. 2.9), not a single-speaker artifact. The Disease
+Agent's own accuracy (~22% real-world, structurally bounded by domain
+shift -- Sec. 2.5) is reported honestly as a measured limitation, not
+positioned as the project's novelty claim.
+
 ## 2. Component-level results
 
 ### 2.0 Full logic/correctness test suite -- run today, all passing
@@ -294,27 +312,33 @@ independent signals**, not accuracy alone:
    (hierarchical) / 21.45% (v2 independent) -- **mean 22.30%, stdev 1.03
    points**. `docs/evidence/metric1_zero_shot_convergence.json`.
 2. **Attractor-class convergence**, now formalized as an actual confusion
-   matrix (previously an informal observation) for the two checkpoints
-   with saved per-image predictions: both independently default to
+   matrix (previously an informal observation) for **all three**
+   checkpoints (row 1's confusion matrix closed 2026-09-16, via a fresh
+   inference run against the actual `flat_baseline_best.pt` checkpoint --
+   no per-image predictions existed for it before, verified recoverable
+   rather than assumed unrecoverable): all three independently default to
    predicting `Tomato_Late_blight`/`Tomato_Early_blight` regardless of
-   true label -- hierarchical checkpoint: `Tomato_Late_blight` predicted
-   522/967 times (54% of ALL predictions, any true class); v2 checkpoint:
-   `Tomato_Late_blight` (425x) + `Tomato_Early_blight` (322x) dominate the
-   same way. Per-class recall on those classes' own true instances stays
-   far below their predicted share (hierarchical: 80.2% recall but only
-   17.0% *precision* on `Tomato_Late_blight` -- the model calls almost
+   true label -- flat baseline: `Tomato_Late_blight` predicted 373/967
+   times (38.6% of all predictions, 59.5% recall but only 17.7%
+   precision); hierarchical: `Tomato_Late_blight` predicted 522/967 times
+   (54% of ALL predictions); v2 checkpoint: `Tomato_Late_blight` (425x) +
+   `Tomato_Early_blight` (322x) dominate the same way. Per-class recall on
+   those classes' own true instances stays far below their predicted
+   share in every checkpoint (hierarchical: 80.2% recall but only 17.0%
+   *precision* on `Tomato_Late_blight` -- the model calls almost
    everything blight, so it's "right" whenever the true label happens to
    be blight and wrong almost everywhere else).
    `docs/evidence/metric1_confusion_matrix_calibration_evidence.json`;
    matrices in
-   `agents/disease/results/confusion_matrix_row{2,6}_*_zero_shot.png`.
-3. **Calibration-shape convergence**: Expected Calibration Error is
-   nearly identical across the two checkpoints (0.4725 vs. 0.4606), and
-   both reliability diagrams show the same shape -- confidence bins above
-   ~0.5 sit well below the diagonal throughout, i.e. the model is
-   systematically *overconfident*, not just inaccurate, and this
-   overconfidence pattern itself replicates independently.
-   `agents/disease/results/reliability_diagram_row{2,6}_*_zero_shot.png`.
+   `agents/disease/results/confusion_matrix_row{1,2,6}_*_zero_shot.png`.
+3. **Calibration-shape convergence**: Expected Calibration Error is close
+   across all three checkpoints (0.4892 flat baseline / 0.4725
+   hierarchical / 0.4606 v2), and all three reliability diagrams show the
+   same shape -- confidence bins above ~0.5 sit well below the diagonal
+   throughout, i.e. the model is systematically *overconfident*, not just
+   inaccurate, and this overconfidence pattern itself replicates
+   independently across three, not two, runs.
+   `agents/disease/results/reliability_diagram_row{1,2,6}_*_zero_shot.png`.
 
 *(These three numbers use each checkpoint's full combined image set,
 n=965-968, matching how the accuracy-band convergence was computed --
@@ -666,7 +690,23 @@ Router -> Disease Agent -> Conflict Resolver -> Phrasing Templates.
   whichever run looked better.
 - Full per-image results: `docs/end_to_end_eval_results.json`.
 
-### 2.9 Voice vs. text ablation (Phase 8.1, metric #4) -- FINAL, n=64, 4 speakers
+### 2.9 Ablation Study: Voice vs. text (Phase 8.1, metric #4) -- FINAL, n=64, 4 speakers
+
+**Formal framing**: this is an ablation study in the standard sense --
+one component of the pipeline (ASR) is removed/bypassed while every
+other component (intent router, agents, conflict resolver, phrasing) is
+held fixed, isolating that single component's causal contribution to
+downstream behavior and failures. Where a typical model ablation removes
+a layer or a training signal and measures the accuracy delta, this
+ablation removes the ASR step and measures the *behavioral* delta --
+whether the pipeline's decisions (which intents fire, which agents run,
+what answer is phrased) change when voice is swapped for text carrying
+the identical semantic content. The two confirmed findings below (Sec.
+2.9) are exactly this kind of ablation result: one isolates the ASR
+component's specific causal contribution to a real failure (the pH
+transliteration flip), the other rules the ASR/voice path in as the
+locus of a separate failure (the live-API timing issue) by showing it
+does not reproduce on the text-only control path.
 
 Does going through ASR change what the pipeline does, compared to typing
 the exact same question? Each of the 16 questions in
@@ -794,13 +834,55 @@ other two, noted honestly rather than inferred).
 massively outscales this project on real-world deployment and user-study
 rigor -- that is a genuine, uncontested strength of theirs, not something
 to argue around. What this comparison actually supports is a narrower,
-verifiable claim: **conflict arbitration between competing advice signals
-and prospective confidence communication to the farmer are explicitly
-engineered, independently-tested components in Krishi-Agent, and are
-not described as present in any of the three comparable systems' own
-published accounts.** That is the project's specific, evidence-backed
-novelty contribution -- not a claim of being "better overall," which the
-evaluation scale gap above would not support.
+verifiable, **system-level** claim, not a component-level one (the
+Disease Agent's own ~22% real-world accuracy is not the novelty claim --
+see Sec. 2.5's honest framing of that as a structural, domain-shift-bound
+limitation):
+
+1. **Conflict arbitration between competing advice signals is explicitly
+   engineered and independently tested** -- a deterministic rule table
+   (13/13 on synthetic tests, Sec. 2.2), one real gap found via live-data
+   testing and fixed (Sec. 2.7), with denominator-honest coverage
+   reporting (Sec. 2.7's coverage-fraction framing) -- and is not
+   described as present in any of the three comparable systems surveyed
+   above.
+2. **Confidence calibration is validated empirically, not merely
+   asserted.** A three-signal convergence (accuracy band, formal
+   confusion matrix, Expected Calibration Error) is now confirmed across
+   three independently-trained zero-shot checkpoints, not one (Sec. 2.5)
+   -- and the deployed confidence cutoff was stress-tested with Wilson
+   95% confidence intervals and a 2,000-iteration bootstrap stability
+   check before any change was even considered, ultimately supporting a
+   documented "hold, don't change" decision rather than a headline-
+   chasing point estimate (Sec. 2.5). None of the three comparable
+   systems describe prospective confidence communication to the user at
+   all (Farmer.Chat's feedback is retrospective thumbs-up/down, not
+   prospective).
+3. **A confirmed, cross-speaker structural failure mode at the
+   ASR-to-intent-router boundary was found, characterized, and
+   reproduced -- not just observed once.** A domain-specific technical
+   term (soil pH) transliterated by ASR into Telugu script flips the
+   intent router's classification from `wants_soil` to `wants_price`;
+   this reproduced independently across all 4 recorded speakers (Sec.
+   2.9's ablation study), demonstrating the failure is structural to how
+   the intent router weighs Latin-script vs. transliterated technical
+   vocabulary, not one recording's fluke. This class of failure -- voice
+   input silently changing system behavior in ways a text-only test
+   suite would never catch -- is exactly the kind of gap a voice-vs-text
+   ablation exists to find, and none of the three comparable systems
+   report running one.
+
+That is the project's specific, evidence-backed novelty contribution --
+not a claim of being "better overall," which the evaluation scale gap
+above would not support. Separately, and not part of the novelty claim
+itself: the Intent Router's own model-size finding (Sec. 2.1 -- the 3B
+model scored 50%, the deployed 7B model 87.5%/81.8% held-out) is
+consistent with the literature survey's documented finding that small
+(7-8B and below) LLMs can underperform on domain-specific coordination
+tasks (Radeva et al. [16], per `orchestrator/intent_router_results.md`)
+-- that citation supports the model-size decision specifically, not the
+conflict-arbitration claim above, which rests on this project's own
+rule-table evidence, not an external literature anchor.
 
 **Real-world plant disease classification**: PlantDoc is an established
 benchmark specifically because it exposes the PlantVillage-to-field
@@ -948,6 +1030,57 @@ In priority order:
    `sell_now`/`hold`/`neutral` decision's boundary would shift) and
    needs its own sign-off and before/after comparison, same discipline
    as every other pipeline.py change this evaluation phase.
+
+### Post-Defense Journal Extension Roadmap
+
+The items below are deliberately **out of scope for the defense
+submission** -- not unfinished work, but rigor that belongs to a
+different venue tier than this project targets right now. Per the
+project's own guiding scope document (Publication Plan section):
+the realistic target is a student research track, workshop paper, or
+regional/national journal, explicitly *not* a top-tier international
+conference. The items here are the specific additional rigor a future
+journal-tier extension would need that a workshop/regional-journal-tier
+defense submission does not -- listed explicitly and by name so "what's
+deliberately deferred" is as documented as everything else in this
+report, not left implicit.
+
+1. **Baseline reproduction under controlled conditions.** Every
+   accuracy figure in this report comes from a single training/eval run
+   per checkpoint (with honest exceptions already noted where
+   nondeterminism was caught and reported, e.g. Sec. 2.8's 33.3% vs.
+   36.7% MPS-backend floating-point difference). A journal-tier
+   submission would re-run each checkpoint's training from scratch
+   multiple times (different random seeds, same hyperparameters) and
+   report variance, not a single point estimate -- distinguishing
+   "this specific run's number" from "this architecture's expected
+   performance band."
+2. **Formal statistical significance testing (McNemar's test) across
+   model comparisons.** This report's checkpoint comparisons (e.g. row
+   1 vs. row 2 vs. row 6's ~22% accuracy band, or the deployed model's
+   37.65% vs. the zero-shot 23.45%) are reported as raw accuracy deltas
+   with confidence intervals where sample size allows (e.g. the Wilson
+   CI work in Sec. 2.5's confidence-cutoff investigation), but paired
+   McNemar's tests on matched predictions (same test images, different
+   checkpoints) would let a specific claim like "checkpoint A is
+   significantly better than checkpoint B" be stated with a p-value,
+   not just an eyeballed gap -- appropriate rigor for a journal
+   reviewer, not required to defend the engineering contribution this
+   project is actually making.
+3. **k-fold cross-validation.** Every PlantDoc evaluation in this
+   report uses PlantDoc's own fixed train/test split (the benchmark's
+   standard split, used so results stay comparable to other published
+   PlantDoc numbers). A journal-tier extension would additionally run
+   k-fold cross-validation within the training data to characterize
+   variance from the specific train/test partition itself, separate
+   from architecture or checkpoint variance -- a different, complementary
+   question to the one this report answers.
+
+These are named explicitly, with the reasoning for deferring each,
+rather than left as a vague "more rigor would be nice" gesture --
+consistent with this report's standing rule that a gap gets stated
+honestly, not smoothed over, whether the gap is in evidence already
+gathered or in evidence deliberately not yet attempted.
 
 ### End-to-end answer-quality rubric -- status
 

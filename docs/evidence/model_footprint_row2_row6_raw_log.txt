@@ -1,0 +1,10 @@
+Row 6 (v2, flat 13-class) / Row 1 (flat baseline, identical architecture): params=4,024,201  MACs=408,932,549  FLOPs=817,865,098 (0.818 GFLOPs)
+Row 2/5 stage1 (crop ID, 2-class): params=4,010,110  MACs=408,918,458  FLOPs=817,836,916 (0.818 GFLOPs)
+Row 2/5 stage2_tomato (10-class): params=4,020,358  MACs=408,928,706  FLOPs=817,857,412 (0.818 GFLOPs)
+Row 2/5 stage2_potato (3-class): params=4,011,391  MACs=408,919,739  FLOPs=817,839,478 (0.818 GFLOPs)
+
+Row 2/5 combined (all 3 models loaded): params=12,041,859  FLOPs if all 3 ran=2,453,533,806
+Row 2/5 per real inference (stage1 + stage2_tomato): FLOPs=1,635,694,328 (1.636 GFLOPs)
+Row 2/5 per real inference (stage1 + stage2_potato): FLOPs=1,635,676,394 (1.636 GFLOPs)
+
+Saved -> /Users/harikharreddy/krishi-agent/docs/evidence/model_footprint_row2_row6_evidence.json

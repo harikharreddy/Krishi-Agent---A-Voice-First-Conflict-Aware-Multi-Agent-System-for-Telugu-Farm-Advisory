@@ -51,6 +51,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 
+ROW1_PATH = os.path.join(ROOT, "docs", "evidence", "metric1_row1_flat_baseline_evidence.json")
 ROW2_PATH = os.path.join(ROOT, "docs", "evidence", "metric6_perimage_confidence_BEFORE_zeroshot_sep3.json")
 ROW6_PATH = os.path.join(ROOT, "docs", "evidence", "metric1_v2_checkpoint_evidence.json")
 FLAT_BASELINE_RESULTS_PATH = os.path.join(HERE, "results", "flat_baseline_results.json")
@@ -82,6 +83,17 @@ V2_TO_CANONICAL = {
     "Tomato___Spider_mites": "Tomato_Spider_mites_Two_spotted_spider_mite",  # INFERRED by naming pattern, not cross-verified (unusable image count for row 6 specifically)
 }
 INFERRED_NOT_VERIFIED = {"Tomato___Target_Spot", "Tomato___Spider_mites"}
+
+
+def load_row1():
+    """Row 1 (flat baseline) already uses the canonical class-naming
+    convention (verified: agents/disease/evaluate_row1_flat_baseline.py
+    sources class names from flat_baseline_results.json, the same file
+    CANONICAL_CLASSES above is built from) -- no cross-checkpoint name
+    mapping needed, same as row 2."""
+    with open(ROW1_PATH, encoding="utf-8") as f:
+        d = json.load(f)
+    return [{"true": r["true_class"], "pred": r["predicted_class"], "confidence": r["confidence"], "correct": r["correct"]} for r in d["records"]]
 
 
 def load_row2():
@@ -277,50 +289,59 @@ def build_checkpoint_evidence(name, records, checkpoint_label):
 
 
 def main():
+    row1_records = load_row1()
     row2_records = load_row2()
     row6_records, row6_unmapped = load_row6()
 
     if row6_unmapped:
         print(f"WARNING: {len(row6_unmapped)} row-6 class name(s) had no V2_TO_CANONICAL entry, records dropped: {row6_unmapped}")
 
+    row1_evidence = build_checkpoint_evidence("row1_flat_baseline_zero_shot", row1_records, "Row 1 (flat baseline, zero-shot, PlantVillage-only)")
     row2_evidence = build_checkpoint_evidence("row2_hierarchical_zero_shot", row2_records, "Row 2 (hierarchical, zero-shot, PlantVillage-only)")
     row6_evidence = build_checkpoint_evidence("row6_v2_zero_shot", row6_records, "Row 6 (v2 independent, zero-shot, PlantVillage-only)")
 
     evidence = {
         "metric": "Per-class confusion matrix, Precision/Recall/F1, and Expected Calibration Error for the zero-shot Disease Agent checkpoints -- formalizes the attractor-class-bias finding as a single confusion-matrix-level result, per external technical review (2026-09-13)",
         "SCOPE": (
-            "Covers ONLY row 2 (hierarchical) and row 6 (v2 independent) -- the two zero-shot "
-            "checkpoints with per-image predictions already stored in this repo. Row 1 (flat "
-            "baseline) has no per-image PlantDoc predictions anywhere in this repo and was "
-            "explicitly held back as a separate, larger-effort item (needs a fresh inference "
-            "run) per team decision 2026-09-13; an orphaned PNG "
+            "Covers all 3 zero-shot checkpoints (rows 1, 2, 6) as of 2026-09-16 -- row 1's gap "
+            "(flagged 2026-09-13 as 'no per-image predictions exist, needs a fresh inference run') "
+            "was closed via agents/disease/evaluate_row1_flat_baseline.py, run against the actual "
+            "flat_baseline_best.pt checkpoint (verified recoverable before assuming otherwise: the "
+            "checkpoint and raw PlantDoc data both exist in this repo). An orphaned PNG "
             "(agents/disease/results/confusion_flat_plantdoc.png) exists with no traceable "
-            "generating script and was NOT used or trusted here."
+            "generating script and was NOT used or trusted for this -- row 1's confusion matrix "
+            "below is freshly computed, not recovered from that file."
         ),
         "method": (
-            "Reprocesses existing per-image prediction records (no new model inference run). "
-            "Row 2 data from docs/evidence/metric6_perimage_confidence_BEFORE_zeroshot_sep3.json "
-            "(n=967, already uses the canonical 13-class naming convention). Row 6 data from "
-            "docs/evidence/metric1_v2_checkpoint_evidence.json's 'records' field (n=965), mapped "
-            "from its own independently-trained class_names onto the same canonical 13-class "
-            "list via V2_TO_CANONICAL (see module docstring in "
-            "agents/disease/generate_confusion_matrix_calibration_evidence.py -- 9 of 11 mapped "
-            "classes cross-verified via shared PlantDoc folder keys between the two checkpoints' "
-            "eval scripts, 2 inferred by an otherwise 100%-consistent naming pattern, explicitly "
-            "flagged as such). Both checkpoints are genuinely zero-shot on PlantDoc (never "
-            "fine-tuned on it), so no train/test contamination restriction applies -- full "
-            "combined image sets are used, matching how each checkpoint's already-established "
-            "headline accuracy (23.45% row 2, 21.45% row 6) was computed."
+            "Reprocesses existing per-image prediction records where available (rows 2, 6); row 1's "
+            "records were freshly generated for this evidence (evaluate_row1_flat_baseline.py) since "
+            "none existed previously. Row 1 data from docs/evidence/metric1_row1_flat_baseline_evidence.json "
+            "(n=967, canonical naming -- class order sourced from flat_baseline_results.json, no "
+            "cross-checkpoint mapping needed). Row 2 data from docs/evidence/"
+            "metric6_perimage_confidence_BEFORE_zeroshot_sep3.json (n=967, canonical naming). Row 6 "
+            "data from docs/evidence/metric1_v2_checkpoint_evidence.json's 'records' field (n=965), "
+            "mapped from its own independently-trained class_names onto the canonical 13-class list "
+            "via V2_TO_CANONICAL (9 of 11 mapped classes cross-verified via shared PlantDoc folder "
+            "keys, 2 inferred by an otherwise 100%-consistent naming pattern, explicitly flagged as "
+            "such). All 3 checkpoints are genuinely zero-shot on PlantDoc (never fine-tuned on it), "
+            "so no train/test contamination restriction applies -- full combined image sets are "
+            "used, matching how each checkpoint's already-established headline accuracy (22.00% row "
+            "1, 23.45% row 2, 21.45% row 6) was computed."
         ),
+        "row1_flat_baseline_zero_shot": row1_evidence,
         "row2_hierarchical_zero_shot": row2_evidence,
         "row6_v2_zero_shot": row6_evidence,
         "unified_finding_attractor_bias_as_formal_confusion_matrix_result": (
             "The project's previously-reported '21-23% average accuracy' and 'attractor-class "
             "bias toward Tomato_Late_blight/Tomato_Early_blight' were reported as two separate "
             "observations; this evidence formalizes them as the SAME phenomenon viewed at two "
-            "resolutions of the same confusion matrix. Both checkpoints show the identical "
-            "signature at the class level: Tomato_Late_blight and Tomato_Early_blight dominate "
-            f"the predicted-class distribution in BOTH checkpoints (row 2 top predicted: "
+            "resolutions of the same confusion matrix -- now confirmed across ALL THREE "
+            "independently-trained zero-shot checkpoints, not two. All three show the identical "
+            "signature at the class level: Tomato_Late_blight and/or Tomato_Early_blight dominate "
+            f"the predicted-class distribution in EVERY checkpoint (row 1 top predicted: "
+            f"{row1_evidence['top_3_most_frequently_predicted_classes'][0]['class']}, "
+            f"{row1_evidence['top_3_most_frequently_predicted_classes'][0]['times_predicted']} "
+            f"times; row 2 top predicted: "
             f"{row2_evidence['top_3_most_frequently_predicted_classes'][0]['class']}, "
             f"{row2_evidence['top_3_most_frequently_predicted_classes'][0]['times_predicted']} "
             f"times; row 6 top predicted: "
@@ -334,21 +355,19 @@ def main():
             "rather than lesion-specific morphology -- exactly the boundary-geometry problem "
             "the external review's Section 1.2 predicted and asked to be tested formally rather "
             "than left as an informal pattern."
-            f" A second, independent convergence signal: ECE is also near-identical across the "
-            f"two checkpoints ({row2_evidence['expected_calibration_error']['value']:.4f} row 2 "
-            f"vs. {row6_evidence['expected_calibration_error']['value']:.4f} row 6) and both "
+            f" A second, independent convergence signal: ECE is close across all three checkpoints "
+            f"({row1_evidence['expected_calibration_error']['value']:.4f} row 1, "
+            f"{row2_evidence['expected_calibration_error']['value']:.4f} row 2, "
+            f"{row6_evidence['expected_calibration_error']['value']:.4f} row 6) and all three "
             f"reliability diagrams show the same shape -- confidence bins above ~0.5 sit well "
             f"below the diagonal throughout, i.e. the model is systematically overconfident, not "
-            f"just inaccurate, and this overconfidence pattern itself replicates across two "
-            f"independently-trained checkpoints rather than being one run's idiosyncrasy."
+            f"just inaccurate, and this overconfidence pattern itself replicates across three "
+            f"independently-trained checkpoints rather than being one or two runs' idiosyncrasy. "
+            f"With row 1 now included, the three-signal convergence finding "
+            f"(evaluation_and_validation.md Sec. 2.5) is confirmed on all 3 checkpoints, not 2 of 3 "
+            f"as previously caveated."
         ),
         "honest_gaps": [
-            "Row 1 (flat baseline) is not included -- see SCOPE above. The three-checkpoint "
-            "zero-shot convergence finding (22.30% mean, 1.03pp stdev) still stands on its own "
-            "aggregate-accuracy evidence (docs/evidence/metric1_zero_shot_convergence.json), but "
-            "this confusion-matrix-level analysis currently covers 2 of those 3 checkpoints, not "
-            "all 3.",
-
             "Per-class recall is undefined (None, not 0%) for any canonical class with zero true "
             "PlantDoc instances in a given checkpoint's evaluable set (e.g. Potato___healthy and "
             "Tomato__Target_Spot have 0 true instances in both checkpoints' PlantDoc coverage) -- "
@@ -374,6 +393,11 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(evidence, f, ensure_ascii=False, indent=2)
 
+    print(f"Row 1 (flat baseline): n={row1_evidence['n']}, acc={row1_evidence['overall_accuracy']:.4f}, "
+          f"ECE={row1_evidence['expected_calibration_error']['value']:.4f}")
+    print(f"  Macro P/R/F1: {row1_evidence['macro_average']}")
+    print(f"  Top predicted: {row1_evidence['top_3_most_frequently_predicted_classes']}")
+    print()
     print(f"Row 2 (hierarchical): n={row2_evidence['n']}, acc={row2_evidence['overall_accuracy']:.4f}, "
           f"ECE={row2_evidence['expected_calibration_error']['value']:.4f}")
     print(f"  Macro P/R/F1: {row2_evidence['macro_average']}")
@@ -385,7 +409,8 @@ def main():
     print(f"  Top predicted: {row6_evidence['top_3_most_frequently_predicted_classes']}")
     print()
     print(f"Saved -> {out_path}")
-    print(f"Plots -> {row2_evidence['confusion_matrix_plot']}, {row2_evidence['reliability_diagram_plot']}")
+    print(f"Plots -> {row1_evidence['confusion_matrix_plot']}, {row1_evidence['reliability_diagram_plot']}")
+    print(f"         {row2_evidence['confusion_matrix_plot']}, {row2_evidence['reliability_diagram_plot']}")
     print(f"         {row6_evidence['confusion_matrix_plot']}, {row6_evidence['reliability_diagram_plot']}")
 
 

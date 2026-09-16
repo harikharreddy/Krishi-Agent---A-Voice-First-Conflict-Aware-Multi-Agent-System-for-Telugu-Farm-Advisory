@@ -10,15 +10,42 @@ which model produced it.
 
 ## The lineage table
 
-| # | Checkpoint(s) | Trained on | PlantDoc role | PlantVillage val acc | PlantDoc accuracy | Deployed? |
-|---|---|---|---|---|---|---|
-| 1 | `flat_baseline_best.pt` | PlantVillage only (13-class flat) | Zero-shot eval only | 99.72% | 22.00% (n=968, train+test combined) | No |
-| 2 | `stage1/2_*_plantvillage_only.pt` | PlantVillage only (hierarchical) | Zero-shot eval only | 99.70% | 23.45% (n=968) / 28.24% (n=85, test-only) | No (kept for rollback) |
-| 3 | `stage1/2_*_plantdoc_no_target_spot.pt` | PlantVillage + PlantDoc **train** split | Train split used for fine-tuning; **test** split held out | n/a (not re-measured) | 40.0% (n=85, test-only, held-out) | No (superseded) |
-| 4 | `stage1/2_*_pre_potato_healthy.pt` | Same as #3 + 20 external Target_Spot photos | Same as #3 | n/a | 38.8% (n=85, test-only, held-out) | No (superseded) |
-| 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** |
-| 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) |
-| 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | ~~32.39% best / 26.76% final~~ **INVALID FOR HEADLINE REPORTING — bug-confirmed, n=71 on a test set silently missing 2 of 13 classes; kept for transparency only, see below** | No — not deployed, and not citable as a comparison point |
+Compute footprint column added 2026-09-16 (params/FLOPs via `ptflops`,
+`agents/disease/compute_model_footprint.py`; latency/throughput pulled
+in from the existing real measurement — `agents/disease/
+compute_full_metrics.py` — rather than reported separately, per
+architecture-sharing notes below the table).
+
+| # | Checkpoint(s) | Trained on | PlantDoc role | PlantVillage val acc | PlantDoc accuracy | Deployed? | Compute footprint* |
+|---|---|---|---|---|---|---|---|
+| 1 | `flat_baseline_best.pt` | PlantVillage only (13-class flat) | Zero-shot eval only | 99.72% | 22.00% (n=968, train+test combined) | No | 4.02M params, 0.82 GFLOPs |
+| 2 | `stage1/2_*_plantvillage_only.pt` | PlantVillage only (hierarchical) | Zero-shot eval only | 99.70% | 23.45% (n=968) / 28.24% (n=85, test-only) | No (kept for rollback) | 12.04M params (3 models), 1.64 GFLOPs/inference — architecture shared with row 5 |
+| 3 | `stage1/2_*_plantdoc_no_target_spot.pt` | PlantVillage + PlantDoc **train** split | Train split used for fine-tuning; **test** split held out | n/a (not re-measured) | 40.0% (n=85, test-only, held-out) | No (superseded) | same as row 2/5 (architecture unchanged by fine-tuning) |
+| 4 | `stage1/2_*_pre_potato_healthy.pt` | Same as #3 + 20 external Target_Spot photos | Same as #3 | n/a | 38.8% (n=85, test-only, held-out) | No (superseded) | same as row 2/5 |
+| 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** | 12.04M params, 1.64 GFLOPs/inference, **240.2ms mean latency (std 20.7ms, n=85), 4.16 img/s throughput** (measured, not inherited) |
+| 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) | 4.02M params, 0.82 GFLOPs — no real-world latency measured for this single-model architecture |
+| 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | ~~32.39% best / 26.76% final~~ **INVALID FOR HEADLINE REPORTING — bug-confirmed, n=71 on a test set silently missing 2 of 13 classes; kept for transparency only, see below** | No — not deployed, and not citable as a comparison point | same as row 6 (architecture unchanged by fine-tuning) |
+
+**\*Compute footprint notes**: params/FLOPs depend on architecture and
+class count, not trained weight values, so rows sharing an architecture
+share identical figures by construction — not independently
+re-measured per row. Row 2's family (rows 2/3/4/5) is the 3-model
+hierarchical split (stage1 crop-ID + stage2 tomato + stage2 potato);
+FLOPs/inference reflects that a real call only ever runs 2 of the 3
+models (stage1 + whichever stage2 branch matches the detected crop), not
+all 3 simultaneously, while the 12.04M param count is all 3 models
+loaded in memory (matches the already-published 12,041,859 figure in
+`evaluation_and_validation.md`'s precision/recall/latency subsection
+exactly — cross-validates this fresh computation against that prior
+independent measurement). Row 5's latency/throughput is the only row
+with a REAL measurement (via live inference timing, not FLOPs-derived)
+— restated here from `compute_full_metrics.py` rather than re-measured,
+and is architecturally representative of rows 2/3/4 too since they share
+the identical compute graph, though those specific checkpoints were
+never independently latency-profiled. Row 6/7's single-model architecture
+has never been latency-profiled at all — stated honestly as a gap, not
+estimated from FLOPs alone. Full evidence:
+`docs/evidence/model_footprint_row2_row6_evidence.json`.
 
 Rows 3-5 all used PlantDoc's **train** split for fine-tuning and held out
 the **test** split completely throughout (verified: same 85 test-only
