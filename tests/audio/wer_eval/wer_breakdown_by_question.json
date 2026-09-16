@@ -1,182 +1,230 @@
 {
   "metric": "ASR WER breakdown by question (which farming-vocabulary questions are hardest, across speakers)",
-  "reporting_status": "PRELIMINARY -- 1/4 speakers. With n=1, 'mean/min/max across speakers' trivially collapses to that one speaker's own WER per question -- this is a mechanism dry-run, not yet a real cross-speaker hardest-question finding. Re-run once all 4 speakers are recorded.",
-  "n_speakers": 1,
+  "reporting_status": "FINAL",
+  "n_speakers": 4,
   "by_question_hardest_first": [
-    {
-      "id": 7,
-      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.5,
-      "min_wer": 0.5,
-      "max_wer": 0.5,
-      "per_speaker": {
-        "speaker1": 0.5
-      }
-    },
     {
       "id": 3,
       "reference": "ఈ రోజు టమాటా ధర ఎంత",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.4,
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.45,
       "min_wer": 0.4,
-      "max_wer": 0.4,
+      "max_wer": 0.6,
       "per_speaker": {
-        "speaker1": 0.4
+        "speaker1": 0.4,
+        "speaker2": 0.6,
+        "speaker3": 0.4,
+        "speaker4": 0.4
       }
     },
     {
-      "id": 5,
-      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.16666666666666666,
-      "min_wer": 0.16666666666666666,
-      "max_wer": 0.16666666666666666,
+      "id": 7,
+      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.375,
+      "min_wer": 0.25,
+      "max_wer": 0.5,
       "per_speaker": {
-        "speaker1": 0.16666666666666666
+        "speaker1": 0.5,
+        "speaker2": 0.25,
+        "speaker3": 0.25,
+        "speaker4": 0.5
       }
     },
     {
       "id": 8,
       "reference": "నేల pH ఎంత ఉండాలి టమాటా కోసం",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.16666666666666666,
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.20833333333333331,
       "min_wer": 0.16666666666666666,
-      "max_wer": 0.16666666666666666,
+      "max_wer": 0.3333333333333333,
       "per_speaker": {
-        "speaker1": 0.16666666666666666
-      }
-    },
-    {
-      "id": 15,
-      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.16666666666666666,
-      "min_wer": 0.16666666666666666,
-      "max_wer": 0.16666666666666666,
-      "per_speaker": {
-        "speaker1": 0.16666666666666666
-      }
-    },
-    {
-      "id": 12,
-      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.14285714285714285,
-      "min_wer": 0.14285714285714285,
-      "max_wer": 0.14285714285714285,
-      "per_speaker": {
-        "speaker1": 0.14285714285714285
-      }
-    },
-    {
-      "id": 11,
-      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.1111111111111111,
-      "min_wer": 0.1111111111111111,
-      "max_wer": 0.1111111111111111,
-      "per_speaker": {
-        "speaker1": 0.1111111111111111
+        "speaker1": 0.16666666666666666,
+        "speaker2": 0.3333333333333333,
+        "speaker3": 0.16666666666666666,
+        "speaker4": 0.16666666666666666
       }
     },
     {
       "id": 10,
       "reference": "నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.1,
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.17500000000000002,
       "min_wer": 0.1,
-      "max_wer": 0.1,
+      "max_wer": 0.2,
       "per_speaker": {
-        "speaker1": 0.1
+        "speaker1": 0.1,
+        "speaker2": 0.2,
+        "speaker3": 0.2,
+        "speaker4": 0.2
+      }
+    },
+    {
+      "id": 15,
+      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.16666666666666666,
+      "min_wer": 0.16666666666666666,
+      "max_wer": 0.16666666666666666,
+      "per_speaker": {
+        "speaker1": 0.16666666666666666,
+        "speaker2": 0.16666666666666666,
+        "speaker3": 0.16666666666666666,
+        "speaker4": 0.16666666666666666
+      }
+    },
+    {
+      "id": 11,
+      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.1111111111111111,
+      "min_wer": 0.1111111111111111,
+      "max_wer": 0.1111111111111111,
+      "per_speaker": {
+        "speaker1": 0.1111111111111111,
+        "speaker2": 0.1111111111111111,
+        "speaker3": 0.1111111111111111,
+        "speaker4": 0.1111111111111111
       }
     },
     {
       "id": 1,
       "reference": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.09375,
       "min_wer": 0.0,
-      "max_wer": 0.0,
+      "max_wer": 0.375,
       "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 2,
-      "reference": "రేపు వర్షం పడుతుందా",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 4,
-      "reference": "నా పొలంలో మట్టి బాగుందా",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 6,
-      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 9,
-      "reference": "వర్షం వస్తే మందు కొట్టాలా",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 13,
-      "reference": "నమస్కారం",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
-      }
-    },
-    {
-      "id": 14,
-      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
-      "n_speakers_recorded": 1,
-      "mean_wer": 0.0,
-      "min_wer": 0.0,
-      "max_wer": 0.0,
-      "per_speaker": {
-        "speaker1": 0.0
+        "speaker1": 0.0,
+        "speaker2": 0.375,
+        "speaker3": 0.0,
+        "speaker4": 0.0
       }
     },
     {
       "id": 16,
       "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
-      "n_speakers_recorded": 1,
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.07142857142857142,
+      "min_wer": 0.0,
+      "max_wer": 0.14285714285714285,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.14285714285714285,
+        "speaker3": 0.0,
+        "speaker4": 0.14285714285714285
+      }
+    },
+    {
+      "id": 9,
+      "reference": "వర్షం వస్తే మందు కొట్టాలా",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.0625,
+      "min_wer": 0.0,
+      "max_wer": 0.25,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.25
+      }
+    },
+    {
+      "id": 5,
+      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.041666666666666664,
+      "min_wer": 0.0,
+      "max_wer": 0.16666666666666666,
+      "per_speaker": {
+        "speaker1": 0.16666666666666666,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 12,
+      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.03571428571428571,
+      "min_wer": 0.0,
+      "max_wer": 0.14285714285714285,
+      "per_speaker": {
+        "speaker1": 0.14285714285714285,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 2,
+      "reference": "రేపు వర్షం పడుతుందా",
+      "n_speakers_recorded": 4,
       "mean_wer": 0.0,
       "min_wer": 0.0,
       "max_wer": 0.0,
       "per_speaker": {
-        "speaker1": 0.0
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 4,
+      "reference": "నా పొలంలో మట్టి బాగుందా",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 6,
+      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 13,
+      "reference": "నమస్కారం",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
+      }
+    },
+    {
+      "id": 14,
+      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "n_speakers_recorded": 4,
+      "mean_wer": 0.0,
+      "min_wer": 0.0,
+      "max_wer": 0.0,
+      "per_speaker": {
+        "speaker1": 0.0,
+        "speaker2": 0.0,
+        "speaker3": 0.0,
+        "speaker4": 0.0
       }
     }
   ]

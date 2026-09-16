@@ -3,14 +3,32 @@
   "method": "jiwer, RNNT decoding via ai4bharat/indic-conformer-600m-multilingual, 16 questions per speaker",
   "planned_speakers": 4,
   "planned_questions_per_speaker": 16,
-  "is_complete": false,
-  "overall_mean_wer": 0.10962301587301587,
+  "is_complete": true,
+  "overall_mean_wer": 0.11194816468253968,
   "by_speaker": {
     "speaker1": {
       "n_recordings": 16,
       "n_expected": 16,
       "missing_question_ids": [],
       "mean_wer": 0.10962301587301587
+    },
+    "speaker2": {
+      "n_recordings": 16,
+      "n_expected": 16,
+      "missing_question_ids": [],
+      "mean_wer": 0.13618551587301586
+    },
+    "speaker3": {
+      "n_recordings": 16,
+      "n_expected": 16,
+      "missing_question_ids": [],
+      "mean_wer": 0.08090277777777778
+    },
+    "speaker4": {
+      "n_recordings": 16,
+      "n_expected": 16,
+      "missing_question_ids": [],
+      "mean_wer": 0.1210813492063492
     }
   },
   "per_question": [
@@ -125,7 +143,343 @@
       "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
       "hypothesis": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
       "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 1,
+      "reference": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "hypothesis": "నా టమోటా ఆకులపై మచ్చలున్నాయి ఇది ఏ వ్యాధి",
+      "wer": 0.375
+    },
+    {
+      "speaker": "speaker2",
+      "id": 2,
+      "reference": "రేపు వర్షం పడుతుందా",
+      "hypothesis": "రేపు వర్షం పడుతుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 3,
+      "reference": "ఈ రోజు టమాటా ధర ఎంత",
+      "hypothesis": "ఈరోజు టమోటా ధర ఎంత",
+      "wer": 0.6
+    },
+    {
+      "speaker": "speaker2",
+      "id": 4,
+      "reference": "నా పొలంలో మట్టి బాగుందా",
+      "hypothesis": "నా పొలంలో మట్టి బాగుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 5,
+      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "hypothesis": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 6,
+      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "hypothesis": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 7,
+      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
+      "hypothesis": "మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా",
+      "wer": 0.25
+    },
+    {
+      "speaker": "speaker2",
+      "id": 8,
+      "reference": "నేల pH ఎంత ఉండాలి టమాటా కోసం",
+      "hypothesis": "నేల పీహెచ్ ఎంత ఉండాలి టమోటా కోసం",
+      "wer": 0.3333333333333333
+    },
+    {
+      "speaker": "speaker2",
+      "id": 9,
+      "reference": "వర్షం వస్తే మందు కొట్టాలా",
+      "hypothesis": "వర్షం వస్తే మందు కొట్టాలా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 10,
+      "reference": "నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "hypothesis": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "wer": 0.2
+    },
+    {
+      "speaker": "speaker2",
+      "id": 11,
+      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "hypothesis": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏమి చేయాలి",
+      "wer": 0.1111111111111111
+    },
+    {
+      "speaker": "speaker2",
+      "id": 12,
+      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "hypothesis": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 13,
+      "reference": "నమస్కారం",
+      "hypothesis": "నమస్కారం",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 14,
+      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "hypothesis": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker2",
+      "id": 15,
+      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
+      "hypothesis": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "wer": 0.16666666666666666
+    },
+    {
+      "speaker": "speaker2",
+      "id": 16,
+      "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "hypothesis": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరుగు వేయాలా",
+      "wer": 0.14285714285714285
+    },
+    {
+      "speaker": "speaker3",
+      "id": 1,
+      "reference": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "hypothesis": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 2,
+      "reference": "రేపు వర్షం పడుతుందా",
+      "hypothesis": "రేపు వర్షం పడుతుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 3,
+      "reference": "ఈ రోజు టమాటా ధర ఎంత",
+      "hypothesis": "ఈరోజు టమాటా ధర ఎంత",
+      "wer": 0.4
+    },
+    {
+      "speaker": "speaker3",
+      "id": 4,
+      "reference": "నా పొలంలో మట్టి బాగుందా",
+      "hypothesis": "నా పొలంలో మట్టి బాగుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 5,
+      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "hypothesis": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 6,
+      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "hypothesis": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 7,
+      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
+      "hypothesis": "మార్కెట్లో బంగాళదుంప ధర పెరుగుతుందా",
+      "wer": 0.25
+    },
+    {
+      "speaker": "speaker3",
+      "id": 8,
+      "reference": "నేల pH ఎంత ఉండాలి టమాటా కోసం",
+      "hypothesis": "నేల పీహెచ్ ఎంత ఉండాలి టమాటా కోసం",
+      "wer": 0.16666666666666666
+    },
+    {
+      "speaker": "speaker3",
+      "id": 9,
+      "reference": "వర్షం వస్తే మందు కొట్టాలా",
+      "hypothesis": "వర్షం వస్తే మందు కొట్టాలా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 10,
+      "reference": "నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "hypothesis": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "wer": 0.2
+    },
+    {
+      "speaker": "speaker3",
+      "id": 11,
+      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "hypothesis": "ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "wer": 0.1111111111111111
+    },
+    {
+      "speaker": "speaker3",
+      "id": 12,
+      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "hypothesis": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 13,
+      "reference": "నమస్కారం",
+      "hypothesis": "నమస్కారం",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 14,
+      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "hypothesis": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker3",
+      "id": 15,
+      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
+      "hypothesis": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "wer": 0.16666666666666666
+    },
+    {
+      "speaker": "speaker3",
+      "id": 16,
+      "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "hypothesis": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 1,
+      "reference": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "hypothesis": "నా టమాటా ఆకులపై మచ్చలు ఉన్నాయి ఇది ఏ వ్యాధి",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 2,
+      "reference": "రేపు వర్షం పడుతుందా",
+      "hypothesis": "రేపు వర్షం పడుతుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 3,
+      "reference": "ఈ రోజు టమాటా ధర ఎంత",
+      "hypothesis": "ఈరోజు టమాటా ధర ఎంత",
+      "wer": 0.4
+    },
+    {
+      "speaker": "speaker4",
+      "id": 4,
+      "reference": "నా పొలంలో మట్టి బాగుందా",
+      "hypothesis": "నా పొలంలో మట్టి బాగుందా",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 5,
+      "reference": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "hypothesis": "బంగాళదుంప ఆకులు పసుపు రంగులోకి మారుతున్నాయి ఎందుకు",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 6,
+      "reference": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "hypothesis": "ఈ వారం వాతావరణం ఎలా ఉంటుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 7,
+      "reference": "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా",
+      "hypothesis": "మార్కెట్లో బంగాళాదుంప ధర పెరుగుతుందా",
+      "wer": 0.5
+    },
+    {
+      "speaker": "speaker4",
+      "id": 8,
+      "reference": "నేల pH ఎంత ఉండాలి టమాటా కోసం",
+      "hypothesis": "నేల పియచ్ ఎంత ఉండాలి టమాటా కోసం",
+      "wer": 0.16666666666666666
+    },
+    {
+      "speaker": "speaker4",
+      "id": 9,
+      "reference": "వర్షం వస్తే మందు కొట్టాలా",
+      "hypothesis": "వర్షం వస్తే మందు కొట్టాల",
+      "wer": 0.25
+    },
+    {
+      "speaker": "speaker4",
+      "id": 10,
+      "reference": "నా పంట అమ్మాలా ఆపాలా ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "hypothesis": "నా పంట అమ్మాల ఆపాల ధర గురించి చెప్పు వాతావరణం కూడా చూసి",
+      "wer": 0.2
+    },
+    {
+      "speaker": "speaker4",
+      "id": 11,
+      "reference": "ఆకులపై తెగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "hypothesis": "ఆకులపై తేగులు ఉంది ధర కూడా తక్కువగా ఉంది ఏం చేయాలి",
+      "wer": 0.1111111111111111
+    },
+    {
+      "speaker": "speaker4",
+      "id": 12,
+      "reference": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "hypothesis": "నా టమాటా పంట గురించి పూర్తి సలహా కావాలి",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 13,
+      "reference": "నమస్కారం",
+      "hypothesis": "నమస్కారం",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 14,
+      "reference": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "hypothesis": "ఈ మందు ఎక్కడ దొరుకుతుంది",
+      "wer": 0.0
+    },
+    {
+      "speaker": "speaker4",
+      "id": 15,
+      "reference": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వల్లనా",
+      "hypothesis": "పంట ఆకులు ఎండిపోతున్నాయి వర్షం లేకపోవడం వలన",
+      "wer": 0.16666666666666666
+    },
+    {
+      "speaker": "speaker4",
+      "id": 16,
+      "reference": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాలా",
+      "hypothesis": "నా మట్టిలో నత్రజని తక్కువగా ఉందా ఎరువు వేయాల",
+      "wer": 0.14285714285714285
     }
   ],
-  "reporting_status": "PRELIMINARY -- 1/4 speakers recorded. Do not cite overall_mean_wer as the project's ASR result until all 4 speakers are complete; single-speaker WER does not measure cross-speaker/accent robustness, which is the actual point of the 4-speaker design."
+  "reporting_status": "FINAL"
 }

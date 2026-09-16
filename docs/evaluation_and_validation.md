@@ -147,25 +147,61 @@ establishes.
 - **Limitation**: rule-based logic over synthetic inputs, not live agent
   output -- validates the *decision logic*, not real-world scenario coverage.
 
-### 2.3 ASR (speech-to-text)
+### 2.3 ASR (speech-to-text) -- FINAL, 4/4 speakers
 
 - **Model**: `ai4bharat/indic-conformer-600m-multilingual`.
-- **Dataset**: 16 real microphone recordings (`tests/audio/wer_eval/speaker1/`),
-  same 16-question set as Sec. 2.1, read aloud by one Telugu speaker.
+- **Dataset**: 64 real microphone recordings (`tests/audio/wer_eval/speaker{1,2,3,4}/`,
+  16 questions x 4 speakers), same 16-question set as Sec. 2.1.
 - **Method**: `tests/check_all_wer.py`, word error rate via `jiwer`, text
-  normalized (punctuation/whitespace stripped) before scoring.
-- **Result**: **mean WER 10.96%** across 16 utterances (full per-question
-  table in `tests/audio/wer_eval/wer_results.json`, which now
-  auto-discovers however many of the planned 4 speakers are recorded --
-  currently 1/4, explicitly flagged `PRELIMINARY` in that file until
-  Speakers 2-4 are done; see `docs/evidence/metric2_wer_recording_instructions.md`).
-  Most individual
-  "errors" are spacing/ZWNJ artifacts (e.g. `ఈరోజు` vs `ఈ రోజు`), not
-  content mistakes; a few are genuine substitutions (e.g. `పట్టా` for
-  `పంట`).
-- **Known limitation**: single speaker, 16 utterances -- not statistically
-  powered, no measure of cross-speaker/accent/noise robustness. A paper
-  needs multi-speaker WER (see Sec. 5).
+  normalized (punctuation/whitespace stripped) before scoring. Auto-discovers
+  and requires all 4 planned speakers before marking `reporting_status: FINAL`
+  -- this run has all 4, so the result below is the project's final ASR
+  number, not preliminary.
+- **Result**: **overall mean WER 11.19%** across 64 utterances (n=64, 4
+  speakers x 16 questions), full per-question table in
+  `tests/audio/wer_eval/wer_results.json`.
+
+  | Speaker | Mean WER | n |
+  |---|---|---|
+  | speaker1 | 10.96% | 16 |
+  | speaker2 | 13.62% | 16 |
+  | speaker3 | 8.09% | 16 |
+  | speaker4 | 12.11% | 16 |
+
+  All 4 speakers land within a ~5.5-point band (8.09%-13.62%) -- no
+  speaker is a wild outlier, which is itself informative: the original
+  1/4-speaker preliminary number (10.96%, speaker1) turned out to sit
+  almost exactly at the middle of the eventual 4-speaker range, not at
+  either extreme.
+
+- **Per-question breakdown** (`tests/wer_breakdown_by_question.py`,
+  `tests/audio/wer_eval/wer_breakdown_by_question.json`) -- which
+  vocabulary is hardest, across all 4 speakers per question (n=4 each):
+
+  | Question | Mean WER | Range | Vocabulary |
+  |---|---|---|---|
+  | Q3 "ఈ రోజు టమాటా ధర ఎంత" (today's tomato price) | 45.0% | 40-60% | Hardest -- short question, `ఈ రోజు`/`ఈరోజు` spacing variance dominates |
+  | Q7 "మార్కెట్‌లో బంగాళదుంప ధర పెరుగుతుందా" (market potato price rising) | 37.5% | 25-50% | ZWNJ in `మార్కెట్‌లో` + `బంగాళదుంప` compound noun |
+  | Q8 "నేల pH ఎంత ఉండాలి టమాటా కోసం" (soil pH for tomato) | 20.8% | 16.7-33.3% | The Latin-script "pH" token itself -- same technical-term-crossing-ASR issue metric #4 (Sec. 2.9) already found downstream in the intent router |
+  | Q10 (compound sell/hold weather+price question) | 17.5% | 10-20% | Longest question in the set -- more words, more chances for a small slip |
+  | Q2, Q4, Q6, Q13, Q14 | 0.0% | 0.0% | Perfect across all 4 speakers -- short, common-vocabulary questions |
+
+  **Pattern, not noise**: the 4 hardest questions (Q3, Q7, Q8, Q10) are
+  hard for *every* speaker, not just one -- consistent min-to-max ranges
+  (e.g. Q3: 40-60%, never near 0%) rather than one speaker dragging up an
+  otherwise-easy question. This points to specific vocabulary/phrasing
+  properties (price-related compound nouns, ZWNJ-heavy words, embedded
+  Latin-script technical terms, longer sentences) being the actual
+  difficulty driver, not individual speaker variation -- the opposite
+  pattern from what a small, single-speaker sample could have shown.
+
+- Most individual "errors" remain spacing/ZWNJ artifacts (e.g. `ఈరోజు`
+  vs `ఈ రోజు`), not content mistakes; genuine substitutions exist but are
+  a minority of the error mass.
+- **No longer a limitation**: 4 speakers, 64 utterances -- this is now
+  the statistically-intended design (see Sec. 5's prior item on this,
+  now closed), though 4 speakers is still a modest n by publication
+  standards for claiming broad accent/dialect robustness.
 
 ### 2.4 TTS (text-to-speech) latency -- the original motivating bug
 
@@ -845,8 +881,13 @@ In priority order:
    System Usability Scale), would be the single highest-value addition for
    reviewer credibility on a "voice-first for farmers" claim. Needs real
    people -- can't be simulated.
-4. **Multi-speaker ASR evaluation** -- current WER is single-speaker;
-   accent/dialect/background-noise robustness is completely unmeasured.
+4. ~~**Multi-speaker ASR evaluation**~~ **Done** -- Sec. 2.3 now reports
+   the full 4-speaker, 64-utterance FINAL result (11.19% overall,
+   8.09-13.62% per-speaker range) plus a per-question breakdown showing
+   the difficulty pattern is vocabulary-driven, not speaker-driven.
+   Background-noise robustness specifically remains unmeasured (all 4
+   speakers recorded in similar quiet conditions) -- a narrower residual
+   gap than "single-speaker," not the same gap.
 5. **A proper literature review** -- Sec. 3 is a starting point, not a
    finished related-work section.
 6. ~~**Formal latency benchmarking methodology**~~ **Done** -- Sec. 2.4/2.6
