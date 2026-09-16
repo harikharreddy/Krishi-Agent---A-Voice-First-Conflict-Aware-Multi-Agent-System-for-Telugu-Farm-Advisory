@@ -366,7 +366,7 @@
       <div class="score-tile"><div class="score-num">70/70</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
       <div class="score-tile"><div class="score-num">81.8%</div><div class="score-label">Intent Router accuracy, held-out questions only (87.5% on the full set, which includes few-shot-exposed questions — see §2.1)</div></div>
       <div class="score-tile"><div class="score-num">37.65%</div><div class="score-label">Disease Agent, real-world photos (up from 23% zero-shot)</div></div>
-      <div class="score-tile"><div class="score-num">10.96%</div><div class="score-label">ASR word error rate — a strong result, 16 Telugu utterances</div></div>
+      <div class="score-tile"><div class="score-num">11.19%</div><div class="score-label">ASR word error rate — final, 64 utterances across 4 speakers</div></div>
     </div>
   </div>
 </div>
@@ -502,16 +502,44 @@
   </section>
 
   <section id="asr">
-    <h2><span class="num">2.3</span>ASR (speech-to-text)</h2>
+    <h2><span class="num">2.3</span>ASR (speech-to-text) <span class="pill good" style="margin-left:6px;">final, 4/4 speakers</span></h2>
     <p><b>Model</b> — <code>ai4bharat/indic-conformer-600m-multilingual</code>.<br>
-    <b>Dataset</b> — 16 real microphone recordings, one Telugu speaker, the same 16-question set as §2.1.<br>
-    <b>Method</b> — word error rate via <code>jiwer</code>, text normalized before scoring.</p>
+    <b>Dataset</b> — 64 real microphone recordings, 4 Telugu speakers, the same 16-question set as §2.1.<br>
+    <b>Method</b> — word error rate via <code>jiwer</code>, text normalized before scoring. Requires all 4 planned speakers before marking the result final.</p>
 
-    <div class="finding">
+    <div class="good-box">
       <div class="finding-label">Result</div>
-      <p><b>Mean WER 10.96%</b> across 16 utterances. Most individual "errors" are spacing/ZWNJ artifacts (<code>ఈరోజు</code> vs <code>ఈ రోజు</code>), not content mistakes; a few are genuine substitutions.</p>
+      <p><b>Overall mean WER 11.19%</b> across 64 utterances (n=64, 4 speakers × 16 questions).</p>
     </div>
-    <p style="color:var(--ink-faint);font-size:13.5px;">Single speaker, 16 utterances — not statistically powered, no cross-speaker/accent/noise measurement. See §5.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Speaker</th><th class="num">Mean WER</th><th class="num">n</th></tr></thead>
+        <tbody>
+          <tr><td>speaker1</td><td class="num">10.96%</td><td class="num">16</td></tr>
+          <tr><td>speaker2</td><td class="num">13.62%</td><td class="num">16</td></tr>
+          <tr><td>speaker3</td><td class="num">8.09%</td><td class="num">16</td></tr>
+          <tr><td>speaker4</td><td class="num">12.11%</td><td class="num">16</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>All 4 speakers land within a ~5.5-point band (8.09%–13.62%) — no speaker is a wild outlier. The original 1/4-speaker preliminary number (10.96%, speaker1) turned out to sit almost exactly at the middle of the eventual 4-speaker range, not at either extreme.</p>
+
+    <h3>Per-question breakdown — which vocabulary is hardest</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th class="wrap-cell">Question</th><th class="num">Mean WER</th><th class="num">Range</th><th class="wrap-cell">Vocabulary</th></tr></thead>
+        <tbody>
+          <tr><td class="wrap-cell">Q3 "today's tomato price"</td><td class="num">45.0%</td><td class="num">40–60%</td><td class="wrap-cell">Hardest — short question, <code>ఈ రోజు</code>/<code>ఈరోజు</code> spacing variance dominates</td></tr>
+          <tr><td class="wrap-cell">Q7 "market potato price rising"</td><td class="num">37.5%</td><td class="num">25–50%</td><td class="wrap-cell">ZWNJ + compound noun</td></tr>
+          <tr><td class="wrap-cell">Q8 "soil pH for tomato"</td><td class="num">20.8%</td><td class="num">16.7–33.3%</td><td class="wrap-cell">The Latin-script "pH" token itself — same issue §2.9 finds downstream in the intent router</td></tr>
+          <tr><td class="wrap-cell">Q10 (compound sell/hold question)</td><td class="num">17.5%</td><td class="num">10–20%</td><td class="wrap-cell">Longest question in the set</td></tr>
+          <tr><td class="wrap-cell">Q2, Q4, Q6, Q13, Q14</td><td class="num">0.0%</td><td class="num">0.0%</td><td class="wrap-cell">Perfect across all 4 speakers</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--ink-faint);font-size:13.5px;">The 4 hardest questions are hard for <i>every</i> speaker, not just one — consistent min-to-max ranges rather than one speaker dragging up an otherwise-easy question. Difficulty is driven by specific vocabulary/phrasing properties, not individual speaker variation.</p>
+    <p style="color:var(--ink-faint);font-size:13.5px;">4 speakers is still a modest n by publication standards for broad accent/dialect robustness, but this is no longer the single-speaker limitation it was.</p>
   </section>
 
   <section id="tts">
@@ -745,22 +773,37 @@
   </section>
 
   <section id="voice-text">
-    <h2><span class="num">2.9</span>Voice vs. text ablation <span class="pill neutral" style="margin-left:6px;">preliminary, n=16, single speaker</span></h2>
-    <p class="section-intro">Does going through ASR change what the pipeline does, compared to typing the exact same question? Each of the 16 questions run through the real, unmocked pipeline twice — once via speaker1's recorded WAV through the exact production ASR call path, once as the reference text typed directly. Both paths use live, unmocked agent calls. Stage-by-stage comparison (ASR transcript, intent router, agents fired, final answer), not just final-answer pass/fail, so an ASR mishearing and a downstream difference stay distinguishable rather than collapsed into one number.</p>
+    <h2><span class="num">2.9</span>Voice vs. text ablation <span class="pill good" style="margin-left:6px;">final, n=64, 4 speakers</span></h2>
+    <p class="section-intro">Does going through ASR change what the pipeline does, compared to typing the exact same question? Each of the 16 questions run through the real, unmocked pipeline twice per speaker, across all 4 speakers (expanded from the original n=16 single-speaker preliminary run once metric #2's 4-speaker recordings closed) — once via that speaker's recorded WAV through the exact production ASR call path, once as the reference text typed directly, run fresh per speaker to stay time-paired with its voice call. Both paths use live, unmocked agent calls. Stage-by-stage comparison, not just final-answer pass/fail, so an ASR mishearing and a downstream difference stay distinguishable rather than collapsed into one number.</p>
 
     <div class="good-box">
-      <div class="finding-label">Result</div>
-      <p>Intent-router output matched <b>15/16</b>; agents-fired matched <b>15/16</b>. Of the 2 apparent final-answer mismatches, one was investigated and ruled out as a live Price API fluctuation unrelated to voice vs. text — leaving <b>exactly one genuine voice-vs-text pipeline finding out of 16 questions</b>.</p>
+      <div class="finding-label">Result — every mismatch fully explained</div>
+      <p>n=64 (16 questions × 4 speakers). Intent-router output matched <b>60/64</b>; agents-fired matched <b>60/64</b>; final answer matched <b>58/64</b>. Of the 6 apparent mismatches, every single one is now explained: <b>4 are the confirmed-structural ASR finding below (one per speaker, same root cause)</b>, and <b>2 were investigated and ruled out as voice-path live-API failures</b> unrelated to pipeline logic. After investigation, zero mismatches in this run trace to genuine state-mapping/conflict-resolver sensitivity.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Speaker</th><th class="num">Intent match</th><th class="num">Agents-fired match</th><th class="num">Final answer match</th></tr></thead>
+        <tbody>
+          <tr><td>speaker1</td><td class="num">15/16</td><td class="num">15/16</td><td class="num">15/16</td></tr>
+          <tr><td>speaker2</td><td class="num">15/16</td><td class="num">15/16</td><td class="num">15/16</td></tr>
+          <tr><td>speaker3</td><td class="num">15/16</td><td class="num">15/16</td><td class="num">15/16</td></tr>
+          <tr><td>speaker4</td><td class="num">15/16</td><td class="num">15/16</td><td class="num">13/16</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="finding">
-      <div class="finding-label">Headline finding (question 8) — ASR transliteration of a technical term changed intent classification</div>
-      <p>"నేల pH ఎంత ఉండాలి టమాటా కోసం?" (What soil pH is needed for tomato?): ASR transcribed "pH" as its Telugu transliteration "పీహెచ్" instead of the reference text's Latin-script "pH." That single spelling difference flipped the LLM intent router's classification — the Latin-script version correctly routed to <code>wants_soil=True</code>; the Telugu-transliterated version routed instead to <code>wants_price=True</code>, so a farmer asking about soil pH by voice would have received a tomato price quote instead. This is a <b>structural</b> finding, not an ASR accuracy defect — the transcription was arguably <i>more</i> natural Telugu than the reference text, and that naturalness is exactly what caused the behavior change. It demonstrates that domain-specific technical terms (soil pH, NPK, pesticide/disease names) crossing the ASR-to-LLM boundary can silently change system behavior in ways a text-only test suite would never catch — the actual reason to run a voice-vs-text ablation at all. Flagged as a concrete direction for future work (e.g. normalizing known technical terms before intent routing), not applied as a fix here — observation only, <code>orchestrator/pipeline.py</code> untouched.</p>
+      <div class="finding-label">Headline finding, now CONFIRMED STRUCTURAL across all 4 speakers — question 8</div>
+      <p>"నేల pH ఎంత ఉండాలి టమాటా కోసం?" (What soil pH is needed for tomato?): every one of the 4 speakers' independent recordings had ASR transliterate "pH" into Telugu script instead of the reference text's Latin-script "pH" — and <b>all 4</b> triggered the same intent-router flip, from <code>wants_soil=True</code> to <code>wants_price=True</code>. No longer a single-speaker curiosity: <b>4 independent speakers, 4 independent recordings, 4 identical behavior changes</b> is strong evidence this is a structural property of how the intent router weighs Latin-script vs. transliterated technical terms, not one person's pronunciation. A farmer asking about soil pH by voice would reliably receive a tomato price quote instead, regardless of who is speaking. Flagged as a concrete direction for future work (e.g. normalizing known technical terms before intent routing), not applied as a fix here — observation only, <code>orchestrator/pipeline.py</code> untouched.</p>
     </div>
 
-    <p><b>One apparent mismatch investigated and ruled out</b> (question 7, potato market price): same intents, same agents fired on both paths, but a different final price quote. Traced to the Price Agent, which hits <code>data.gov.in</code> live with no caching on every call — checked every price-agent call across the entire run and found 8 of 9 returned the <i>identical</i> value to 16 decimal places, including this question's own text-path call made 4 seconds later; only the voice-path call for this question differed. Confirmed via source read (not inference) that <code>price_agent.py</code>'s code path cannot differ by invocation source at all — <code>get_price_advice()</code> never receives the question text. Settled, not provisional: a one-off live API fluctuation, not a voice-vs-text pipeline effect.</p>
+    <div class="finding">
+      <div class="finding-label">Secondary finding — 2 voice-path live-API failures, investigated and distinguished from pipeline logic</div>
+      <p>Both of the run's remaining 2 mismatches (speaker4, question 2 "Will it rain tomorrow?" and question 7 "Will potato market price rise?") initially looked like generic answer-text divergence. Checked, not assumed: both voice-path final answers exactly matched the source-code fallback strings for a live API call outright failing (<code>requests.exceptions.RequestException</code> in <code>weather_agent.py</code>/<code>price_agent.py</code>), not the "no data reported today" branches. Both occurred on the <b>voice</b> path specifically — zero such failures anywhere on the text path across all 64 pairs. A plausible mechanism, flagged as plausible and not proven: every voice-path call is immediately preceded by a 20–30s ASR transcription (a heavy model-inference call with no text-path equivalent), and this report's own §2.6 already documents a related, independently-confirmed resource-contention pattern on this same 8GB machine. Consistent with that prior finding, not isolated as a controlled variable here.</p>
+    </div>
 
-    <p style="color:var(--ink-faint);font-size:13.5px;"><b>Preliminary</b> — n=16, single speaker (speaker1) only, same caveat as §2.3's WER check at 1/4 speakers. Should be re-run against speakers 2–4 once their WER recordings are available, using the same reusable script. Full evidence: <code>docs/evidence/metric4_voice_vs_text_ablation_evidence.json</code>.</p>
+    <p style="color:var(--ink-faint);font-size:13.5px;"><b>Final, 4/4 speakers, n=64</b> — no longer preliminary. Cross-speaker robustness of the ASR-to-intent-router pathway is now measured, not just single-speaker behavior. Remaining gaps: 4 speakers is still a modest n for the Q8 finding's exact population frequency (though its structural mechanism is now confirmed); the Disease Agent path remains unexercised (no images in this test set); the voice-path API-failure mechanism is plausible but not causally isolated. Full evidence: <code>docs/evidence/metric4_voice_vs_text_ablation_evidence.json</code>.</p>
   </section>
 
   <section id="related">
@@ -815,7 +858,7 @@
       <li><span class="pill good" style="margin-right:6px;">Done</span><b>End-to-end answer-quality evaluation</b>, for the automatable parts — §2.7 (text-only pipeline characterization) and §2.8 (disease-with-photo full-pipeline accuracy + wiring integrity). Still open: factual correctness for live Weather/Price answers isn't automatable at all, and actionability genuinely needs a human judge.</li>
       <li><b>Statistical power</b> on the still-small evals (Intent Router, Conflict Resolver, ASR, disease-with-photo end-to-end all sit at n&lt;20). Potato_healthy is the one exception, now n=263.</li>
       <li><b>A small human/user study.</b> 5–10 Telugu-speaking test users on realistic tasks, plus a short usability survey — the single highest-value addition for reviewer credibility on a "voice-first for farmers" claim. Needs real people; can't be simulated.</li>
-      <li><b>Multi-speaker ASR evaluation</b> — current WER is single-speaker; accent/dialect/noise robustness is unmeasured.</li>
+      <li><span class="pill good" style="margin-right:6px;">Done</span><b>Multi-speaker ASR evaluation</b> — §2.3 now reports the full 4-speaker, 64-utterance final result (11.19% overall, 8.09–13.62% per-speaker range) plus a per-question breakdown showing the difficulty pattern is vocabulary-driven, not speaker-driven. Background-noise robustness specifically remains unmeasured (all 4 speakers recorded in similar quiet conditions) — a narrower residual gap than "single-speaker."</li>
       <li><b>A proper literature review</b> — §3 is a starting point.</li>
       <li><span class="pill good" style="margin-right:6px;">Done</span><b>Formal latency benchmarking</b> — §2.4/§2.6 now report real n=8-trial mean/std/min/max with hardware spec, and it caught a genuine discrepancy worth investigating further (the Intent Router's 8-trial mean vs. the original 3-trial spot check).</li>
       <li><b>Price Agent threshold outcome validation.</b> The descriptive distribution check (§4) confirms the ±10% thresholds aren't a degenerate operating point, but doesn't validate them against real farmer outcomes. A proper version needs an outcome-based backtest against an explicitly-justified holding-horizon assumption — tomato perishability makes this a real agronomic question, not just a modeling detail, and deserves domain input before being attempted rather than an arbitrarily chosen horizon. Data already available and sufficient (116K+/39K+ rows for Tomato/Potato, 2002–2026) — this is a scoping/domain-input gap, not a data-availability one.</li>
