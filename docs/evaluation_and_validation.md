@@ -989,44 +989,7 @@ limitation):
    chasing point estimate (Sec. 2.5). None of the three comparable
    systems describe prospective confidence communication to the user at
    all (Farmer.Chat's feedback is retrospective thumbs-up/down, not
-   prospective). **The confidence-aware responses themselves have now
-   been validated for quality, not just internal consistency (FINAL,
-   4/4 planned raters, 2026-09-17)**: a blind rubric
-   (`docs/evidence/phrasing_fluency_rubric_tool.html`) had all 4 team
-   members (Amarthya, Harikha, Ranga Sarvesh, Venky) independently rate
-   all 14 confidence-keyed phrasing outputs -- the 10 Phrasing Templates
-   + fallback, plus the 3 distinct Weather/Price confidence-hedge
-   variants -- on fluency, naturalness, and correctness (1-5). Mean
-   scores: fluency 4.14, naturalness 3.86, correctness 4.34 (n=4 raters
-   x 14 items = 56 ratings/dimension) -- every dimension mean sits above
-   3.8/5.
-   **Inter-rater agreement, reported honestly rather than smoothed
-   over**: pairwise linearly-weighted Cohen's kappa across the 6 rater
-   pairs ranges from slight to moderate (0.0-0.43), and the 4-rater
-   omnibus Fleiss' kappa is actually **negative** on all three
-   dimensions (fluency -0.054, naturalness -0.153, correctness -0.031)
-   -- worse than chance-level agreement by that specific statistic.
-   Investigated rather than left as an unexplained bad number: per-rater
-   mean scores range from 3.55 (Venky, most critical) to 4.86 (Harikha,
-   most lenient), a 1.31-point spread with nearly every individual
-   rating still clustered in the positive 3-5 zone. This is the standard
-   restricted-range pattern that makes chance-corrected statistics like
-   kappa unstable -- when raters agree something is broadly good but
-   differ in exactly how good, there's little scale left for "agreement
-   beyond chance" to register against, so kappa can read low or negative
-   even on data that looks reasonably consistent by eye. Within-1-point
-   agreement (the more informative statistic for this dataset's shape)
-   is considerably higher than exact-match agreement across most pairs.
-   **One specific, non-random pattern surfaced by this analysis**: Venky
-   rated fluency exactly 2/5 on all 3 confidence-hedge items (the
-   Weather/Price Agent answers) while every other rater scored those
-   same 3 items 4-5 -- the single largest, most consistent disagreement
-   in the dataset, concentrated specifically on the Phase 6.9 hedge
-   phrasing rather than spread randomly across all 14 items. Worth
-   further follow-up, not explained away. Full detail --
-   including the dynamically-computed list of every item/dimension with
-   a rater spread of 3+ points, and the per-rater mean-score
-   breakdown -- in `docs/evidence/phrasing_fluency_rubric_evidence.json`.
+   prospective).
 3. **A confirmed, cross-speaker structural failure mode at the
    ASR-to-intent-router boundary was found, characterized, and
    reproduced -- not just observed once.** A domain-specific technical
