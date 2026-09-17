@@ -411,8 +411,7 @@ story.append(P("<b>Confirmed with the project guide, 2026-09-13.</b> The zero-sh
                "number, since row 5 was fine-tuned on PlantDoc and is methodologically "
                "incomparable to a zero-shot claim.", "Callout"))
 
-story.append(P("Bugs found and fixed during this evaluation", "H2"))
-story.append(data_table(
+bugs_table = data_table(
     [["Bug / gap", "Status", "Where documented"],
      ["Conflict Resolver rule-table gap: (None, rain_risk, sell_now) had no entry", "FIXED (Phase 8.1 metric #5)", "metric5_conflict_rule_table_evidence.json"],
      ["Row 7 fine-tune: data-loading bug silently dropped 2 of 13 classes from test set", "Found, NOT fixed -- run marked INVALID for headline reporting", "model_lineage.md \"Row 7\" section"],
@@ -424,7 +423,8 @@ story.append(data_table(
      ["Intent Router 87.5% full-set number includes 5 few-shot-exposed questions", "Corrected -- 81.8% held-out is the honest estimate", "metric_intent_router_per_intent_evidence.json"],
      ],
     col_widths=[70 * mm, 60 * mm, 45 * mm],
-))
+)
+story.append(KeepTogether([P("Bugs found and fixed during this evaluation", "H2"), bugs_table]))
 story.append(PageBreak())
 
 # =====================================================================
