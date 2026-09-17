@@ -1,0 +1,373 @@
+<title>Phrasing Fluency Rubric</title>
+<meta name="description" content="Blind rubric for rating Krishi-Agent's Telugu phrasing templates and confidence-hedged agent answers on fluency, naturalness, and correctness.">
+<style>
+  :root {
+    --bg: #f4f5f1;
+    --surface: #ffffff;
+    --surface-2: #eceee8;
+    --ink: #1e2a22;
+    --ink-muted: #58655c;
+    --ink-faint: #8b968d;
+    --primary: #2b5d52;
+    --primary-dark: #1c3f38;
+    --primary-tint: #e3ede9;
+    --accent: #a8791f;
+    --accent-tint: #f5ecd9;
+    --border: #d7dcd3;
+    --border-soft: #e6e9e2;
+    --good: #2b6e46;
+    --good-tint: #e4f1e8;
+    --shadow: 0 1px 2px rgba(30,42,34,0.06), 0 8px 20px rgba(30,42,34,0.06);
+    --radius: 12px;
+    --font-display: "Public Sans", system-ui, sans-serif;
+    --font-body: "Public Sans", system-ui, sans-serif;
+    --font-telugu: "Noto Sans Telugu", "Noto Sans", sans-serif;
+    --font-mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121815;
+      --surface: #1a231e;
+      --surface-2: #212b24;
+      --ink: #e7ece8;
+      --ink-muted: #a8b3ac;
+      --ink-faint: #6f7a72;
+      --primary: #7cc0ad;
+      --primary-dark: #9ed4c3;
+      --primary-tint: #1e2d28;
+      --accent: #d6ab5c;
+      --accent-tint: #2c2416;
+      --border: #34413a;
+      --border-soft: #2a352e;
+      --good: #7cc79a;
+      --good-tint: #1c3324;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121815;
+    --surface: #1a231e;
+    --surface-2: #212b24;
+    --ink: #e7ece8;
+    --ink-muted: #a8b3ac;
+    --ink-faint: #6f7a72;
+    --primary: #7cc0ad;
+    --primary-dark: #9ed4c3;
+    --primary-tint: #1e2d28;
+    --accent: #d6ab5c;
+    --accent-tint: #2c2416;
+    --border: #34413a;
+    --border-soft: #2a352e;
+    --good: #7cc79a;
+    --good-tint: #1c3324;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; padding-inline: 16px; }
+  .wrap { max-width: 720px; margin: 0 auto; padding-block: 28px 140px; }
+  h1, h2, h3 { font-family: var(--font-display); }
+  p { max-width: 68ch; }
+
+  header.top {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary-dark); font-weight: 600; }
+  h1 { font-size: 24px; font-weight: 700; margin: 6px 0 8px; text-wrap: balance; }
+  .lede { color: var(--ink-muted); font-size: 14.5px; margin: 0 0 16px; }
+
+  .rater-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  select {
+    font: inherit; font-size: 15px; padding: 9px 12px; border-radius: 9px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--ink);
+  }
+  label.field-label { font-size: 12.5px; font-weight: 600; color: var(--ink-muted); display: block; margin-bottom: 5px; }
+
+  .instructions { background: var(--primary-tint); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; font-size: 14px; }
+  .instructions b { color: var(--primary-dark); }
+  .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 10px; }
+  .dim-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 9px; padding: 10px 12px; }
+  .dim-card .dim-name { font-weight: 700; font-size: 13.5px; margin-bottom: 3px; }
+  .dim-card .dim-anchor { font-size: 12px; color: var(--ink-muted); }
+
+  .progress-note { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-faint); margin-top: 12px; }
+
+  .item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px; margin-bottom: 14px; box-shadow: var(--shadow);
+  }
+  .item-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .item-index {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--primary-dark);
+    background: var(--primary-tint); border-radius: 999px; padding: 2px 9px;
+  }
+  .item-context { font-size: 12.5px; color: var(--ink-muted); }
+  .item-telugu {
+    font-family: var(--font-telugu); font-size: 21px; line-height: 1.6; color: var(--ink);
+    margin: 6px 0 16px; padding: 12px 14px; background: var(--surface-2); border-radius: 9px;
+  }
+
+  .rating-group { margin-bottom: 12px; }
+  .rating-group:last-child { margin-bottom: 0; }
+  .rating-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .rating-label .anchors { font-weight: 400; color: var(--ink-faint); font-size: 11.5px; font-family: var(--font-mono); }
+  .scale { display: flex; gap: 6px; }
+  .scale button {
+    flex: 1; font: inherit; font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    padding: 9px 0; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--ink-muted); cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .scale button:hover { border-color: var(--primary); }
+  .scale button.selected { background: var(--accent); border-color: var(--accent); color: #2a1f08; }
+
+  .bottom-bar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+  }
+  .bottom-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .bottom-progress { font-family: var(--font-mono); font-size: 13px; color: var(--ink-muted); }
+  button.submit {
+    font: inherit; font-size: 14.5px; font-weight: 700; padding: 11px 20px; border-radius: 9px;
+    border: none; background: var(--primary); color: #fff; cursor: pointer;
+  }
+  button.submit:disabled { background: var(--border); color: var(--ink-faint); cursor: not-allowed; }
+
+  .confirm {
+    background: var(--good-tint); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; margin-top: 16px; font-size: 14px;
+  }
+  .confirm b { color: var(--good); }
+  textarea.fallback {
+    width: 100%; min-height: 140px; font-family: var(--font-mono); font-size: 12px;
+    padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--ink);
+    margin-top: 8px;
+  }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 480px) {
+    .scale button { padding: 10px 0; font-size: 13px; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Krishi-Agent &middot; Category A follow-up</div>
+    <h1>Phrasing Fluency Rubric</h1>
+    <p class="lede">Rating novelty claim #3 (confidence-aware responses): does the system's Telugu actually read as fluent, natural, and correct for the situation it's responding to -- not just internally consistent?</p>
+
+    <div class="rater-row">
+      <div>
+        <label class="field-label" for="rater-select">Your name</label>
+        <select id="rater-select">
+          <option value="">Select...</option>
+          <option value="Harikha">Harikha</option>
+          <option value="Venky">Venky</option>
+          <option value="Amarthya">Amarthya</option>
+          <option value="Ranga Sarvesh">Ranga Sarvesh</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <p><b>Rate independently, before comparing notes with anyone else on the team.</b> This page doesn't show you anyone else's scores -- there aren't any to see. Read each Telugu sentence as if a farmer just heard it spoken aloud, using the context line only to judge whether it fits the situation.</p>
+    <div class="dims">
+      <div class="dim-card"><div class="dim-name">Fluency</div><div class="dim-anchor">1 = broken/ungrammatical &middot; 5 = reads like natural written Telugu</div></div>
+      <div class="dim-card"><div class="dim-name">Naturalness</div><div class="dim-anchor">1 = robotic/stilted &middot; 5 = how a person would actually say it aloud</div></div>
+      <div class="dim-card"><div class="dim-name">Correctness</div><div class="dim-anchor">1 = wrong tone/advice for the situation &middot; 5 = exactly fits the context</div></div>
+    </div>
+    <p class="progress-note" id="progress-note">0 / 14 items rated</p>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="confirm" id="confirm" hidden>
+    <p><b>Saved.</b> A file named <code id="confirm-filename"></code> was downloaded (or, if your browser blocked that, copy the JSON below). Send that file back to Harikha directly -- please don't post it anywhere the other three raters might see it before everyone's done.</p>
+    <textarea class="fallback" id="fallback-text" hidden readonly></textarea>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <span class="bottom-progress" id="bottom-progress">Select your name to begin</span>
+      <button class="submit" id="submit-btn" disabled>Download my ratings</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ITEMS = [
+    {id:"delay_treatment_medium", context:"Disease treatment recommended, but rain expected -- resolution: delay spraying until rain clears. (Medium confidence)", text:"వర్షం రాబోతోంది, కాబట్టి వర్షం ఆగిన తర్వాత మందు కొట్టండి — చికిత్స మానకండి."},
+    {id:"harvest_now_high", context:"Weather risk and good price agree -- harvest now. (High confidence)", text:"మీ పంటను ఇప్పుడే కోయండి — ఇది పంటను కాపాడటానికి మరియు మంచి ధర పొందటానికి సరైన సమయం."},
+    {id:"harvest_now_medium", context:"Same recommendation as above, softer phrasing. (Medium confidence)", text:"మీ పంటను ఇప్పుడు కోయడం మంచిదని అనిపిస్తుంది, వర్షం మరియు ధరను దృష్టిలో ఉంచుకుని."},
+    {id:"treat_first_medium", context:"Disease and price signals conflict -- treat the crop before worrying about price. (Medium confidence)", text:"ధర గురించి ఆలోచించే ముందు, మీ పంటకు చికిత్స చేయడం మంచిది."},
+    {id:"protect_crop_medium", context:"Weather and price conflict -- protect the crop first, price can wait. (Medium confidence)", text:"ముందుగా మీ పంటను కాపాడుకోవడంపై దృష్టి పెట్టండి — నీటిపారుదల లేదా కోత; ధర తర్వాత చూడవచ్చు."},
+    {id:"no_conflict_high", context:"No competing signals -- all clear. (High confidence)", text:"ప్రస్తుతానికి అంతా బాగానే ఉంది — మీ పంటను గమనిస్తూ ఉండండి."},
+    {id:"single_agent_action_high", context:"Only one agent fired (drought risk) -- simple single-issue action. (High confidence)", text:"కరువు ప్రమాదం ఉన్నందున నీటిపారుదల చేయండి — ప్రస్తుతానికి వేరే సమస్య ఏమీ లేదు."},
+    {id:"treat_and_irrigate_medium", context:"Disease and drought risk agree -- treat and irrigate. (Medium confidence)", text:"వెంటనే పంటకు చికిత్స చేయండి, వీలైతే నీరు కూడా పెట్టండి."},
+    {id:"treat_with_caution_low", context:"Treatment recommended, but the weather forecast itself is uncertain. (Low confidence)", text:"ఇప్పుడు చికిత్స చేయండి, కానీ వాతావరణ సూచన ఖచ్చితంగా లేదని గమనించండి."},
+    {id:"treat_now_synergy_high", context:"Disease and weather agree -- good time to treat. (High confidence)", text:"ఇప్పుడు చికిత్స చేయడానికి మంచి సమయం — వాతావరణం కూడా అనుకూలంగా ఉంది."},
+    {id:"unresolved_conflict_low", context:"No rule matched -- fallback: no clear answer, consult your local agricultural officer. (Low confidence)", text:"ఈ విషయంలో మాకు స్పష్టమైన సమాధానం లేదు — దయచేసి మీ స్థానిక వ్యవసాయ అధికారిని సంప్రదించండి."},
+    {id:"weather_medium_hedge", context:"Weather Agent standalone answer, Medium confidence (Phase 6.9 hedging).", text:"రాబోయే 48 గంటల్లో వర్షం పడే అవకాశం తక్కువ, అయితే ఖచ్చితంగా చెప్పలేం (గరిష్ట సంభావ్యత 45%)."},
+    {id:"price_medium_hedge", context:"Price Agent standalone answer, Medium confidence (Phase 6.9 hedging).", text:"ఈరోజు Tomato ధర 1100 రూ., ఈ నెలలో సాధారణ ధర (1253 రూ.) కంటే 12% తక్కువ, కానీ ఖచ్చితంగా చెప్పలేం. వీలైతే ఆగడం మంచిది."},
+    {id:"price_low_hedge", context:"Price Agent standalone answer, Low confidence, price near seasonal baseline (Phase 6.9 hedging).", text:"ఈరోజు Tomato ధర 1275 రూ., ఇది ఈ నెలలో సాధారణ ధర (1253 రూ.)కి దగ్గరగా ఉంది, అయితే ఇది స్పష్టమైన సూచన కాదు."}
+  ];
+
+  var DIMS = ["fluency", "naturalness", "correctness"];
+  var ratings = {}; // item_id -> {fluency, naturalness, correctness}
+
+  var itemsEl = document.getElementById("items");
+  var raterSelect = document.getElementById("rater-select");
+  var submitBtn = document.getElementById("submit-btn");
+  var progressNote = document.getElementById("progress-note");
+  var bottomProgress = document.getElementById("bottom-progress");
+  var confirmBox = document.getElementById("confirm");
+  var confirmFilename = document.getElementById("confirm-filename");
+  var fallbackText = document.getElementById("fallback-text");
+
+  function buildItem(item, idx) {
+    ratings[item.id] = {};
+    var card = document.createElement("div");
+    card.className = "item";
+
+    var head = document.createElement("div");
+    head.className = "item-head";
+    var badge = document.createElement("span");
+    badge.className = "item-index";
+    badge.textContent = (idx + 1) + " / " + ITEMS.length;
+    var ctx = document.createElement("span");
+    ctx.className = "item-context";
+    ctx.textContent = item.context;
+    head.appendChild(badge);
+    head.appendChild(ctx);
+    card.appendChild(head);
+
+    var telugu = document.createElement("div");
+    telugu.className = "item-telugu";
+    telugu.textContent = item.text;
+    card.appendChild(telugu);
+
+    DIMS.forEach(function (dim) {
+      var group = document.createElement("div");
+      group.className = "rating-group";
+
+      var label = document.createElement("div");
+      label.className = "rating-label";
+      var name = document.createElement("span");
+      name.textContent = dim.charAt(0).toUpperCase() + dim.slice(1);
+      var anchors = document.createElement("span");
+      anchors.className = "anchors";
+      anchors.textContent = "1 low → 5 high";
+      label.appendChild(name);
+      label.appendChild(anchors);
+      group.appendChild(label);
+
+      var scale = document.createElement("div");
+      scale.className = "scale";
+      for (var v = 1; v <= 5; v++) {
+        (function (value) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = String(value);
+          btn.id = "rate-" + item.id + "-" + dim + "-" + value;
+          btn.addEventListener("click", function () {
+            ratings[item.id][dim] = value;
+            var siblings = scale.querySelectorAll("button");
+            for (var i = 0; i < siblings.length; i++) siblings[i].classList.remove("selected");
+            btn.classList.add("selected");
+            updateProgress();
+          });
+          scale.appendChild(btn);
+        })(v);
+      }
+      group.appendChild(scale);
+      card.appendChild(group);
+    });
+
+    itemsEl.appendChild(card);
+  }
+
+  ITEMS.forEach(buildItem);
+
+  function ratedCount() {
+    var n = 0;
+    ITEMS.forEach(function (item) {
+      var r = ratings[item.id];
+      if (r.fluency && r.naturalness && r.correctness) n++;
+    });
+    return n;
+  }
+
+  function updateProgress() {
+    var n = ratedCount();
+    var total = ITEMS.length;
+    progressNote.textContent = n + " / " + total + " items rated";
+    var raterChosen = !!raterSelect.value;
+    if (!raterChosen) {
+      bottomProgress.textContent = "Select your name to begin";
+    } else {
+      bottomProgress.textContent = raterSelect.value + " — " + n + " / " + total + " items rated";
+    }
+    submitBtn.disabled = !(raterChosen && n === total);
+  }
+
+  raterSelect.addEventListener("change", updateProgress);
+  updateProgress();
+
+  function slug(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+  }
+
+  async function handleSubmit() {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Saving...";
+
+    var payload = {
+      rater: raterSelect.value,
+      submitted_at: new Date().toISOString(),
+      tool_version: "1.0",
+      item_count: ITEMS.length,
+      ratings: ITEMS.map(function (item) {
+        var r = ratings[item.id];
+        return {item_id: item.id, fluency: r.fluency, naturalness: r.naturalness, correctness: r.correctness};
+      })
+    };
+    var json = JSON.stringify(payload, null, 2);
+    var filename = "krishi_agent_phrasing_rubric_" + slug(raterSelect.value) + ".json";
+
+    var saved = false;
+    try {
+      var downloads = window.claude && (await window.claude.use("downloads"));
+      if (downloads) {
+        await downloads.save({filename: filename, data: json});
+        saved = true;
+      }
+    } catch (e) {
+      saved = false;
+    }
+
+    confirmFilename.textContent = filename;
+    confirmBox.hidden = false;
+    if (!saved) {
+      fallbackText.hidden = false;
+      fallbackText.value = json;
+    }
+    confirmBox.scrollIntoView({behavior: "smooth", block: "nearest"});
+    submitBtn.textContent = "Download my ratings";
+    submitBtn.disabled = false;
+  }
+
+  submitBtn.addEventListener("click", handleSubmit);
+})();
+</script>
