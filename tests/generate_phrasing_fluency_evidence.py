@@ -272,7 +272,21 @@ def main():
             for dim, stats in dims.items():
                 stats["interpretation"] = kappa_interpretation(stats["cohens_kappa_linear_weighted"])
 
+    missing_raters = sorted(VALID_RATERS - set(raters.keys()))
+    if len(raters) >= len(VALID_RATERS):
+        reporting_status = f"FINAL -- {len(raters)}/{len(VALID_RATERS)} planned raters ({', '.join(sorted(raters.keys()))})."
+    else:
+        reporting_status = (
+            f"PRELIMINARY -- {len(raters)}/{len(VALID_RATERS)} planned raters "
+            f"({', '.join(sorted(raters.keys()))}). {', '.join(missing_raters)} "
+            f"{'has' if len(missing_raters) == 1 else 'have'} not yet submitted ratings. "
+            "Aggregate scores and inter-rater agreement below are based on these "
+            f"{len(raters)} rater(s) only -- same treatment as metric #2's WER evidence before "
+            "all 4 speakers' recordings arrived: do not cite as final until all 4 raters have submitted."
+        )
+
     evidence = {
+        "reporting_status": reporting_status,
         "metric": "Novelty claim #3 (confidence-aware responses) -- phrasing fluency/naturalness/correctness rubric",
         "method": (
             "14 items rated 1-5 on fluency, naturalness, and correctness by team members acting as "

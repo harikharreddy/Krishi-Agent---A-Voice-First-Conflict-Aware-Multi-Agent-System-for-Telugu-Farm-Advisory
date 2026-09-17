@@ -989,7 +989,26 @@ limitation):
    chasing point estimate (Sec. 2.5). None of the three comparable
    systems describe prospective confidence communication to the user at
    all (Farmer.Chat's feedback is retrospective thumbs-up/down, not
-   prospective).
+   prospective). **The confidence-aware responses themselves have now
+   started being validated for quality, not just internal consistency
+   (PRELIMINARY, 2/4 planned raters, 2026-09-17)**: a blind rubric
+   (`docs/evidence/phrasing_fluency_rubric_tool.html`) had 2 of 4 team
+   members independently rate all 14 confidence-keyed phrasing
+   outputs -- the 10 Phrasing Templates + fallback, plus the 3 distinct
+   Weather/Price confidence-hedge variants -- on fluency, naturalness,
+   and correctness (1-5). Mean scores: fluency 4.29, naturalness 3.68,
+   correctness 4.11 (n=2 raters x 14 items = 28 ratings/dimension).
+   Inter-rater agreement (linearly-weighted Cohen's kappa, the
+   appropriate statistic for exactly 2 raters on an ordinal scale):
+   fluency kappa=0.282 (fair), naturalness kappa=0.432 (moderate),
+   correctness kappa=0.294 (fair) -- exact-match agreement is modest
+   (43-50%) but within-1-point agreement is high (79-100%), meaning the
+   two raters rarely disagree by more than a point even when they don't
+   pick the identical number. Full detail, including the honest caveat
+   that raters are the system's own build team (not naive end users),
+   in `docs/evidence/phrasing_fluency_rubric_evidence.json`. **Not yet
+   final** -- 2 of 4 planned raters, same status WER carried before all
+   4 speakers' recordings arrived (Sec. 2.3).
 3. **A confirmed, cross-speaker structural failure mode at the
    ASR-to-intent-router boundary was found, characterized, and
    reproduced -- not just observed once.** A domain-specific technical
