@@ -362,6 +362,82 @@ architecture-independent, confirmed across two distinct architecture
 families**, not just independent of training run or random seed within
 one family.
 
+## K-fold cross-validation variance estimate (closed 2026-09-17)
+
+Trained and evaluated externally (not in this repo). Delivered evidence:
+`docs/evidence/kfold_cv_row6_variance_evidence.json`. 5-fold stratified
+cross-validation on EfficientNetB0, matching the row 6/v2 checkpoint's
+recipe (same architecture, same PlantVillage-only training data). CV
+pool = the original train+val split (seed=42); the original held-out
+test set was excluded from CV entirely and never touched. Epoch budget
+reduced to 15 max epochs/fold (from the original 30) to make 5 full
+training runs tractable in one session — stated explicitly, not hidden,
+same as the compute-scoping note on the baseline-reproduction roadmap
+item.
+
+| Fold | PlantVillage val acc | PlantDoc zero-shot acc | n |
+|---|---|---|---|
+| 1 | 99.86% | 24.33% | 822 |
+| 2 | 99.88% | 23.97% | 822 |
+| 3 | 99.80% | 23.72% | 822 |
+| 4 | 99.86% | 22.87% | 822 |
+| 5 | 99.80% | 22.02% | 822 |
+
+**PlantVillage: 99.84% ± 0.03%. PlantDoc zero-shot: 23.38% ± 0.83%**
+(fold range 22.02-24.33%, a 2.31-point spread across 5 independently-
+trained folds of the *same* architecture on the *same* underlying data,
+differing only in which 20% was held out as validation each time).
+
+**What this adds, precisely**: the cross-architecture convergence above
+answers "do independently-trained models agree with each other" (yes,
+formally). This answers a different, complementary question: "if you
+retrain the same recipe on a different train/val partition of the same
+data, how much does the zero-shot number itself move around" — i.e. is
+22-23% a stable estimate or a fragile point estimate that got lucky
+once. ±0.83 percentage points across 5 folds is a tight variance band,
+answering that question: **the ~22-23% zero-shot ceiling is not just
+architecture-independent, it is also stable under resampling of the
+training data itself.**
+
+**Honestly scoped, not overclaimed**:
+- **One architecture only** (EfficientNetB0, row 6's recipe) — this CV
+  run does not establish that ResNet18 (row 8) or the hierarchical
+  split (row 2) would show the same ±0.83pp variance if each were
+  independently 5-fold cross-validated too; it establishes variance
+  *within* the EfficientNetB0-flat recipe specifically, not
+  architecture-general variance.
+- **Reduced epoch budget** (15 vs. the original checkpoints' 30 max
+  epochs) — each fold may be very slightly undertrained relative to
+  rows 1/6's own checkpoints; the fold-to-fold *spread* is still a
+  valid variance estimate regardless (undertraining would be expected
+  to affect all 5 folds similarly, not to selectively inflate or
+  deflate the spread between them), but the absolute fold means
+  shouldn't be read as "what a full 30-epoch run of each fold would
+  score."
+- **A monotonic downward drift across folds** (24.33% → 23.97% →
+  23.72% → 22.87% → 22.02%, strictly decreasing every single fold) is
+  visible in the raw numbers. Worth stating plainly since it's an
+  unusual pattern for 5 supposedly-exchangeable folds, but **not
+  overclaimed as a trend** — n=5 cannot distinguish a real effect (e.g.
+  fold-order correlating with some property of the stratified split)
+  from a coincidence, and no further investigation was done to
+  distinguish the two. Reported as an observed pattern in the delivered
+  data, not explained.
+- **This run's PlantDoc zero-shot images (n=822) match row 8's
+  evaluation set size exactly, not rows 1/2/6's established 967/968.**
+  Not independently confirmed at the image level (no per-image
+  predictions were delivered for the CV folds, unlike row 8's), but the
+  exact count match makes it near-certain this CV run drew on the same
+  external PlantDoc-Dataset clone as row 8 — i.e. the same 2 classes
+  (`Tomato_healthy`, `Tomato_Yellow_Leaf_Curl_Virus`) likely missing
+  here too. This does not undermine the *variance* estimate (all 5
+  folds were evaluated on the identical 822-image set, so the ±0.83pp
+  spread is an apples-to-apples comparison of the 5 folds against each
+  other), but the **absolute 23.38% mean should not be read as directly
+  comparable, number-for-number, to rows 1/2/6's 22.00%/23.45%/21.45%**
+  computed on the fuller benchmark — the same caveat already applied to
+  row 8's headline number, for the same likely reason.
+
 ## Metric #6 — CLOSED, final decision recorded (2026-09-13)
 
 Full evidence in `docs/evidence/metric6_confidence_calibration_evidence.json`

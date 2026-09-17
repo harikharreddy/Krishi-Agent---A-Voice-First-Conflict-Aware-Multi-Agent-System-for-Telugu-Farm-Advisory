@@ -429,6 +429,30 @@ deployment** -- this five-signal, architecture-independent convergence
 (three descriptive, two formally tested) is the evidence for that
 limitation and the honest framing of it, not a hidden weakness.
 
+**A second, complementary form of rigor: the estimate is stable, not
+just cross-architecture-convergent (k-fold CV, 2026-09-17).** The
+five-signal convergence above answers "do independently-trained models
+agree with each other" (yes, formally). A separate question -- does the
+~22-23% number itself move around if you retrain the same recipe on a
+different partition of the same training data -- is answered by 5-fold
+stratified cross-validation on EfficientNetB0 (row 6's recipe; CV pool
+= train+val only, the original held-out test set untouched throughout):
+**PlantDoc zero-shot 23.38% ± 0.83%** across 5 folds (range
+22.02-24.33%), a tight band. **Put together, this is a materially
+stronger combined claim than either piece alone**: not only do
+independent architectures converge to ~21-23%, but the estimate itself
+is stable across different training-data partitions, not a fragile
+point estimate that happened to land in a convenient range once. Scoped
+honestly (Sec. 5 item 3): run on one architecture only, at a reduced
+15-epoch/fold budget, and its PlantDoc image set (n=822) most likely
+carries the same class-coverage gap as row 8's rather than matching
+rows 1/2/6's fuller 967/968-image benchmark exactly -- so the ±0.83pp
+*spread* is a clean same-benchmark comparison across the 5 folds, but
+the 23.38% mean is not asserted as identical-benchmark to the other
+rows' headline figures. Full detail and the fold-by-fold table:
+`docs/evidence/kfold_cv_row6_variance_evidence.json`,
+`docs/evidence/model_lineage.md`.
+
 **After fine-tuning on PlantDoc's own `train` split** (conservative
 transfer learning: frozen backbone except the last block + classifier
 head, low LR, few epochs; `agents/disease/finetune_plantdoc.py`; PlantDoc
@@ -920,7 +944,14 @@ limitation):
    accuracy band, attractor bias, and formal indistinguishability,
    p=0.369/0.156/0.083) is now confirmed across four independently-
    trained zero-shot checkpoints spanning two distinct architecture
-   families, not one (Sec. 2.5) -- and the deployed
+   families, not one (Sec. 2.5) -- **and, complementing that
+   cross-architecture agreement, the estimate itself is stable under
+   resampling of the training data**: 5-fold cross-validation on
+   EfficientNetB0 gives PlantDoc zero-shot 23.38% ± 0.83% across folds
+   (Sec. 2.5), so the ~22-23% real-world ceiling is not just something
+   independent architectures happen to agree on once, but a number that
+   holds up when the same recipe is retrained on different partitions of
+   the same data -- and the deployed
    confidence cutoff was stress-tested with Wilson
    95% confidence intervals and a 2,000-iteration bootstrap stability
    check before any change was even considered, ultimately supporting a
@@ -1154,14 +1185,34 @@ report, not left implicit.
    here; a McNemar comparison for that pair would need the zero-shot
    checkpoint's predictions restricted to the same 85 test-only images
    first, not attempted in this pass.
-3. **k-fold cross-validation.** Every PlantDoc evaluation in this
+3. ~~**k-fold cross-validation.** Every PlantDoc evaluation in this
    report uses PlantDoc's own fixed train/test split (the benchmark's
    standard split, used so results stay comparable to other published
    PlantDoc numbers). A journal-tier extension would additionally run
    k-fold cross-validation within the training data to characterize
    variance from the specific train/test partition itself, separate
    from architecture or checkpoint variance -- a different, complementary
-   question to the one this report answers.
+   question to the one this report answers.~~ **Done, explicitly scoped**
+   -- pulled forward and run 2026-09-17
+   (`docs/evidence/kfold_cv_row6_variance_evidence.json`,
+   `docs/evidence/model_lineage.md`'s "K-fold cross-validation variance
+   estimate" section): 5-fold stratified CV on EfficientNetB0 (row 6/v2's
+   recipe), CV pool = train+val only (original held-out test set
+   untouched throughout), gives **PlantDoc zero-shot 23.38% ± 0.83%**
+   (fold range 22.02-24.33%) -- a tight variance band directly answering
+   this item's question of partition-specific variance. **Scoped
+   honestly, same as item 1's compute-cost scoping note**: run on **one
+   architecture only** (EfficientNetB0; does not establish ResNet18's or
+   the hierarchical split's fold-to-fold variance), at a **reduced
+   15-epoch/fold budget** (vs. the original checkpoints' 30), and on a
+   PlantDoc image set (n=822) that matches row 8's coverage-gap-affected
+   benchmark rather than rows 1/2/6's fuller 967/968 -- so the fold
+   spread itself is a clean apples-to-apples comparison (all 5 folds
+   share the same 822 images), but the 23.38% mean isn't directly
+   comparable number-for-number to rows 1/2/6's headline figures. A
+   strictly monotonic downward drift across the 5 folds is visible in
+   the raw data and reported as an observed pattern, not investigated or
+   claimed as a trend at n=5.
 
 These are named explicitly, with the reasoning for deferring each,
 rather than left as a vague "more rigor would be nice" gesture --

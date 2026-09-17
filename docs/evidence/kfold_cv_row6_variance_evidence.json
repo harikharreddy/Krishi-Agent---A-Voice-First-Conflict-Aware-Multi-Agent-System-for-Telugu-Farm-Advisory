@@ -1,0 +1,57 @@
+{
+  "method": "5-fold stratified cross-validation, EfficientNetB0, matching the v2 checkpoint's recipe. Reduced to 15 max epochs/fold (vs. original 30) to make 5 runs tractable. CV pool = original train+val (seed=42 split); original held-out test set EXCLUDED from CV entirely.",
+  "num_folds": 5,
+  "max_epochs_per_fold": 15,
+  "fold_results": [
+    {
+      "fold": 1,
+      "plantvillage_val_accuracy": 99.85519837822183,
+      "plantdoc_zeroshot_accuracy": 0.24330900243309003,
+      "plantdoc_correct": 200,
+      "plantdoc_total": 822,
+      "n_train": 13812,
+      "n_val": 3453
+    },
+    {
+      "fold": 2,
+      "plantvillage_val_accuracy": 99.88415870257747,
+      "plantdoc_zeroshot_accuracy": 0.2396593673965937,
+      "plantdoc_correct": 197,
+      "plantdoc_total": 822,
+      "n_train": 13812,
+      "n_val": 3453
+    },
+    {
+      "fold": 3,
+      "plantvillage_val_accuracy": 99.79727772951057,
+      "plantdoc_zeroshot_accuracy": 0.23722627737226276,
+      "plantdoc_correct": 195,
+      "plantdoc_total": 822,
+      "n_train": 13812,
+      "n_val": 3453
+    },
+    {
+      "fold": 4,
+      "plantvillage_val_accuracy": 99.85519837822183,
+      "plantdoc_zeroshot_accuracy": 0.22871046228710462,
+      "plantdoc_correct": 188,
+      "plantdoc_total": 822,
+      "n_train": 13812,
+      "n_val": 3453
+    },
+    {
+      "fold": 5,
+      "plantvillage_val_accuracy": 99.79727772951057,
+      "plantdoc_zeroshot_accuracy": 0.22019464720194648,
+      "plantdoc_correct": 181,
+      "plantdoc_total": 822,
+      "n_train": 13812,
+      "n_val": 3453
+    }
+  ],
+  "plantvillage_val_accuracy_mean": 99.83782218360845,
+  "plantvillage_val_accuracy_std": 0.034752389226757906,
+  "plantdoc_zeroshot_accuracy_mean": 23.38199513381995,
+  "plantdoc_zeroshot_accuracy_std": 0.8336662627256357,
+  "honest_note": "CV run on ONE checkpoint architecture (EfficientNetB0, matching row 6/v2), not across all checkpoints, due to multiplicative training cost. Per-fold epoch budget reduced from 30 to 15 to make 5 folds feasible in one session."
+}
