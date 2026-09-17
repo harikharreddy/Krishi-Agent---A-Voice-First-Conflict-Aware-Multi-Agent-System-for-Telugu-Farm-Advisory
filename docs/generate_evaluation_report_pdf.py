@@ -239,19 +239,32 @@ story.append(P("A domain-specific technical term (soil pH) transliterated by ASR
                "-- not a single-speaker artifact.", "Body"))
 
 story.append(P("Closest existing work", "H2"))
+story.append(P("Three systems read in enough depth to compare honestly, all pulled directly from "
+               "krishiagent-literaturesurvey.docx (our own 25-paper survey) -- Farmer.Chat [15] "
+               "(arXiv:2409.08916), Kisaan Margadarshak [13] (Trimukhe et al. 2025, Springer, "
+               "DOI:10.1007/978-3-031-74440-2_1, rated HIGH in our survey and already the base "
+               "paper the rest of this report treats as the closest structural precedent), and "
+               "CropCare Companion [14] (Sable et al. 2025, IJRASET, rated CAUTION in our survey).",
+               "BodySmall"))
 story.append(data_table(
-    [["Dimension", "Krishi-Agent", "Farmer.Chat", "Krishi Sathi", "Raithubot"],
-     ["Architecture", "Multi-agent + explicit rule-based Conflict Resolver", "RAG + multi-agent orchestration", "Multi-turn RAG, intent-aware retrieval", "Single RLHF-fine-tuned LLM (Pythia-2.8B)"],
-     ["Explicit conflict resolution", "Yes -- 13/13 synthetic tests (7/36 of full 3-agent state grid)", "Not described", "Not described", "Not described"],
-     ["Disease diagnosis", "Own trained CV model, in-pipeline (37.65% honestly measured)", "Delegated to Plantix (3rd party)", "Not described", "Not described"],
-     ["Confidence shown to user", "Yes -- hedged phrasing + UI indicator", "Not described (retrospective thumbs-up/down only)", "Not described", "Not described"],
-     ["Evaluation scale", "Component-level (n=12-263)", "15,000+ users, 300,000+ queries", "Not found", "Not publicly detailed"],
+    [["Dimension", "Krishi-Agent", "Farmer.Chat [15]", "Kisaan Margadarshak [13]", "CropCare Companion [14]"],
+     ["Architecture", "Multi-agent + explicit rule-based Conflict Resolver", "RAG + multi-agent orchestration", "Android app -- on-device MobileNetV2 CNN + Django + Flutter, weather + mandi price APIs", "Naive Bayes + DeepSeek LLM fallback; NLP pipeline + Google Translate + Web Speech API"],
+     ["Explicit conflict resolution", "Yes -- 13/13 synthetic tests (7/36 of full 3-agent state grid)", "Not described", "Not described in survey entry", "Not described in survey entry"],
+     ["Disease diagnosis", "Own trained CV model, in-pipeline (37.65% honestly measured)", "Delegated to Plantix (3rd party)", "On-device CNN, single-crop (cotton) only -- no quantified accuracy/F1", "No image-based detection -- named as future work"],
+     ["Confidence shown to user", "Yes -- hedged phrasing + UI indicator", "Not described (retrospective thumbs-up/down only)", "Not described in survey entry", "Not described in survey entry"],
+     ["Evaluation scale", "Component-level (n=12-263)", "15,000+ users, 300,000+ queries", "No accuracy/F1 or user-scale reported (survey's own stated limitation)", ">91% accuracy, multilingual -- but proprietary, undisclosed-size dataset (CAUTION-rated)"],
      ],
-    col_widths=[30 * mm, 42 * mm, 33 * mm, 28 * mm, 27 * mm],
+    col_widths=[26 * mm, 34 * mm, 28 * mm, 38 * mm, 38 * mm],
 ))
 story.append(P("Farmer.Chat massively outscales this project on real-world deployment and "
-               "user-study rigor -- a genuine, uncontested strength of theirs. This table supports "
-               "a narrower, verifiable, system-level claim, not a claim of being \"better overall.\"",
+               "user-study rigor -- a genuine, uncontested strength of theirs. CropCare Companion's "
+               "own reported >91% accuracy is also higher than any Krishi-Agent number in this "
+               "report, stated here rather than omitted -- but it's measured on a proprietary, "
+               "undisclosed-size Q&amp;A dataset with no independent evaluation, exactly why our own "
+               "survey rated that paper CAUTION rather than HIGH, and why it isn't treated as a "
+               "like-for-like comparison against this report's own sourced-and-sized accuracy "
+               "figures. This table supports a narrower, verifiable, system-level claim, not a "
+               "claim of being \"better overall.\"",
                "BodySmall"))
 story.append(PageBreak())
 
