@@ -1,0 +1,90 @@
+{
+  "method": "ResNet18 baseline, zero-shot PlantDoc evaluation \u2014 SAME protocol as rows 1/2/6 (train and test splits matched INDEPENDENTLY, then combined and content-hash deduped across PlantDoc's train+test, 13-class fixed order matching the checkpoint).",
+  "base_checkpoint": "disease_agent_resnet18_baseline.pt (99.70% PlantVillage test)",
+  "total_evaluation_images": 822,
+  "duplicates_removed": 7,
+  "overall_accuracy": 0.22506082725060828,
+  "n_correct": 185,
+  "per_class_results": {
+    "Potato___Early_blight": {
+      "n_test": 117,
+      "correct": 33,
+      "recall": 0.28205128205128205
+    },
+    "Potato___Late_blight": {
+      "n_test": 100,
+      "correct": 8,
+      "recall": 0.08
+    },
+    "Potato___healthy": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null
+    },
+    "Tomato___Bacterial_spot": {
+      "n_test": 110,
+      "correct": 1,
+      "recall": 0.00909090909090909
+    },
+    "Tomato___Early_blight": {
+      "n_test": 88,
+      "correct": 39,
+      "recall": 0.4431818181818182
+    },
+    "Tomato___Late_blight": {
+      "n_test": 111,
+      "correct": 80,
+      "recall": 0.7207207207207207
+    },
+    "Tomato___Leaf_Mold": {
+      "n_test": 91,
+      "correct": 5,
+      "recall": 0.054945054945054944
+    },
+    "Tomato___Mosaic_virus": {
+      "n_test": 54,
+      "correct": 0,
+      "recall": 0.0
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "n_test": 149,
+      "correct": 19,
+      "recall": 0.12751677852348994
+    },
+    "Tomato___Spider_mites": {
+      "n_test": 2,
+      "correct": 0,
+      "recall": 0.0
+    },
+    "Tomato___Target_Spot": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null
+    },
+    "Tomato___Yellow_Leaf_Curl_Virus": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null
+    },
+    "Tomato___healthy": {
+      "n_test": 0,
+      "correct": 0,
+      "recall": null
+    }
+  },
+  "prediction_distribution": {
+    "Potato___Early_blight": 94,
+    "Potato___Late_blight": 32,
+    "Potato___healthy": 14,
+    "Tomato___Bacterial_spot": 15,
+    "Tomato___Early_blight": 237,
+    "Tomato___Late_blight": 362,
+    "Tomato___Leaf_Mold": 11,
+    "Tomato___Mosaic_virus": 0,
+    "Tomato___Septoria_leaf_spot": 32,
+    "Tomato___Spider_mites": 0,
+    "Tomato___Target_Spot": 0,
+    "Tomato___Yellow_Leaf_Curl_Virus": 22,
+    "Tomato___healthy": 3
+  }
+}

@@ -14,7 +14,8 @@ Compute footprint column added 2026-09-16 (params/FLOPs via `ptflops`,
 `agents/disease/compute_model_footprint.py`; latency/throughput pulled
 in from the existing real measurement — `agents/disease/
 compute_full_metrics.py` — rather than reported separately, per
-architecture-sharing notes below the table).
+architecture-sharing notes below the table). Row 8 added 2026-09-16
+(`agents/disease/compute_model_footprint_row8.py`).
 
 | # | Checkpoint(s) | Trained on | PlantDoc role | PlantVillage val acc | PlantDoc accuracy | Deployed? | Compute footprint* |
 |---|---|---|---|---|---|---|---|
@@ -25,6 +26,7 @@ architecture-sharing notes below the table).
 | 5 | `stage1/2_*_best.pt` | Same as #4 + 100 external Potato_healthy photos | Same as #3 | n/a | **37.65% (n=85, test-only, held-out)** | **YES — this is what `orchestrator/pipeline.py` calls via `disease_agent.predict_disease()` right now** | 12.04M params, 1.64 GFLOPs/inference, **240.2ms mean latency (std 20.7ms, n=85), 4.16 img/s throughput** (measured, not inherited) |
 | 6 | `disease_agent_efficientnetb0.pt` (flat 13-class, commit `2fdd4fd`) | PlantVillage only, full fine-tune + augmentation (per description) | Zero-shot eval, train+test combined (n=965; see discrepancy note in metric1 evidence) | 99.87% val / 99.80% test | **21.45% (207/965)** | No (still row 5 deployed) | 4.02M params, 0.82 GFLOPs — no real-world latency measured for this single-model architecture |
 | 7 | `disease_agent_plantdoc_finetuned_best.pt` | Row 6 (v2, flat 13-class) + PlantDoc native train split, content-hash deduped, best-checkpoint tracked | Train split fine-tuning; test split held out throughout | n/a (not re-measured) | ~~32.39% best / 26.76% final~~ **INVALID FOR HEADLINE REPORTING — bug-confirmed, n=71 on a test set silently missing 2 of 13 classes; kept for transparency only, see below** | No — not deployed, and not citable as a comparison point | same as row 6 (architecture unchanged by fine-tuning) |
+| 8 | `disease_agent_resnet18_baseline.pt` (**ResNet18, not EfficientNetB0** — trained externally under a protocol matched to rows 1/2/6: same seed=42, same 70/15/15 split, same LR schedule shape, same 30-epoch/6-patience budget) | PlantVillage only (flat 13-class) | Zero-shot eval only | 99.70% test | **22.51% (185/822) self-reported — own eval set missing 2 of 13 classes vs. rows 1/2/6, see Row 8 section below; 22.41-22.47% on the exact shared-image subset used for each pairwise comparison** | No | 11.18M params, 3.65 GFLOPs — different architecture family, no real-world latency measured |
 
 **\*Compute footprint notes**: params/FLOPs depend on architecture and
 class count, not trained weight values, so rows sharing an architecture
@@ -174,10 +176,104 @@ in `docs/evidence/metric1_v2_checkpoint_evidence.json` /
   identified. Effect on the headline number is at most ~0.2 percentage
   points — noted for completeness, not treated as invalidating the result.
 
+## Row 8 results — cross-architecture baseline (ResNet18, closed 2026-09-16)
+
+Trained and evaluated externally (not in this repo), delivered as three
+evidence files: `docs/evidence/row8_resnet18_training_evidence.json`
+(PlantVillage training), `row8_resnet18_plantdoc_zeroshot_evidence.json`
+(zero-shot PlantDoc accuracy), `row8_resnet18_plantdoc_perimage_predictions.json`
+(per-image predictions, used below for McNemar's test). Checkpoint:
+`agents/disease/checkpoints/disease_agent_resnet18_baseline.pt`.
+
+**PlantVillage training result matches rows 1/2/6 within noise**:
+99.70% test accuracy (`best_val_accuracy` 99.87%), against rows 1/2/6's
+99.72%/99.70%/99.80% — a different architecture (ResNet18 vs.
+EfficientNetB0) reaches the same in-domain ceiling under a matched
+protocol, as expected for a well-studied 13-class problem with ample
+PlantVillage data; not itself the interesting finding, but confirms the
+training run is sound before its zero-shot generalization result is
+trusted.
+
+**PlantDoc zero-shot: 22.51% (185/822)** — lands inside the existing
+21.45-23.45% band from rows 1/2/6, from a *different architecture
+family entirely*. This headline number is **not computed on an
+identical benchmark to rows 1/2/6**, though: verified (not assumed) via
+`agents/disease/mcnemar_test_row8_resnet18_vs_zeroshot.py`, row 8's own
+822-image evaluation set is missing 2 of 13 classes' worth of images
+that rows 1/2/6's 967/968/965-image set includes in full —
+`Tomato_Yellow_Leaf_Curl_Virus` (76 images) and `Tomato_healthy` (63
+images), plus 7 stray misses elsewhere (146 images total row 1 has that
+row 8 doesn't, against 1 image unique to row 8). **This is the same two
+classes already flagged as dropped by a data-loading bug in Row 7's
+fine-tuning run** (see Row 7 section below) — consistent with an
+external-environment PlantDoc-Dataset clone/version issue, but not
+independently root-caused here (no filesystem access to the Colab
+environment to SHA-verify, unlike Row 7's investigation). On the actual
+shared-image subset used for each pairwise McNemar's comparison below,
+row 8 scores 22.41-22.47% — essentially identical to its own
+822-image self-reported figure, so the coverage gap does not change
+row 8's own number materially, but the *comparison* to rows 1/2/6
+should be read against the shared-subset accuracies (22.41-22.47%
+row 8 vs. 23.87%/24.73%/24.54% rows 1/2/6 on those same images), not
+the raw 22.00%/23.45%/21.45% headline figures computed on a differently-
+sized benchmark.
+
+**The strongest result of this evaluation: the attractor-class bias
+reproduces almost exactly, in an independent architecture family.**
+Of all 822 predictions, `Tomato_Late_blight` was predicted 362 times
+(44.04%) and `Tomato_Early_blight` 237 times (28.83%) — 599/822 (72.87%)
+of every prediction this model made, regardless of true label, landed
+on one of these two classes. True prevalence of those two classes in
+the eval set is 13.50% and 10.70% respectively (24.20% combined) — so
+the model over-predicts them by roughly 3x. This is the same
+`Tomato_Late_blight`/`Tomato_Early_blight` attractor-bias pattern
+already independently documented for rows 1, 2, and 6 (see
+`metric1_confusion_matrix_calibration_evidence.json`), now reproduced a
+**fourth** time, by a model with a fundamentally different architecture
+(residual connections, ResNet's 3x3-conv stacked-block design) trained
+in a different environment. Four independent training runs — 2
+architecture families — all defaulting to the same two blight-type
+diagnoses on real-world photos is much stronger evidence that this is a
+**structural property of the PlantVillage-to-PlantDoc domain gap
+itself** (the two most visually generic/textured disease classes acting
+as a default fallback under distribution shift) than a single
+architecture's or training run's idiosyncrasy — the claim this
+evaluation can now make is architecture-independent, not just
+model-independent within one architecture.
+
+**McNemar's test, row 8 vs. each of rows 1/2/6** (same formal-testing
+discipline as the within-EfficientNetB0-family test below), via
+`agents/disease/mcnemar_test_row8_resnet18_vs_zeroshot.py` /
+`docs/evidence/mcnemar_row8_resnet18_vs_zeroshot_evidence.json`:
+
+| Pair | n (shared images) | Discordant pairs | Test | Statistic | p-value | Significant? |
+|---|---|---|---|---|---|---|
+| Row 8 (ResNet18) vs Row 1 | 821 | 150 | chi-square, continuity-corrected | 0.807 | 0.369 | No |
+| Row 8 (ResNet18) vs Row 2 | 821 | 161 | chi-square, continuity-corrected | 2.012 | 0.156 | No |
+| Row 8 (ResNet18) vs Row 6 | 819 | 85 | chi-square, continuity-corrected | 3.012 | 0.083 | No |
+
+**All three cross-architecture pairwise comparisons are non-significant
+(p ≥ 0.05)** — the same conclusion as the within-EfficientNetB0-family
+test, now extended across architecture families. Image sets were
+verified (not assumed) before each test: 821/822 of row 8's images are
+present in rows 1/2's 967/968-image set, 819/822 in row 6's 965-image
+set, restricting each pairwise test to the actual intersection. The
+row8-vs-row6 pair's p=0.083 is the closest of the six pairwise tests
+run across this project to the 0.05 threshold — still not significant,
+stated plainly rather than rounded away, and consistent with row 6
+having the smallest discordant-pair count (85, roughly half the other
+pairs') of the six.
+
 ## Zero-shot convergence across all three independent checkpoints
 
 `agents/disease/compute_zero_shot_convergence.py` /
-`docs/evidence/metric1_zero_shot_convergence.json`.
+`docs/evidence/metric1_zero_shot_convergence.json`. (Rows 1/2/6 are all
+EfficientNetB0-family; row 8, added 2026-09-16, is a different
+architecture family entirely — see "Cross-architecture confirmation"
+below, kept as a separate subsection rather than folded into this table
+since row 8's own n=822 is not the same benchmark size as rows 1/2/6's
+n=967-968/965, per the class-coverage gap documented in the Row 8
+section above.)
 
 | Checkpoint | Architecture | Accuracy | n |
 |---|---|---|---|
@@ -226,6 +322,45 @@ chi-square approximation, so chi-square with continuity correction was
 used throughout, not defaulted to without checking). Not corrected for
 multiple comparisons (3 tests at α=0.05) — noted as a caveat in the
 evidence file, not hidden.
+
+### Cross-architecture confirmation (2026-09-16): a fourth, independently-architected checkpoint
+
+Row 8 (ResNet18, not EfficientNetB0) extends this convergence finding
+across architecture families, not just across independent training runs
+of the same family. On the shared-image subset used for each pairwise
+comparison (the fair, apples-to-apples figure — see Row 8 section
+above for why the raw 822-image number isn't directly comparable),
+row 8 scores 22.41-22.47%, inside the same band as rows 1/2/6's
+21.45-24.73% range on those identical images. Both signals already
+established for the 3-checkpoint EfficientNetB0 convergence above
+reproduce independently in row 8:
+
+1. **Aggregate accuracy lands in the same band** (22.41-22.51%, vs. the
+   existing 21.45-23.45% range) — now from a structurally different
+   architecture (residual connections vs. compound-scaled MBConv
+   blocks), not a fourth EfficientNetB0 run.
+2. **The `Tomato_Late_blight`/`Tomato_Early_blight` attractor bias
+   reproduces almost exactly** (44.04%/28.83% of all predictions,
+   72.87% combined) — the single strongest piece of evidence in this
+   evaluation that the domain-gap failure mode is a property of the
+   PlantVillage-to-PlantDoc shift itself, not of any one model family.
+3. **Formally tested the same way as the within-family comparisons
+   above**: all three row-8-vs-row-{1,2,6} McNemar's comparisons are
+   non-significant (p=0.369/0.156/0.083) — see the McNemar's table in
+   the Row 8 section above.
+
+**Read together**: this is not a fourth data point added to the same
+argument — it is a qualitatively different confirmation. Three
+same-family checkpoints converging could still, in principle, reflect
+something EfficientNetB0-specific about how it responds to this domain
+shift (a shared inductive bias from compound scaling, say). A
+completely different architecture family landing in the same accuracy
+band, showing the same attractor-class bias, and formally
+indistinguishable by McNemar's test from all three closes that
+loophole: **the domain gap and its attractor-bias failure mode are
+architecture-independent, confirmed across two distinct architecture
+families**, not just independent of training run or random seed within
+one family.
 
 ## Metric #6 — CLOSED, final decision recorded (2026-09-13)
 

@@ -1,0 +1,9 @@
+{
+  "metric": "Compute footprint (parameter count, FLOPs) for model lineage row 8 (ResNet18 cross-architecture baseline)",
+  "method": "ptflops (get_model_complexity_info), same method as model_footprint_row2_row6_evidence.json. Computed on the untrained architecture (torchvision resnet18, weights=None, fc head replaced with a 13-class Linear layer matching the checkpoint), input shape (3, 224, 224).",
+  "params": 11183181,
+  "macs": 1824807437,
+  "flops": 3649614874,
+  "gflops": 3.649614874,
+  "context_note": "ResNet18 has fewer parameters than row 2/5's combined 3-model hierarchical footprint (11.18M vs 12.04M) but MORE FLOPs per inference than EfficientNetB0's single-model footprint (3.65 GFLOPs vs 0.82 GFLOPs, row 1/6) -- EfficientNet's compound scaling is specifically designed for FLOP-efficiency per parameter, so this is expected, not anomalous. No real-world latency was measured for row 8 (no local deployment -- external Colab training/eval only), so this is a FLOPs-only figure, same honest gap already noted for row 6 in model_footprint_row2_row6_evidence.json."
+}

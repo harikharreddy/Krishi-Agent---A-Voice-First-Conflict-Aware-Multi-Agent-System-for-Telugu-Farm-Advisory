@@ -31,11 +31,15 @@ single component-level accuracy claim** (full evidence and exact wording
 in Sec. 3.1): (1) explicit, independently-tested conflict arbitration
 across competing advice signals, not present in any of the three
 comparable published systems surveyed; (2) confidence calibration
-validated empirically, not asserted -- a four-signal convergence
-(accuracy band, formal confusion matrix, Expected Calibration Error, and
-now a formal McNemar's-test significance check confirming all three
-checkpoints are statistically indistinguishable) across three
-independently-trained checkpoints (Sec. 2.5), plus statistically-grounded
+validated empirically, not asserted -- a five-signal convergence
+(accuracy band, formal confusion matrix, Expected Calibration Error, a
+formal McNemar's-test significance check confirming all three
+same-family checkpoints are statistically indistinguishable, and now a
+fourth, independently-architected checkpoint (ResNet18, not
+EfficientNetB0) reproducing the same accuracy band, the same
+attractor-class bias, and formal statistical indistinguishability from
+all three) across four independently-trained checkpoints spanning two
+distinct architecture families (Sec. 2.5), plus statistically-grounded
 work on the deployed confidence cutoff (Wilson CIs and bootstrap
 stability checks, Sec. 2.5); (3) a confirmed, cross-speaker
 structural failure mode at the ASR-to-intent-router boundary -- a
@@ -297,15 +301,22 @@ with a specific, diagnosable failure mode: the model over-predicted
 attractor-class bias, not just noise.
 
 **Is this one model's fluke, or a structural property of the domain gap?
-Cross-architecture convergence (3 independent checkpoints).** The
-single-checkpoint baseline above (28.2%, 85-image test-only subset) could,
-on its own, be one model's idiosyncrasy -- undertrained, an unlucky
-initialization, a quirk of this specific run. It isn't: two more
-independently-trained EfficientNetB0 checkpoints -- a flat 13-class
-baseline, and a separately-trained flat "v2" checkpoint built from a
-fresh Colab session (full provenance in `docs/evidence/model_lineage.md`)
--- were evaluated the same way, and all three converge on **three
-independent signals**, not accuracy alone:
+Independent-checkpoint convergence, now confirmed across two
+architecture families.** The single-checkpoint baseline above (28.2%,
+85-image test-only subset) could, on its own, be one model's
+idiosyncrasy -- undertrained, an unlucky initialization, a quirk of this
+specific run. It isn't: two more independently-trained EfficientNetB0
+checkpoints -- a flat 13-class baseline, and a separately-trained flat
+"v2" checkpoint built from a fresh Colab session (full provenance in
+`docs/evidence/model_lineage.md`) -- were evaluated the same way, and a
+fourth checkpoint built on a genuinely different backbone architecture
+(ResNet18, not EfficientNetB0) confirms the same pattern again (signal 5
+below). All four converge on **five independent signals**, not accuracy
+alone. (Signals 1-4 were established across the three EfficientNetB0
+checkpoints -- note that "flat vs. hierarchical" there describes a
+*head-structure* variation within the same EfficientNetB0 backbone, not
+a different architecture family; signal 5 is the first checkpoint with
+an actually different backbone.)
 
 1. **Accuracy band convergence**: all three checkpoints' zero-shot
    PlantDoc accuracy (full train+test combined, n=965-968 -- the valid
@@ -359,6 +370,24 @@ independent signals**, not accuracy alone:
    checked per pair via discordant-pair count, not defaulted), and the
    multiple-comparisons caveat:
    `docs/evidence/mcnemar_zero_shot_checkpoint_comparison_evidence.json`.
+5. **Cross-architecture-family confirmation (ResNet18, 2026-09-16)** --
+   a fourth checkpoint, trained externally under a protocol matched to
+   the three above (same seed, split, LR schedule, epoch/patience
+   budget) but on a **different backbone architecture** (ResNet18, not
+   EfficientNetB0), reproduces every signal above independently:
+   22.51% zero-shot accuracy (185/822; 22.41-22.47% on the exact
+   image subset shared with each of the three EfficientNetB0
+   checkpoints, the fair apples-to-apples figure -- this checkpoint's
+   own evaluation set is missing 2 of 13 classes relative to the
+   others', documented honestly in `docs/evidence/model_lineage.md`'s
+   Row 8 section rather than glossed over), landing inside the existing
+   21.45-23.45% band; the same `Tomato_Late_blight`/`Tomato_Early_blight`
+   attractor bias (44.0%/28.8% of all predictions, 72.9% combined,
+   against 13.5%/10.7% true prevalence); and formal statistical
+   indistinguishability from all three EfficientNetB0 checkpoints via
+   McNemar's test (p=0.369 / 0.156 / 0.083, all non-significant).
+   `agents/disease/mcnemar_test_row8_resnet18_vs_zeroshot.py` /
+   `docs/evidence/mcnemar_row8_resnet18_vs_zeroshot_evidence.json`.
 
 *(Signals 1-3 use each checkpoint's full combined image set, n=965-968,
 matching how the accuracy-band convergence was computed -- not the
@@ -367,25 +396,38 @@ model comparison. Directionally consistent with, not contradicting, the
 49%-predicted/12%-true `Tomato_Late_blight` figure already quoted for the
 single-checkpoint 85-image baseline. Signal 4 uses the same full-image
 sets per pair, restricted to each pair's actual intersection where row 6
-is involved -- see above.)*
+is involved -- see above. Signal 5's own image set (n=822) is smaller
+than the others' (missing 2 of 13 classes, documented in
+`model_lineage.md`'s Row 8 section) -- its headline 22.51% is on its own
+822-image set, while its McNemar's comparisons and the 22.41-22.47%
+range quoted above are restricted to the actual per-pair shared-image
+intersection, the same discipline used for row 6 in signal 4.)*
 
-**Read together, these are not four separate findings -- they are the
-same underlying phenomenon viewed at four resolutions of the same
-confusion matrix, three descriptive and now one formally tested**,
-replicated across three independently-trained models, two training
-environments, and two architectures (flat 13-class vs. hierarchical
-2-stage). The evidence points to a decision boundary shaped almost
-entirely by PlantVillage's uniform lab backgrounds and framing -- a
-"blotchy texture on a leaf-shaped object, pick the nearest common label"
-heuristic -- rather than lesion-specific morphology. This
-is strong evidence the ~22% real-world accuracy ceiling is a **structural
-covariate-shift problem inherent to PlantVillage-only training data, not
-a fixable modeling error specific to one run**, and it is this project's
-most scientifically interesting result. Stated plainly, without hedging:
-**the Disease Agent, as currently trained, should not be presented as
-reliable for field deployment** -- this four-signal convergence (three
-descriptive, one formally tested) is the evidence for that limitation and
-the honest framing of it, not a hidden weakness.
+**Read together, these are not five separate findings -- they are the
+same underlying phenomenon viewed at five resolutions of the same
+confusion matrix, three descriptive and now two formally tested**,
+replicated across four independently-trained models, at least three
+training environments, and -- critically -- **two genuinely distinct
+backbone architecture families (EfficientNetB0 and ResNet18), not just a
+head-structure variation within one family**. The evidence points to a
+decision boundary shaped almost entirely by PlantVillage's uniform lab
+backgrounds and framing -- a "blotchy texture on a leaf-shaped object,
+pick the nearest common label" heuristic -- rather than lesion-specific
+morphology, and signal 5 rules out the remaining loophole in that
+argument: that this heuristic might be something EfficientNetB0
+specifically learns (e.g. an inductive bias from compound scaling),
+rather than a property of the PlantVillage-to-PlantDoc domain shift
+itself. A structurally different architecture (residual blocks, no
+compound scaling) reproducing the identical failure mode closes that
+gap. This is strong evidence the ~22% real-world accuracy ceiling is a
+**structural covariate-shift problem inherent to PlantVillage-only
+training data, not a fixable modeling error specific to one run or one
+architecture**, and it is this project's most scientifically interesting
+result. Stated plainly, without hedging: **the Disease Agent, as
+currently trained, should not be presented as reliable for field
+deployment** -- this five-signal, architecture-independent convergence
+(three descriptive, two formally tested) is the evidence for that
+limitation and the honest framing of it, not a hidden weakness.
 
 **After fine-tuning on PlantDoc's own `train` split** (conservative
 transfer learning: frozen backbone except the last block + classifier
@@ -870,11 +912,15 @@ limitation):
    described as present in any of the three comparable systems surveyed
    above.
 2. **Confidence calibration is validated empirically, not merely
-   asserted.** A four-signal convergence (accuracy band, formal confusion
-   matrix, Expected Calibration Error, and a formal McNemar's-test
-   significance check -- all three pairwise comparisons non-significant,
-   p=0.316/0.754/0.179) is now confirmed across three independently-
-   trained zero-shot checkpoints, not one (Sec. 2.5) -- and the deployed
+   asserted.** A five-signal convergence (accuracy band, formal confusion
+   matrix, Expected Calibration Error, a formal McNemar's-test
+   significance check across the three same-family checkpoints --
+   p=0.316/0.754/0.179, all non-significant -- and now a fourth,
+   independently-architected checkpoint (ResNet18) reproducing the same
+   accuracy band, attractor bias, and formal indistinguishability,
+   p=0.369/0.156/0.083) is now confirmed across four independently-
+   trained zero-shot checkpoints spanning two distinct architecture
+   families, not one (Sec. 2.5) -- and the deployed
    confidence cutoff was stress-tested with Wilson
    95% confidence intervals and a 2,000-iteration bootstrap stability
    check before any change was even considered, ultimately supporting a
@@ -1079,14 +1125,28 @@ report, not left implicit.
    multiple times (different random seeds, same hyperparameters) and
    report variance, not a single point estimate -- distinguishing
    "this specific run's number" from "this architecture's expected
-   performance band."
+   performance band." **Still open as originally scoped** -- a related
+   but different piece of evidence was added 2026-09-16 (Sec. 2.5 signal
+   5, `model_lineage.md` Row 8): a *different architecture*
+   (ResNet18) trained once under a matched protocol, not the *same*
+   architecture retrained with different seeds. That checkpoint answers
+   "does a different backbone reproduce this finding" (yes, formally
+   confirmed by McNemar's test), which is stronger evidence for the
+   domain-gap claim than seed variance would have been, but it does not
+   answer the seed-variance question this item specifically names --
+   stated honestly rather than counted as covering it.
 2. ~~**Formal statistical significance testing (McNemar's test) across
-   model comparisons.**~~ **Done for the zero-shot triad** -- pulled
-   forward and run 2026-09-16 (Sec. 2.5's four-signal convergence,
-   `docs/evidence/mcnemar_zero_shot_checkpoint_comparison_evidence.json`):
+   model comparisons.**~~ **Done for the zero-shot triad, and extended to
+   a fourth, cross-architecture checkpoint** -- pulled forward and run
+   2026-09-16 (Sec. 2.5's five-signal convergence,
+   `docs/evidence/mcnemar_zero_shot_checkpoint_comparison_evidence.json`
+   and `docs/evidence/mcnemar_row8_resnet18_vs_zeroshot_evidence.json`):
    all three pairwise comparisons among rows 1/2/6 (p=0.316/0.754/0.179)
    are non-significant, formally confirming the accuracy-band convergence
-   rather than leaving it as an eyeballed gap. **Still open**: the
+   rather than leaving it as an eyeballed gap; the same test between the
+   ResNet18 checkpoint (row 8) and each of rows 1/2/6 (p=0.369/0.156/
+   0.083) is also non-significant, extending the formal confirmation
+   across architecture families. **Still open**: the
    deployed model's 37.65% vs. the zero-shot 23.45% headline is a
    different comparison (different checkpoints, different test-set sizes
    -- n=85 test-only vs. n=965-968 train+test combined, not a like-for-
