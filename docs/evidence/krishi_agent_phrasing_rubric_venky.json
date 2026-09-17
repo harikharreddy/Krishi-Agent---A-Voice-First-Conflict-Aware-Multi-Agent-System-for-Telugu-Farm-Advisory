@@ -1,0 +1,92 @@
+{
+  "rater": "Venky",
+  "submitted_at": "2026-09-17T11:16:16.689Z",
+  "tool_version": "1.0",
+  "item_count": 14,
+  "ratings": [
+    {
+      "item_id": "delay_treatment_medium",
+      "fluency": 4,
+      "naturalness": 4,
+      "correctness": 5
+    },
+    {
+      "item_id": "harvest_now_high",
+      "fluency": 3,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "harvest_now_medium",
+      "fluency": 4,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "treat_first_medium",
+      "fluency": 4,
+      "naturalness": 4,
+      "correctness": 5
+    },
+    {
+      "item_id": "protect_crop_medium",
+      "fluency": 3,
+      "naturalness": 4,
+      "correctness": 4
+    },
+    {
+      "item_id": "no_conflict_high",
+      "fluency": 4,
+      "naturalness": 3,
+      "correctness": 5
+    },
+    {
+      "item_id": "single_agent_action_high",
+      "fluency": 3,
+      "naturalness": 4,
+      "correctness": 5
+    },
+    {
+      "item_id": "treat_and_irrigate_medium",
+      "fluency": 3,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "treat_with_caution_low",
+      "fluency": 3,
+      "naturalness": 3,
+      "correctness": 5
+    },
+    {
+      "item_id": "treat_now_synergy_high",
+      "fluency": 3,
+      "naturalness": 4,
+      "correctness": 5
+    },
+    {
+      "item_id": "unresolved_conflict_low",
+      "fluency": 3,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "weather_medium_hedge",
+      "fluency": 2,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "price_medium_hedge",
+      "fluency": 2,
+      "naturalness": 2,
+      "correctness": 3
+    },
+    {
+      "item_id": "price_low_hedge",
+      "fluency": 2,
+      "naturalness": 3,
+      "correctness": 3
+    }
+  ]
+}

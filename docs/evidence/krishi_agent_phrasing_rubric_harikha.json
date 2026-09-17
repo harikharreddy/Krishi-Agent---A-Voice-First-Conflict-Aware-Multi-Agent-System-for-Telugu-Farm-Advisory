@@ -1,0 +1,92 @@
+{
+  "rater": "Harikha",
+  "submitted_at": "2026-09-17T08:18:54.234Z",
+  "tool_version": "1.0",
+  "item_count": 14,
+  "ratings": [
+    {
+      "item_id": "delay_treatment_medium",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "harvest_now_high",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "harvest_now_medium",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "treat_first_medium",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "protect_crop_medium",
+      "fluency": 4,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "no_conflict_high",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "single_agent_action_high",
+      "fluency": 5,
+      "naturalness": 3,
+      "correctness": 4
+    },
+    {
+      "item_id": "treat_and_irrigate_medium",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "treat_with_caution_low",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 4
+    },
+    {
+      "item_id": "treat_now_synergy_high",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "unresolved_conflict_low",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "weather_medium_hedge",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "price_medium_hedge",
+      "fluency": 5,
+      "naturalness": 5,
+      "correctness": 5
+    },
+    {
+      "item_id": "price_low_hedge",
+      "fluency": 5,
+      "naturalness": 4,
+      "correctness": 5
+    }
+  ]
+}
