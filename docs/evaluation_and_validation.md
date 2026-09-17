@@ -942,31 +942,43 @@ the comparison fair.
 ### 3.1 Direct comparison against comparable published systems
 
 Three systems were read in enough depth to compare honestly (not just
-named) -- **Farmer.Chat** (arXiv:2409.08916, the most detailed and most
-comparable: a large-scale, publicly documented deployment), **Krishi
-Sathi** (arXiv:2508.03719, intent-aware RAG for multi-turn agricultural
-QA), and **Raithubot** (RLHF-fine-tuned Telugu chatbot, ICDSA
-best-paper -- less public technical detail was findable than for the
-other two, noted honestly rather than inferred).
+named), all pulled directly from `krishiagent-literaturesurvey.docx`
+(our own 25-paper survey), not sourced separately -- **Farmer.Chat**
+([15], arXiv:2409.08916, Digital Green & Microsoft Research -- the most
+detailed and most comparable: a large-scale, publicly documented
+deployment), **Kisaan Margadarshak** ([13], Trimukhe et al. 2025,
+Springer, DOI:10.1007/978-3-031-74440-2_1 -- rated ★ HIGH in our survey,
+and already the base paper the rest of this report treats as the closest
+structural precedent), and **CropCare Companion** ([14], Sable et al.
+2025, IJRASET -- rated ⚠ CAUTION in our survey; its own >91% accuracy
+figure is reported here with that caveat attached, not at face value).
 
-| Dimension | Krishi-Agent | Farmer.Chat | Krishi Sathi | Raithubot |
+| Dimension | Krishi-Agent | Farmer.Chat [15] | Kisaan Margadarshak [13] | CropCare Companion [14] |
 |---|---|---|---|---|
-| Architecture | Multi-agent + explicit rule-based Conflict Resolver | RAG + multi-agent orchestration (Planning/Execution/Tooling agents) | Multi-turn RAG with intent-aware context retrieval | Single RLHF-fine-tuned LLM (Pythia-2.8B) |
-| Explicit conflict resolution across advice types (weather/price/disease) | **Yes** -- rule table, 13/13 on synthetic tests (7/36 of the full 3-agent state grid); 1 real gap found via live-data testing (Sec. 2.7) and fixed | Not described in the paper | Not described | Not described |
-| Disease/pest diagnosis | Own trained, fine-tuned CV model, in-pipeline (Sec. 2.5, honestly measured at 37.65%) | Delegated to a third-party service (Plantix) | Not described | Not described |
-| Confidence/uncertainty shown to the user | **Yes** -- hedged phrasing templates + a UI confidence indicator, both keyed to the real underlying confidence level | Not described (feedback is retrospective thumbs-up/down, not prospective confidence) | Not described | Not described |
-| Languages | Telugu (bilingual UI) | 6 languages incl. Telugu, deployed across 4 countries | Not specified in available sources | Telugu, Hindi, English |
-| Evaluation scale | Component-level (n=12-263) + two fresh-clone reproducibility tests; **no live user study yet** | **15,000+ real users, 300,000+ queries**, formal focus groups + bi-weekly satisfaction surveys | Published methodology; user-scale not found in available sources | Conference-published; accuracy not publicly detailed |
-| Response latency (reported) | ~13.6s intent routing + ~24-26s TTS for a full voice answer (Sec. 2.4/2.6) | 9.05s average (text response; not confirmed whether this includes voice synthesis) | Not found | Not reported |
+| Architecture | Multi-agent + explicit rule-based Conflict Resolver | RAG + multi-agent orchestration (Planning/Execution/Tooling agents) | Android app -- on-device MobileNetV2 CNN (disease) + Django backend + Flutter frontend, weather + mandi price API integration | Naive Bayes classifier + DeepSeek LLM fallback; NLP pipeline (tokenization/stemming/stop-word removal) + Google Translate + Web Speech API |
+| Explicit conflict resolution across advice types (weather/price/disease) | **Yes** -- rule table, 13/13 on synthetic tests (7/36 of the full 3-agent state grid); 1 real gap found via live-data testing (Sec. 2.7) and fixed | Not described in the paper | Not described in the survey entry | Not described in the survey entry |
+| Disease/pest diagnosis | Own trained, fine-tuned CV model, in-pipeline (Sec. 2.5, honestly measured at 37.65%) | Delegated to a third-party service (Plantix) | On-device MobileNetV2 CNN, but trained on a **single-crop (cotton)** dataset (Kaggle) -- no quantified accuracy/F1 reported | **No image-based disease detection** -- explicitly named as future work, not yet implemented |
+| Confidence/uncertainty shown to the user | **Yes** -- hedged phrasing templates + a UI confidence indicator, both keyed to the real underlying confidence level | Not described (feedback is retrospective thumbs-up/down, not prospective confidence) | Not described in the survey entry | Not described in the survey entry |
+| Languages | Telugu (bilingual UI) | 6 languages incl. Telugu, deployed across 4 countries | Multilingual UI (specific languages not itemized in the survey entry) | Hindi, Marathi, Gujarati, English |
+| Evaluation scale | Component-level (n=12-263) + two fresh-clone reproducibility tests; **no live user study yet** | **15,000+ real users, 300,000+ queries**, formal focus groups + bi-weekly satisfaction surveys | **No quantified accuracy/F1 or user-scale reported** -- the survey's own stated limitation, not an omission on our part | **>91% accuracy** across multilingual inputs -- but on a **proprietary Q&A dataset of undisclosed size/source**; ⚠ CAUTION-rated in our survey, not cited here as full-confidence |
+| Response latency (reported) | ~13.6s intent routing + ~24-26s TTS for a full voice answer (Sec. 2.4/2.6) | 9.05s average (text response; not confirmed whether this includes voice synthesis) | Not reported in the survey entry | ~1.7s average response time (text; multilingual NLP + LLM fallback, no voice synthesis stage to account for) |
 
 **Honest reading of this table, not a one-sided one**: Farmer.Chat
 massively outscales this project on real-world deployment and user-study
 rigor -- that is a genuine, uncontested strength of theirs, not something
-to argue around. What this comparison actually supports is a narrower,
-verifiable, **system-level** claim, not a component-level one (the
-Disease Agent's own ~22% real-world accuracy is not the novelty claim --
-see Sec. 2.5's honest framing of that as a structural, domain-shift-bound
-limitation):
+to argue around. CropCare Companion's own reported >91% accuracy is also
+higher than any Krishi-Agent number in this report, and is stated here
+rather than omitted -- but it comes with a caveat that matters: that
+figure is measured on a proprietary, undisclosed-size Q&A dataset with no
+independent evaluation, which is exactly why our own survey rated that
+paper ⚠ CAUTION rather than ★ HIGH, and why it isn't treated here as a
+like-for-like comparison against this report's own accuracy figures
+(each of which traces to a named, sized, and in most cases
+publicly-sourced dataset). What this comparison actually supports is a
+narrower, verifiable, **system-level** claim, not a component-level one
+(the Disease Agent's own ~22% real-world accuracy is not the novelty
+claim -- see Sec. 2.5's honest framing of that as a structural,
+domain-shift-bound limitation):
 
 1. **Conflict arbitration between competing advice signals is explicitly
    engineered and independently tested** -- a deterministic rule table
