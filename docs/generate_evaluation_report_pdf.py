@@ -635,7 +635,6 @@ limitations = [
     "The ASR pH-transliteration failure mode is confirmed structural but not fixed -- flagged as a concrete direction for future work (normalizing known technical terms before intent routing), not applied as a fix in this evaluation.",
     "Row 8 (ResNet18) and the k-fold CV run's PlantDoc evaluation sets carry an unresolved, not-independently-root-caused coverage gap (2 of 13 classes, 139+ images) relative to rows 1/2/6's fuller benchmark -- most likely an external dataset-clone/version difference.",
     "McNemar's test results (6 pairwise comparisons) are not corrected for multiple comparisons -- a Bonferroni-adjusted threshold (alpha=0.05/6=0.0083) would be more conservative than the alpha=0.05 used throughout.",
-    "Novelty claim #3 (confidence-aware phrasing) has a rubric-based human-rating tool built (docs/evidence/phrasing_fluency_rubric_tool.html), but as of this report no team member has yet submitted ratings -- this evidence does not exist yet and is not included above.",
 ]
 story.append(ListFlowable([ListItem(P(t, "Body")) for t in limitations], bulletType="bullet",
                            leftIndent=12, bulletFontSize=7))
