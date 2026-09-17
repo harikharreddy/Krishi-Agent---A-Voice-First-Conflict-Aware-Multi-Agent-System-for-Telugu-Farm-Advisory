@@ -483,6 +483,25 @@ is the final, currently-deployed state; all intermediate numbers are
 preserved in the checkpoint lineage and result files for full
 reproducibility of the ablation.*
 
+**A scale gap worth stating plainly, separate from the train/test-split
+question above**: 37.65% is measured on **n=85**, while the zero-shot
+convergence numbers in the signal table above (rows 1/2/6/8, "Accuracy
+band" and "Cross-architecture-family confirmation") are measured on
+**n=822-968** -- roughly an **11x larger sample**. This is not a
+contamination risk (PlantDoc's test split was held out and never trained
+on, verified above) but a genuinely different scale of statistical
+evidence: on n=85, one misclassified image moves the headline number by
+**1.18 percentage points**; on n=822-968, one image moves it by roughly
+**0.10-0.12 points**. Reading 37.65% against the zero-shot rows' 21.45-
+23.45% as if both carried equal precision would overstate how tightly the
+37.65% figure specifically is pinned down -- part of why this project's
+own model-lineage decision (`docs/evidence/model_lineage.md`, "Decision
+(recorded)") treats it as a separately-labeled *exploratory* result
+rather than a head-to-head comparison point against the zero-shot
+checkpoints, and why the Sec. 5 roadmap's McNemar's-testing item notes
+this same n=85-vs-n=965-968 mismatch as the reason a formal significance
+test was not attempted between them.
+
 **Per-class accuracy, current deployed model** (PlantDoc test, n=85):
 
 | Class | Accuracy | n |

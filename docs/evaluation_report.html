@@ -673,6 +673,11 @@
     </div>
     <p style="color:var(--ink-faint);font-size:13.5px;">True rate for Late Blight is 12% — the fix lands almost exactly on target, not just "lower."</p>
 
+    <div class="finding">
+      <div class="finding-label">A scale gap worth stating plainly, separate from the train/test-split question above</div>
+      <p>37.65% is measured on <b>n=85</b>, while the zero-shot convergence numbers earlier in this section (rows 1/2/6/8) are measured on <b>n=822–968</b> — roughly an <b>11x larger sample</b>. This isn't a contamination risk (PlantDoc's test split was held out and never trained on, verified above) but a genuinely different scale of statistical evidence: on n=85, one misclassified image moves the headline number by <b>1.18 percentage points</b>; on n=822–968, one image moves it by roughly <b>0.10–0.12 points</b>. Reading 37.65% against the zero-shot rows' 21.45–23.45% as if both carried equal precision would overstate how tightly the 37.65% figure is pinned down — part of why the model-lineage decision (<code>docs/evidence/model_lineage.md</code>, "Decision (recorded)") treats it as a separately-labeled <i>exploratory</i> result, not a head-to-head comparison point against the zero-shot checkpoints.</p>
+    </div>
+
     <h3>Per-class accuracy, current deployed model</h3>
     <div class="table-scroll">
       <table>

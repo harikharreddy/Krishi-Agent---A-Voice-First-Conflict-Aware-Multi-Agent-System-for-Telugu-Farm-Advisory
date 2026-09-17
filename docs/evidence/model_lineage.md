@@ -64,6 +64,25 @@ be** -- its PlantDoc accuracy has not been measured yet, and if/when it
 is, the same train/test-contamination check built for metric #6 will be
 applied to it before any number is reported (see "Next" below).
 
+**A separate issue from contamination: rows 3-5's accuracy sits on a
+different scale of evidence than rows 1/2/6/8's, and the table above
+doesn't say so on its own.** Rows 1/2/6/8's zero-shot PlantDoc accuracy
+is measured on **n=822-968** (train+test combined); rows 3-5's is
+measured on **n=85** (test-only) -- roughly an **11x smaller sample**.
+This is not a contamination risk (already checked and ruled out above)
+but a genuinely different scale of statistical evidence: one misclassified
+image moves row 5's 37.65% by **1.18 percentage points**, versus roughly
+**0.10-0.12 points** for rows 1/2/6/8's larger sets. Reading row 5's
+37.65% against row 2's 23.45% as if both numbers carried equal precision
+would overstate how well-supported the 37.65% figure specifically is --
+this is exactly why the project's own "Decision (recorded)" section
+below treats row 5 as a separately-labeled *exploratory* result rather
+than a head-to-head comparison point against the zero-shot rows, and why
+`evaluation_and_validation.md`'s Sec. 5 roadmap (McNemar's item) notes
+this same n=85-vs-n=965-968 gap as the reason a formal significance test
+was not attempted between them. Stated explicitly here, next to the
+table, rather than left implicit in those other two places only.
+
 ## Metric #6's checkpoints, named explicitly
 
 Metric #6 compared **row 2** ("BEFORE," zero-shot, dated Sep 3) against
