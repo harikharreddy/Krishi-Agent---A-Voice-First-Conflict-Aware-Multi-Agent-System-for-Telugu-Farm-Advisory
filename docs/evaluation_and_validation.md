@@ -62,21 +62,32 @@ them):
 | Test file | Result | What it covers |
 |---|---|---|
 | `test_conflict_resolver.py` | 13/13 (100%) | Conflict Resolver rule logic, synthetic scenarios (13th added as a regression test for the Sec. 2.7 rule-table gap, now fixed) |
-| `test_phrasing_templates.py` | 12/12 (100%) | Confidence-calibrated template selection |
+| `test_phrasing_templates.py` | 13/13 (100%) | Confidence-calibrated template selection (shares `tests/conflict_scenarios.json` with `test_conflict_resolver.py` and `test_pipeline.py` -- grew from 12 to 13 cases when the 13th regression scenario was added to that shared fixture) |
 | `test_state_mapping.py` | 13/13 (100%) | Boundary-value tests for the Weather/Price state-mapping thresholds (exact 0.10/-0.10 cutoffs, missing-data fallbacks) -- previously only comfortably-inside values were tested |
 | `test_pipeline.py` | 13/13 (100%) | End-to-end conflict scenarios through the real pipeline |
 | `test_pipeline_edge_cases.py` | 5/5 (100%) | No photo, missing profile fields, agent API failures |
 | `test_weather_agent.py` | 9/9 (100%) | Schema validity, graceful failure, drought-signal unit tests |
 | `test_price_agent.py` | 5/5 (100%) | Schema validity, graceful failure, market lookup |
 
-**70/70 (100%)** across all deterministic-logic tests (was 68/68 before
-the metric #5 fix added a 13th conflict scenario, exercised by 2 test
-files). This is the
-"nothing is silently broken" layer underneath the accuracy metrics below
--- a paper/evaluator claim like "37.65% disease accuracy" only means
-something if the surrounding pipeline logic (conflict resolution,
-phrasing, state thresholds) is itself verified correct, which this table
-establishes.
+**71/71 (100%)** across all deterministic-logic tests. **Corrected
+2026-09-17** -- this table previously listed `test_phrasing_templates.py`
+at 12/12 and the total at 70/70, both stale by 1. Root cause:
+`test_conflict_resolver.py`, `test_phrasing_templates.py`, and
+`test_pipeline.py` are script-style modules with a `main()` function, not
+pytest-native `test_*` functions -- `pytest` silently collects zero
+tests from all three (confirmed directly: `pytest tests/test_phrasing_templates.py`
+reports "no tests ran", not a failure), so getting a real count requires
+running each file directly rather than trusting a pytest summary. All
+three share `tests/conflict_scenarios.json` (13 entries); when the 13th
+regression scenario was added for the Sec. 2.7 fix,
+`test_conflict_resolver.py` and `test_pipeline.py` were correctly
+re-counted at the time, but `test_phrasing_templates.py`'s row was
+missed. Caught and fixed by direct re-execution of all 7 files, not by
+re-deriving the number from memory. This is the "nothing is silently
+broken" layer underneath the accuracy metrics below -- a paper/evaluator
+claim like "37.65% disease accuracy" only means something if the
+surrounding pipeline logic (conflict resolution, phrasing, state
+thresholds) is itself verified correct, which this table establishes.
 
 ### 2.1 Intent Router (LLM-based question routing)
 
@@ -1272,7 +1283,8 @@ gathered or in evidence deliberately not yet attempted.
   underlying confidence level?) -- **mechanism already verified**:
   `tests/test_phrasing_templates.py` confirms `phrase_resolution()`
   selects the exact `TEMPLATES[(resolution, confidence)]` entry for all
-  12 synthetic (resolution, confidence) pairs (12/12, re-run today). What
+  13 synthetic (resolution, confidence) pairs (13/13, re-run today --
+  corrected 2026-09-17 from a stale 12/12, see Sec. 2.0). What
   Sec. 2.7 additionally shows is that on live data, most real questions in
   the 16-question set never reach a *multi-agent* resolved-conflict
   template at all (`phrase_resolution()` is only called when >1 agent

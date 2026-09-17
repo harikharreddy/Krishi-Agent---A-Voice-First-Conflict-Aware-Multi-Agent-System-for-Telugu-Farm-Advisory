@@ -363,7 +363,7 @@
     <p class="reading-note"><b>How to read the numbers below:</b> real-world plant-disease classification on field photos (not studio photos) is a known-hard benchmark — published work in this exact space shows the same steep drop from lab to field conditions. A 37.65% real-world accuracy after fine-tuning represents a <b>64% relative improvement</b> over the 23% zero-shot starting point, not a weak result in isolation. The differentiator this report is built to demonstrate isn't a single headline percentage — it's that every number here is reproducible, every failure is diagnosed rather than hidden, and the underlying pipeline logic is independently verified correct (§2.0).</p>
 
     <div class="scorecard">
-      <div class="score-tile"><div class="score-num">70/70</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
+      <div class="score-tile"><div class="score-num">71/71</div><div class="score-label">deterministic logic tests passing (conflict resolution, phrasing, state-mapping, edge cases)</div></div>
       <div class="score-tile"><div class="score-num">81.8%</div><div class="score-label">Intent Router accuracy, held-out questions only (87.5% on the full set, which includes few-shot-exposed questions — see §2.1)</div></div>
       <div class="score-tile"><div class="score-num">37.65%</div><div class="score-label">Disease Agent, real-world photos (up from 23% zero-shot)</div></div>
       <div class="score-tile"><div class="score-num">11.19%</div><div class="score-label">ASR word error rate — final, 64 utterances across 4 speakers</div></div>
@@ -434,7 +434,7 @@
         <thead><tr><th>Test file</th><th class="num">Result</th><th class="wrap-cell">Covers</th></tr></thead>
         <tbody>
           <tr><td><code>test_conflict_resolver.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">Conflict Resolver rule logic, synthetic scenarios (13th = regression test for the §2.7 gap, now fixed)</td></tr>
-          <tr><td><code>test_phrasing_templates.py</code></td><td class="num"><span class="pill good">12/12</span></td><td class="wrap-cell">Confidence-calibrated template selection</td></tr>
+          <tr><td><code>test_phrasing_templates.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">Confidence-calibrated template selection (shares <code>tests/conflict_scenarios.json</code> with <code>test_conflict_resolver.py</code> and <code>test_pipeline.py</code> — grew from 12 to 13 cases when the 13th regression scenario was added to that shared fixture)</td></tr>
           <tr><td><code>test_state_mapping.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">New — boundary values for Weather/Price thresholds (exact 0.10 / −0.10 cutoffs)</td></tr>
           <tr><td><code>test_pipeline.py</code></td><td class="num"><span class="pill good">13/13</span></td><td class="wrap-cell">End-to-end conflict scenarios, real pipeline</td></tr>
           <tr><td><code>test_pipeline_edge_cases.py</code></td><td class="num"><span class="pill good">5/5</span></td><td class="wrap-cell">No photo, missing profile fields, agent API failures</td></tr>
@@ -446,8 +446,9 @@
 
     <div class="good-box">
       <div class="finding-label">Result</div>
-      <p><b>70/70 (100%)</b> across all deterministic-logic tests — the correctness layer underneath the accuracy metrics that follow. A claim like "37.65% disease accuracy" only means something if the surrounding pipeline logic is itself verified correct.</p>
+      <p><b>71/71 (100%)</b> across all deterministic-logic tests — the correctness layer underneath the accuracy metrics that follow. A claim like "37.65% disease accuracy" only means something if the surrounding pipeline logic is itself verified correct.</p>
     </div>
+    <p style="color:var(--ink-faint);font-size:13.5px;"><b>Corrected 2026-09-17</b> — this section previously listed <code>test_phrasing_templates.py</code> at 12/12 and the total at 70/70, both stale by 1. Root cause: <code>test_conflict_resolver.py</code>, <code>test_phrasing_templates.py</code>, and <code>test_pipeline.py</code> are script-style modules with a <code>main()</code> function, not pytest-native <code>test_*</code> functions — <code>pytest</code> silently collects zero tests from all three ("no tests ran", not a failure), so a real count requires running each file directly rather than trusting a pytest summary. All three share <code>tests/conflict_scenarios.json</code> (13 entries); when the 13th regression scenario was added for the §2.7 fix, two of the three files were correctly re-counted at the time, but <code>test_phrasing_templates.py</code>'s row was missed. Caught and fixed by direct re-execution of all 7 files.</p>
   </section>
 
   <section id="intent">
