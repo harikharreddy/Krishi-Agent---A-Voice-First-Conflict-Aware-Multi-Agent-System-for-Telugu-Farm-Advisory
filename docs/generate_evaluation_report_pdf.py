@@ -197,7 +197,7 @@ story.append(P("Krishi-Agent substantiates <b>three system-level contributions</
 story.append(P("Headline findings", "H2"))
 story.append(data_table(
     [["Metric", "Result", "Notes"],
-     ["Deterministic logic test suite", "70/70 (100%)", "Conflict resolution, phrasing, state-mapping, edge cases"],
+     ["Deterministic logic test suite", "71/71 (100%)", "Conflict resolution, phrasing, state-mapping, edge cases"],
      ["Intent Router accuracy", "81.8% held-out (87.5% full set)", "87.5% includes 5 few-shot-exposed questions -- 81.8% is the honest estimate"],
      ["Disease Agent, real-world (zero-shot)", "21.45-23.45% across 4 checkpoints, 2 architectures", "Converges tightly; 5-fold CV: 23.38% +/- 0.83%"],
      ["Disease Agent, real-world (deployed, fine-tuned)", "37.65% (n=85, test-only)", "Exploratory result -- not a like-for-like comparison to the zero-shot rows (11x smaller n)"],
@@ -383,24 +383,30 @@ story.append(P("Read together: not five separate findings, but the same underlyi
                "covariate-shift problem inherent to PlantVillage-only training data, not a fixable "
                "modeling error specific to one run or one architecture.", "Body"))
 
-story.append(P("Per-class recall (row 5, deployed, best checkpoint epoch 11)", "H2"))
+story.append(P("Per-class recall (row 5, deployed, current checkpoint)", "H2"))
 story.append(data_table(
     [["Class", "Recall", "n (test)"],
+     ["Tomato_Yellow_Leaf_Curl_Virus", "66.7%", "6"],
+     ["Tomato_Early_blight", "55.6%", "9"],
      ["Tomato_Septoria_leaf_spot", "54.5%", "11"],
-     ["Tomato_Early_blight", "44.4%", "9"],
-     ["Tomato_Late_blight", "40.0%", "10"],
-     ["Tomato_Leaf_Mold", "50.0%", "6"],
-     ["Potato_Early_blight", "37.5%", "8"],
-     ["Potato_Late_blight", "25.0%", "8"],
-     ["Tomato_Mosaic_virus", "10.0%", "10"],
-     ["Tomato_Bacterial_spot", "0.0%", "9"],
+     ["Potato_Late_blight", "37.5%", "8"],
+     ["Tomato_healthy", "37.5%", "8"],
+     ["Tomato_Leaf_Mold", "33.3%", "6"],
+     ["Tomato_Mosaic_virus", "30.0%", "10"],
+     ["Potato_Early_blight", "25.0%", "8"],
+     ["Tomato_Bacterial_spot", "22.2%", "9"],
+     ["Tomato_Late_blight", "20.0%", "10"],
      ],
     col_widths=[70 * mm, 30 * mm, 30 * mm],
 ))
-story.append(P("n=6-11 per class -- each individual test image is worth roughly 9-17 percentage "
-               "points of that class's own recall. 0.0% on Bacterial_spot and 10.0% on "
-               "Mosaic_virus are not statistically distinguishable from several-times-better "
-               "results at this sample size.", "BodySmall"))
+story.append(P("n=6-11 per class (sums to 85, matching the 37.65% headline exactly) -- each "
+               "individual test image is worth roughly 9-17 percentage points of that class's "
+               "own recall. Source: agents/disease/results/full_verification_metrics.json "
+               "(the same file backing the precision/recall/F1/latency/footprint table above). "
+               "Corrected 2026-09-17: an earlier version of this table showed row 7's "
+               "bug-confirmed-invalid n=71 data (see the model lineage table's row 7 entry) "
+               "mislabeled as row 5 -- caught by inspecting that the n-values summed to 71, "
+               "not 85.", "BodySmall"))
 
 story.append(P("Zero-shot vs. fine-tuned: the recorded decision", "H2"))
 story.append(P("<b>Confirmed with the project guide, 2026-09-13.</b> The zero-shot PlantDoc result "
